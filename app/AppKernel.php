@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new DevGarden\simpleq\QueueBundle\QueueBundle(),
             new DevGarden\simpleq\WorkerBundle\WorkerBundle(),
             new DevGarden\simpleq\DemoBundle\DemoBundle(),
+            new DevGarden\simpleq\SimpleqBundle\SimpleqBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

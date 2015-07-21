@@ -2,3 +2,16 @@ services:
 #    worker.example:
 #        class: DevGarden\simpleq\WorkerBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+    simpleq.worker.provider:
+        class: DevGarden\simpleq\WorkerBundle\Service\WorkerProvider
+        arguments:
+            - @simpleq.config.provider
+            - @doctrine
+    simpleq.worker.run.process:
+        class: DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess
+        scope: prototype
+    simpleq.base.worker:
+        class: DevGarden\simpleq\WorkerBundle\Service\BaseWorker
+        arguments:
+            - @simpleq.worker.provider
+            - @simpleq.scheduler.history.provider

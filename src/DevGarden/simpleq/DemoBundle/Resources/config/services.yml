@@ -2,3 +2,8 @@ services:
 #    demo.example:
 #        class: DevGarden\simpleq\DemoBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+    simpleq.worker.dummy:
+        class: DevGarden\simpleq\DemoBundle\Worker\DummyWorker
+        arguments:
+            - @simpleq.worker.provider
+            - @simpleq.scheduler.history.provider

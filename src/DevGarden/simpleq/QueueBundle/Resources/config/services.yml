@@ -2,3 +2,15 @@ services:
 #    queue.example:
 #        class: DevGarden\simpleq\QueueBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
+    simpleq.queue.provider:
+        class: DevGarden\simpleq\QueueBundle\Service\QueueProvider
+        arguments:
+            - @simpleq.config.provider
+            - @simpleq.queue.create.process
+            - @doctrine
+    simpleq.mapping.listener:
+        class: DevGarden\simpleq\QueueBundle\EventListener\MappingListener
+        tags:
+            - { name: doctrine.event_listener, event: loadClassMetadata }
+    simpleq.queue.create.process:
+        class: DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess

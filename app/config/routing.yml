@@ -1,15 +1,1 @@
-demo:
-    resource: "@DemoBundle/Resources/config/routing.yml"
-    prefix:   /
 
-worker:
-    resource: "@WorkerBundle/Resources/config/routing.yml"
-    prefix:   /
-
-queue:
-    resource: "@QueueBundle/Resources/config/routing.yml"
-    prefix:   /
-
-scheduler:
-    resource: "@SchedulerBundle/Resources/config/routing.yml"
-    prefix:   /
