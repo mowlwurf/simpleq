@@ -10,11 +10,12 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SchedulerHistoryCommand extends ContainerAwareCommand
+class SchedulerHistoryClearCommand extends ContainerAwareCommand
 {
     public function configure(){
-        $this->setName('simpleq:scheduler:history');
+        $this->setName('simpleq:scheduler:clear');
         $this->addArgument('name', InputArgument::OPTIONAL);
+        $this->setDescription('seriously?');
     }
 
     /**
@@ -25,15 +26,9 @@ class SchedulerHistoryCommand extends ContainerAwareCommand
     public function execute(InputInterface $input, OutputInterface $output){
         $name = ($input->getArgument('name')) ? $input->getArgument('name') : null;
         $provider = $this->getSchedulerHistoryProvider();
-        $activeWorkers = $provider->getWorkerHistory($name);
-        $output->writeln(sprintf('Scheduler working queue history contains %s executed workers', count($activeWorkers)));
-        $table = $this->getHelper('table');
-        $output->writeln('Setting headers ...');
-        $table->setHeaders(array('ID', 'Status', 'PID', 'Worker', 'Created', 'Updated','Archived'));
-        $output->writeln('Setting rows ...');
-        $table->setRows($this->mapWorkerQueueObjectsToArray($activeWorkers));
-        $output->writeln('Print output ...');
-        $table->render($output);
+        $output->writeln('Starting to clear scheduler history ...');
+        $provider->clearWorkerHistory($name);
+        $output->writeln('Finished clearing up scheduler history');
     }
 
     /**

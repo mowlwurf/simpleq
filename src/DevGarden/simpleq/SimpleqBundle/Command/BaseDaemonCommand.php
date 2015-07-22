@@ -4,6 +4,7 @@ namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Process\Process;
 
 
 /**
@@ -13,6 +14,8 @@ use Symfony\Component\Filesystem\Filesystem;
  */
 abstract class BaseDaemonCommand extends ContainerAwareCommand
 {
+    CONST PID_FILE_NAME = 'simpleq_scheduler_start';
+
     /**
      * Asserts that the current command is running as single instance. Throw exception if instance is running
      * in another runtime scope.
@@ -25,8 +28,7 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
     {
         // Check if command is already running
         $pid         = posix_getpid();
-        $pidFileName = $this->formatPidFilePath();
-        $pidFilePath = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), $pidFileName);
+        $pidFilePath = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), self::PID_FILE_NAME);
         $filesystem  = new Filesystem();
         if ($filesystem->exists($pidFilePath)) {
             $pidFileHandle = new \SplFileObject($pidFilePath, 'r');
@@ -67,5 +69,14 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
     protected function getPidFileDirectoryPath()
     {
         return '/var/lock';
+    }
+
+    public function stopDaemon(){
+        $pidFilePath = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), self::PID_FILE_NAME);
+        $pidFileHandle = new \SplFileObject($pidFilePath, 'r');
+        $storedPID     = trim($pidFileHandle->fgets());
+        $filesystem  = new Filesystem();
+        $filesystem->remove($pidFilePath);
+        posix_kill($storedPID, SIGKILL);
     }
 }

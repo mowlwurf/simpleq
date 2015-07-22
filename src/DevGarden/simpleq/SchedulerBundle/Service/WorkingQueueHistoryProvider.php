@@ -51,4 +51,17 @@ class WorkingQueueHistoryProvider
         $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueueHistory');
         return is_null($name) ? $repository->findAll() : $repository->findBy(['worker' => $name]);
     }
+
+    /**
+     * param name could be set to clear only one defined worker type from history
+     *
+     * @param string $name
+     */
+    public function clearWorkerHistory($name = null){
+        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueueHistory');
+        $entries = !is_null($name) ? $repository->findBy(['worker' => $name]) : $repository->findAll();
+        foreach ($entries as $entry) {
+            $this->doctrine->getManager()->remove($entry);
+        }
+    }
 }

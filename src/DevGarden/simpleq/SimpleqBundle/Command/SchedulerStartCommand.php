@@ -21,6 +21,7 @@ class SchedulerStartCommand extends BaseDaemonCommand
      * @return int|null|void
      */
     public function execute(InputInterface $input, OutputInterface $output){
+        $this->assertSingleInstance();
         $provider = $this->getWorkerProvider();
         $workers  = $provider->getRegisteredWorkers();
         do{
