@@ -2,6 +2,7 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
+use DevGarden\simpleq\SchedulerBundle\Service\JobProvider;
 use DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess;
 use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
 use Symfony\Component\Console\Input\InputInterface;
@@ -25,6 +26,7 @@ class SchedulerStartCommand extends BaseDaemonCommand
         do{
             foreach ($workers as $key => $worker) {
                 $activeWorkers = $provider->getActiveWorkers($worker['class']);
+                //$jobs          = $this->getJobProvider()->provideJob();
                 $countActiveWorkers = count($activeWorkers);
                 if ($countActiveWorkers >= $worker['limit']) {
                     $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
@@ -48,6 +50,13 @@ class SchedulerStartCommand extends BaseDaemonCommand
      */
     protected function getWorkerProvider(){
         return $this->getContainer()->get('simpleq.worker.provider');
+    }
+
+    /**
+     * @return JobProvider
+     */
+    protected function getJobProvider(){
+        return $this->getContainer()->get('simpleq.scheduler.job.provider');
     }
 
     /**

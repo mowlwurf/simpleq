@@ -81,9 +81,12 @@ swiftmailer:
 
 # SimpleQ Configuration
 simpleq:
-    queues: [demoqueue, dummy]
-    workers:
+    queue:
+        demoqueue:
+            type: default
         dummy:
-            class: simpleq.worker.dummy
-            limit: 10
-
+            type: default
+            worker:
+                dummy:
+                    class: simpleq.worker.dummy
+                    limit: 10

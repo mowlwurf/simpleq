@@ -2,8 +2,6 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
-use DevGarden\simpleq\QueueBundle\Entity\Demoqueue;
-use DevGarden\simpleq\QueueBundle\Entity\Queue;
 use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -27,13 +25,42 @@ class QueueCheckCommand extends ContainerAwareCommand
         $queueProvider = $this->getQueueProvider();
         $queues = $queueProvider->getQueues();
         try {
-            foreach ($queues as $queue) {
-                $entries = $queueProvider->getQueueEntries($queue);
-                $output->writeln(sprintf('Queue %s contains %s tasks', $queue, count($entries)));
+            foreach ($queues as $key => $queue) {
+                $entries = $queueProvider->getQueueEntries($key);
+                if (!empty($entries)){
+                    $table = $this->getHelper('table');
+                    $output->writeln('Setting headers ...');
+                    $table->setHeaders(array('ID', 'Status', 'Task', 'Created', 'Updated'));
+                    $output->writeln('Setting rows ...');
+                    $table->setRows($this->mapQueueObjectsToArray($entries));
+                    $output->writeln('Print output ...');
+                    $table->render($output);
+                }
+                $output->writeln(sprintf('Queue %s contains %s tasks', $key, count($entries)));
             }
         } catch (\Exception $e) {
             $output->writeln('Could not read database: '.$e->getMessage());
         }
+    }
+
+    /**
+     * @param $entities
+     * @return array
+     */
+    public function MapQueueObjectsToArray($entities){
+        $arr = [];
+        foreach ($entities as $entity) {
+            $created = $entity->getCreated();
+            $updated = $entity->getUpdated();
+            $arr[] = [
+                'id' => $entity->getId(),
+                'status' => $entity->getStatus(),
+                'task' => $entity->getTask(),
+                'created' => $created->format('Y-m-d h:i:s'),
+                'updated' => $updated->format('Y-m-d h:i:s')
+            ];
+        }
+        return $arr;
     }
 
     /**

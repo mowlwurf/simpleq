@@ -7,3 +7,7 @@ services:
         arguments:
             - @doctrine
             - @simpleq.worker.provider
+    simpleq.scheduler.job.provider:
+        class: DevGarden\simpleq\SchedulerBundle\Service\JobProvider
+        arguments:
+            - @simpleq.queue.provider

@@ -19,35 +19,21 @@ class Configuration implements ConfigurationInterface
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('simpleq');
-        $firstChild = $rootNode->children()->arrayNode('workers');
-        $firstChild->treatNullLike(array());
-        $prototype = $firstChild->prototype('array');
+        // parent queue id
+        $prototypeParent = $rootNode->children()->arrayNode('queue');
+        $prototype = $prototypeParent->prototype('array');
         $prototype->cannotBeEmpty();
-        $firstChildChild = $prototype->children()->scalarNode('class');
-        $secondChildChild = $prototype->children()->integerNode('limit');
-        $secondChild = $rootNode->children()->arrayNode('queues');
-        $secondChild->treatNullLike(array());
-        $secondChild->prototype('scalar');
-        /**$rootNode
-            ->children()
-                ->arrayNode('workers')
-                    ->prototype('array')
-                    ->children()
-                        ->scalarNode('class')->end()
-                        ->integerNode('limit')->end()
-                    ->end()
-                ->end()
-                ->arrayNode('queues')
-                    ->treatNullLike(array())
-                    ->prototype('scalar')
-                ->end()
-            ->end()
-        ;*/
-
-        // Here you should define the parameters that are allowed to
-        // configure your bundle. See the documentation linked above for
-        // more information on that topic.
-
+        // child type
+        $prototype->children()->scalarNode('type');
+        // child worker(s)
+        $workerChild = $prototype->children()->arrayNode('worker');
+        $workerChildChilds = $workerChild->prototype('array');
+        // worker child class
+        $workerChildChilds->children()->scalarNode('class');
+        // worker child limit
+        $workerChildChilds->children()->integerNode('limit');
+        // worker child task
+        $workerChildChilds->children()->scalarNode('task');
         return $treeBuilder;
     }
 }

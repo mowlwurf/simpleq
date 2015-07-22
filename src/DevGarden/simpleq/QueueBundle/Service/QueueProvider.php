@@ -107,11 +107,16 @@ txt;
     }
 
     /**
+     * @param $name
+     * @param null $task
      * @return array
      */
-    public function getQueueEntries($name){
+    public function getQueueEntries($name, $task = null){
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
-        return $repository->findAll();
+        if (is_null($task)) {
+            return $repository->findAll();
+        }
+        return $repository->findBy(['task' => $task]);
     }
 
     /**
@@ -134,13 +139,5 @@ txt;
         $em->flush();
     }
 
-    public function demoPersist(){
-        $product = new DemoQueue();
-        $product->setTask('test');
-        $product->setStatus('open');
-        $product->setCreated(new \DateTime());
-        $product->setUpdated(new \DateTime());
-        $this->doctrine->persist($product);
-        $this->doctrine->flush();
-    }
+
 }

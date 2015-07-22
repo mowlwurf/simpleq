@@ -5,5 +5,4 @@ services:
     simpleq.config.provider:
         class: DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider
         arguments:
-            - %simpleq.queues%
-            - %simpleq.workers%
+            - %simpleq.queue%

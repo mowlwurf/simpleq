@@ -1,5 +1,5 @@
 {
-    "name": "dnaumann/simpleq",
+    "name": "devgarden/simpleq",
     "license": "proprietary",
     "type": "project",
     "autoload": {
@@ -8,6 +8,13 @@
             "SymfonyStandard\\": "app/SymfonyStandard/"
         }
     },
+    "authors": [
+        {
+            "name": "Daniel Naumann",
+            "email": "naumann.da@gmail.com",
+            "role": "Master"
+        }
+    ],
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
