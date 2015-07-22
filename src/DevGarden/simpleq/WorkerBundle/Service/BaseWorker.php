@@ -71,12 +71,14 @@ class BaseWorker extends WorkerInterface
 
     /**
      * @param int $pid
+     * @param string $task
      * @param string $worker
      * @return array
      */
-    public function run($pid, $worker){
+    public function run($pid, $task, $worker){
         $this->provider->pushWorkerToWorkingQueue($pid, $worker);
         $this->setProcessId($pid);
+        $this->setTaskId($task);
         try {
             $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_PENDING_CODE,WorkerStatus::WORKER_STATUS_PENDING_MESSAGE);
             $this->prepare();

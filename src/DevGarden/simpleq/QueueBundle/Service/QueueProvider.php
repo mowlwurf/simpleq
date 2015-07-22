@@ -108,7 +108,7 @@ txt;
 
     /**
      * @param $name
-     * @param null $task
+     * @param mixed|string|array $task
      * @return array
      */
     public function getQueueEntries($name, $task = null){
@@ -116,7 +116,37 @@ txt;
         if (is_null($task)) {
             return $repository->findAll();
         }
+        if (is_array($task)) {
+            return $this->getQueueEntriesXOr($name, $task);
+        }
         return $repository->findBy(['task' => $task]);
+    }
+
+    /**
+     * @param $name
+     * @param null $task
+     * @return array|object
+     */
+    public function getNextQueueEntry($name, $task = null){
+        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
+        if (is_null($task)) {
+            return $repository->findBy(array(),['created' => 'DESC'], 1);
+        }
+        if (is_array($task)) {
+            return $this->getQueueEntriesXOr($name, $task);
+        }
+        return $repository->findOneBy(['task' => $task]);
+    }
+
+    /**
+     * @param $name
+     * @param $tasks
+     * @return array
+     */
+    public function getQueueEntriesXOr($name, $tasks){
+        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
+        return $repository->findAllJobsByQueueForTasks($name, $tasks);
+
     }
 
     /**

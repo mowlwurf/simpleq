@@ -21,10 +21,10 @@ class JobProvider
 
     /**
      * @param string $queue
-     * @param null $task
+     * @param mixed|string|array $task
+     * @return array
      */
     public function provideJob($queue, $task = null){
-        $entries = $this->provider->getQueueEntries($queue, $task);
-        var_dump($entries);
+        return $this->provider->getNextQueueEntry($queue, $task);
     }
 }

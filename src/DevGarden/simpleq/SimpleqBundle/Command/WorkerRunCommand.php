@@ -16,6 +16,7 @@ class WorkerRunCommand extends ContainerAwareCommand
         $this->setName('simpleq:worker:run');
         $this->addArgument('service', InputArgument::REQUIRED, 'service id of the worker you want to run');
         $this->addArgument('pid', InputArgument::OPTIONAL);
+        $this->addArgument('task', InputArgument::OPTIONAL);
     }
 
     /**
@@ -27,8 +28,9 @@ class WorkerRunCommand extends ContainerAwareCommand
     public function execute(InputInterface $input, OutputInterface $output){
         try{
             $pid = ($input->getArgument('pid')) ? $input->getArgument('pid') : getmypid();
+            $task = ($input->getArgument('task')) ? $input->getArgument('task') : null;
             $workerClass = $this->getContainer()->get($input->getArgument('service'));
-            $workerClass->run($pid, $input->getArgument('service'));
+            $workerClass->run($pid, $task, $input->getArgument('service'));
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
         }
