@@ -21,7 +21,8 @@ abstract class WorkerInterface
     protected $taskId;
 
     /**
+     * @param string $data
      * @return int processId
      */
-    public abstract function execute();
+    public abstract function execute($data);
 }

@@ -68,18 +68,19 @@ class BaseWorker extends WorkerInterface
      * @param int $jobId
      * @param int $pid
      * @param string $worker
+     * @param string $data
      * @return array
      */
-    public function run($jobId, $pid, $worker){
+    public function run($jobId, $pid, $worker, $data = null){
         $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId, JobStatus::JOB_STATUS_RUNNING);
         $this->workerProvider->pushWorkerToWorkingQueue($pid, $worker);
         $this->setProcessId($pid);
         try {
             $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_PENDING_CODE,WorkerStatus::WORKER_STATUS_PENDING_MESSAGE);
-            $this->prepare();
+            $this->prepare($data);
             $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_RUNNING_CODE,WorkerStatus::WORKER_STATUS_RUNNING_MESSAGE);
-            $this->execute();
-            $this->endJob();
+            $this->execute($data);
+            $this->endJob($data);
         } catch (\Exception $e) {
             $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_FAILED_CODE,WorkerStatus::WORKER_STATUS_FAILED_MESSAGE);
             $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId, JobStatus::JOB_STATUS_FAILED);
@@ -108,18 +109,22 @@ class BaseWorker extends WorkerInterface
     /**
      * prepare to execute stuff must be done before the worker execute its job
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
+     * @param $data
      */
-    public function prepare(){}
+    public function prepare($data){}
 
     /**
      * execute the job, should set WorkerStatus to FAILED on exception
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
+     * @param string $data
+     * @return int|void
      */
-    public function execute(){}
+    public function execute($data){}
 
     /**
      * do stuff like clean up jobs
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
+     * @param $data
      */
-    public function endJob(){}
+    public function endJob($data){}
 }

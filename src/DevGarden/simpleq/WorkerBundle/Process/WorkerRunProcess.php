@@ -6,7 +6,7 @@ use DevGarden\simpleq\SimpleqBundle\Process\BaseProcess;
 
 class WorkerRunProcess extends BaseProcess
 {
-    CONST CMD_PATTERN = 'app/console simpleq:worker:run %s %s';
+    CONST CMD_PATTERN = 'app/console simpleq:worker:run %s %s %s';
 
     public function __construct(){
         parent::__construct(self::CMD_PATTERN);
@@ -20,7 +20,7 @@ class WorkerRunProcess extends BaseProcess
      */
     public function execute($id, $job, $verbose = false){
         $this->setCommandLine(
-            sprintf(self::CMD_PATTERN, $id, $job->getId())
+            sprintf(self::CMD_PATTERN, $id, $job->getId(), $job->getData())
         );
         return $this->executeProcess($verbose);
     }
@@ -32,7 +32,7 @@ class WorkerRunProcess extends BaseProcess
      */
     public function executeAsync($id, $job){;
         $this->setCommandLine(
-            sprintf(self::CMD_PATTERN, $id, $job->getId())
+            sprintf(self::CMD_PATTERN, $id, $job->getId(), $job->getData())
         );
         return $this->executeAsyncProcess();
     }

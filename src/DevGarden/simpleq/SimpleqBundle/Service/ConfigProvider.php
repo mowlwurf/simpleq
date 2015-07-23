@@ -19,8 +19,9 @@ class ConfigProvider
      */
     public function __construct(array $queues){
         foreach ($queues as $key=> $queue) {
-            foreach ($queue['worker'] as $worker) {
+            foreach ($queue['worker'] as $workerKey => $worker) {
                 $worker['queue'] = $key;
+                $worker['name']  = $workerKey;
                 array_push($this->workers, $worker);
             }
         }
@@ -32,7 +33,7 @@ class ConfigProvider
      * @return bool
      */
     public function getQueue($name){
-        return is_array($this->queues[$name]) ? $this->queues[$name] : false;
+        return isset($this->queues[$name]) && is_array($this->queues[$name]) ? $this->queues[$name] : false;
     }
 
     /**
@@ -43,12 +44,17 @@ class ConfigProvider
     }
 
     /**
+     * @param $queue
      * @param $name
      * @return bool
      */
-    public function getWorker($name){
-        $key = array_search($name, $this->workers);
-        return $key !== false ? $this->workers[$key] : false;
+    public function getWorker($queue, $name){
+        foreach ($this->workers as $worker) {
+            if ($worker['queue'] == $queue && $worker['name'] == $name) {
+                return $worker;
+            }
+        }
+        return false;
     }
 
     /**

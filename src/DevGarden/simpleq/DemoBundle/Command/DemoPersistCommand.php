@@ -36,6 +36,7 @@ class DemoPersistCommand extends ContainerAwareCommand
         $product = new Dummy();
         $product->setTask('test');
         $product->setStatus('open');
+        $product->setData(json_encode(['test' => 1]));
         $product->setCreated(new \DateTime());
         $product->setUpdated(new \DateTime());
         $this->getContainer()->get('doctrine')->getManager()->persist($product);

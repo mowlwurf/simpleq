@@ -29,7 +29,7 @@ class WorkingQueueHistory
     protected $pid;
 
     /**
-     * @ORM\Column(type="string", length=16)
+     * @ORM\Column(type="string", length=128)
      */
     protected $worker;
 

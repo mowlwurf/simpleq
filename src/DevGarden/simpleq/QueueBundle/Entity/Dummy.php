@@ -28,6 +28,11 @@ class Dummy
     protected $status;
 
     /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $data;
+
+    /**
      * @var \DateTime $created
      *
      * @Gedmo\Timestampable(on="create")
@@ -97,6 +102,29 @@ class Dummy
     public function getStatus()
     {
         return $this->status;
+    }
+
+    /**
+     * Set data
+     *
+     * @param string $data
+     * @return Dummy
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return string 
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 
     /**

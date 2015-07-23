@@ -6,26 +6,25 @@ use DevGarden\simpleq\WorkerBundle\Service\BaseWorker;
 
 class DummyWorker extends BaseWorker
 {
-    // you might overwrite parent constructor too
 
-    public function prepare(){
-        parent::prepare();
-        sleep(3);
+    public function prepare($data){
         print "prepare job".PHP_EOL;
+        var_dump($data);
+        usleep(rand(100,1000));
         // use your job preparing code here (f.e. worker configuration)
     }
 
-    public function execute(){
-        parent::execute();
-        sleep(3);
+    public function execute($data){
         print "execute job".PHP_EOL;
+        var_dump($data);
+        usleep(rand(100,1000));
         // use your job executing code here (this is the main job process, its possible to only overwrite this parent function)
     }
 
-    public function endJob(){
+    public function endJob($data){
         print "finishing job".PHP_EOL;
-        sleep(3);
+        var_dump($data);
+        usleep(rand(100,1000));
         // use your job finalizing code here (f.e. clean up jobs)
-        parent::endJob();
     }
 }

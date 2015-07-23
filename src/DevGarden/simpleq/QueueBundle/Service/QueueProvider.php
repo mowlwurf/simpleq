@@ -44,8 +44,7 @@ class QueueProvider
      * @throws \Exception
      */
     public function generateQueue($name){
-        $queue = $this->configProvider->getQueue($name);
-        if (!$queue) {
+        if (!$this->configProvider->getQueue($name)) {
             throw new \Exception(
                 sprintf(
                     'Queue %s is undefined, defined queues are [\'%s\']',
@@ -83,6 +82,11 @@ class %s
      * @ORM\Column(type="string", length=16)
      */
     protected $status;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $data;
 
     /**
      * @var \DateTime $created
