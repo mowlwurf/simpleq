@@ -79,6 +79,20 @@ swiftmailer:
     password:  "%mailer_password%"
     spool:     { type: memory }
 
+# Monolog
+monolog:
+    channels: [app,dev,queue,scheduler,worker]
+    handlers:
+        app:
+            type: stream
+            path: %kernel.root_dir%/logs/app.log
+            level: debug
+            channels: [!dev]
+        dev:
+            type: stream
+            path: %kernel.root_dir%/logs/dev.log
+            level: debug
+
 # SimpleQ Configuration
 simpleq:
     queue:

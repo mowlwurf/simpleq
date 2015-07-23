@@ -14,25 +14,25 @@ class WorkerRunProcess extends BaseProcess
 
     /**
      * @param string $id
-     * @param string $task
+     * @param $job
      * @param bool $verbose
      * @return bool
      */
-    public function execute($id, $task, $verbose = false){
+    public function execute($id, $job, $verbose = false){
         $this->setCommandLine(
-            sprintf(self::CMD_PATTERN, $id, $task)
+            sprintf(self::CMD_PATTERN, $id, $job->getId())
         );
         return $this->executeProcess($verbose);
     }
 
     /**
      * @param string $id
-     * @param string $task
+     * @param object $job
      * @return int|null
      */
-    public function executeAsync($id, $task){
+    public function executeAsync($id, $job){;
         $this->setCommandLine(
-            sprintf(self::CMD_PATTERN, $id, $task)
+            sprintf(self::CMD_PATTERN, $id, $job->getId())
         );
         return $this->executeAsyncProcess();
     }

@@ -2,6 +2,8 @@
 
 namespace DevGarden\simpleq\WorkerBundle\Service;
 
+use DevGarden\simpleq\SchedulerBundle\Extension\JobStatus;
+use DevGarden\simpleq\SchedulerBundle\Service\JobProvider;
 use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
 use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
 
@@ -10,20 +12,27 @@ class BaseWorker extends WorkerInterface
     /**
      * @var WorkerProvider
      */
-    protected $provider;
+    protected $workerProvider;
+
+    /**
+     * @var JobProvider
+     */
+    protected $jobProvider;
 
     /**
      * @var WorkingQueueHistoryProvider
      */
-    private $historyProvider;
+    protected $historyProvider;
 
     /**
      * @param WorkerProvider $workerProvider
      * @param WorkingQueueHistoryProvider $historyProvider
+     * @param JobProvider $jobProvider
      */
-    public function __construct(WorkerProvider $workerProvider, WorkingQueueHistoryProvider $historyProvider){
-        $this->provider = $workerProvider;
+    public function __construct(WorkerProvider $workerProvider, WorkingQueueHistoryProvider $historyProvider, JobProvider $jobProvider){
+        $this->workerProvider = $workerProvider;
         $this->historyProvider = $historyProvider;
+        $this->jobProvider = $jobProvider;
     }
 
     /**
@@ -56,29 +65,15 @@ class BaseWorker extends WorkerInterface
     }
 
     /**
-     * @param mixed|string|int $taskId
-     */
-    public function setTaskId($taskId){
-        $this->taskId = $taskId;
-    }
-
-    /**
-     * @return int|mixed|string
-     */
-    public function getTaskId(){
-        return $this->taskId;
-    }
-
-    /**
+     * @param int $jobId
      * @param int $pid
-     * @param string $task
      * @param string $worker
      * @return array
      */
-    public function run($pid, $task, $worker){
-        $this->provider->pushWorkerToWorkingQueue($pid, $worker);
+    public function run($jobId, $pid, $worker){
+        $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId, JobStatus::JOB_STATUS_RUNNING);
+        $this->workerProvider->pushWorkerToWorkingQueue($pid, $worker);
         $this->setProcessId($pid);
-        $this->setTaskId($task);
         try {
             $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_PENDING_CODE,WorkerStatus::WORKER_STATUS_PENDING_MESSAGE);
             $this->prepare();
@@ -87,9 +82,17 @@ class BaseWorker extends WorkerInterface
             $this->endJob();
         } catch (\Exception $e) {
             $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_FAILED_CODE,WorkerStatus::WORKER_STATUS_FAILED_MESSAGE);
+            $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId, JobStatus::JOB_STATUS_FAILED);
         }
         $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_SUCCESS_CODE,WorkerStatus::WORKER_STATUS_SUCCESS_MESSAGE);
-        $this->historyProvider->archiveWorkingQueueEntry($pid);
+        try {
+            $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId, JobStatus::JOB_STATUS_FINISHED);
+            $this->jobProvider->removeJob($this->workerProvider->getWorkerQueue($worker), $jobId);
+            $this->historyProvider->archiveWorkingQueueEntry($pid);
+            $this->workerProvider->removeWorkingQueueEntry($pid);
+        } catch ( \Exception $e) {
+            $this->run($jobId, $pid, $worker);
+        }
         return $this->getWorkerStatus();
     }
 
@@ -99,7 +102,7 @@ class BaseWorker extends WorkerInterface
      */
     protected function pushWorkerStatus($code, $message){
         $this->setWorkerStatus($code, $message);
-        $this->provider->pushWorkerStatus($this->getProcessId(), $code);
+        $this->workerProvider->pushWorkerStatus($this->getProcessId(), $code);
     }
 
     /**

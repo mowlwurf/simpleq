@@ -29,39 +29,45 @@ class SchedulerStartCommand extends BaseDaemonCommand
             foreach ($queues as $qKey => $queue) {
                 $workers = $queue['worker'];
                 if(!is_array($workers) || empty($workers)){
+                    unset($queues[$qKey]);
                     $output->writeln('No workers registered for queue '. $qKey);
+                    continue;
                 }
                 foreach ($workers as $key => $worker) {
-                    $task = null;
-                    $job = $this->provideJob($qKey, $task);
-                    if (empty($job)) {
-                        $output->writeln(
-                            sprintf(
-                                'No jobs available for queue %s and task %s',
-                                $qKey,
-                                $task
-                            )
-                        );
-                        continue;
-                    }
+                    $task  = null;
+                    $limit = $worker['limit'];
                     // get already started worker for this type
                     $activeWorkers = $provider->getActiveWorkers($worker['class']);
                     $countActiveWorkers = count($activeWorkers);
-                    if ($countActiveWorkers >= $worker['limit']) {
+                    if ($countActiveWorkers >= $limit) {
                         $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
                         continue;
                     }
-                    try{
-                        $process = $this->getWorkerRunProcess();
-                        $process->executeAsync($worker['class'],$task);
-                        $output->writeln('Spawned worker on pid '. $process->getPid());
-                    } catch(\Exception $e){
-                        $output->writeln($e->getMessage());
+                    for($i=0;$i<$limit;$i++){
+                        $job = $this->provideJob($qKey, $task);
+                        $job = $job[0];
+                        if (empty($job)) {
+                            $output->writeln(
+                                sprintf(
+                                    'No jobs available for queue %s and task %s',
+                                    $qKey,
+                                    $task
+                                )
+                            );
+                            continue;
+                        }
+                        try{
+                            $process = $this->getWorkerRunProcess();
+                            $process->executeAsync($worker['class'],$job);
+                            $output->writeln('Spawned worker on pid '. $process->getPid());
+                        } catch(\Exception $e){
+                            $output->writeln($e->getMessage());
+                        }
                     }
                 }
             }
             //TODO bad hack to avoid spawning new workers before, recently spawned workers have been started
-            sleep(1);
+            sleep(5);
         } while (true);
     }
 

@@ -81,6 +81,16 @@ class WorkerProvider
         $this->doctrine->getManager()->flush();
     }
 
+    /***
+     * @param int $pid
+     */
+    public function removeWorkingQueueEntry($pid){
+        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
+        $em = $this->doctrine->getManager();
+        $em->remove($repository->findOneBy(['pid' => $pid]));
+        $em->flush();
+    }
+
     /**
      * @param $pid
      * @param $status
@@ -90,5 +100,13 @@ class WorkerProvider
         $worker->setStatus($status);
         $this->doctrine->getManager()->persist($worker);
         $this->doctrine->getManager()->flush();
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function getWorkerQueue($id){
+        return $this->config->getQueueByWorkerService($id);
     }
 }

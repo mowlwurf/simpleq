@@ -7,3 +7,4 @@ services:
         arguments:
             - @simpleq.worker.provider
             - @simpleq.scheduler.history.provider
+            - @simpleq.scheduler.job.provider

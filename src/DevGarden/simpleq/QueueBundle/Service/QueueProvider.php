@@ -127,10 +127,10 @@ txt;
      * @param null $task
      * @return array|object
      */
-    public function getNextQueueEntry($name, $task = null){
+    public function getNextOpenQueueEntry($name, $task = null){
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
         if (is_null($task)) {
-            return $repository->findBy(array(),['created' => 'DESC'], 1);
+            return $repository->findBy(['status' => 'open'],['created' => 'ASC'], 1);
         }
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($name, $task);
@@ -169,5 +169,30 @@ txt;
         $em->flush();
     }
 
+    /**
+     * @param $queue
+     * @param $id
+     */
+    public function removeQueueEntry($queue, $id){
+        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($queue)));
+        $em = $this->doctrine->getManager();
+        $em->remove($repository->findOneBy(['id' => $id]));
+        $em->flush();
+    }
 
+    /**
+     * @param string $queue
+     * @param int $id
+     * @param array $args
+     */
+    public function updateQueueEntry($queue, $id, array $args){
+        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($queue)));
+        $entry      = $repository->findOneBy(['id' => $id]);
+        foreach ($args as $arg => $val) {
+            $fnc   = sprintf('set%s',ucfirst($arg));
+            $entry->$fnc($val);
+        }
+        $this->doctrine->getManager()->persist($entry);
+        $this->doctrine->getManager()->flush();
+    }
 }

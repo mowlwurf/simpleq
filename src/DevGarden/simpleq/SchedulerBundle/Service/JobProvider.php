@@ -15,7 +15,6 @@ class JobProvider
      * @param QueueProvider $provider
      */
     public function __construct(QueueProvider $provider){
-
         $this->provider = $provider;
     }
 
@@ -25,6 +24,19 @@ class JobProvider
      * @return array
      */
     public function provideJob($queue, $task = null){
-        return $this->provider->getNextQueueEntry($queue, $task);
+        return $this->provider->getNextOpenQueueEntry($queue, $task);
+    }
+
+    /***
+     * @param $queue
+     * @param $jobId
+     */
+    public function removeJob($queue, $jobId){
+        $this->provider->removeQueueEntry($queue, $jobId);
+    }
+
+    public function updateJobStatus($queue, $jobId, $status){
+        $args = ['status' => $status];
+        $this->provider->updateQueueEntry($queue, $jobId, $args);
     }
 }

@@ -20,6 +20,7 @@ class ConfigProvider
     public function __construct(array $queues){
         foreach ($queues as $key=> $queue) {
             foreach ($queue['worker'] as $worker) {
+                $worker['queue'] = $key;
                 array_push($this->workers, $worker);
             }
         }
@@ -55,5 +56,18 @@ class ConfigProvider
      */
     public function getWorkerList(){
         return $this->workers;
+    }
+
+    /**
+     * @param $id
+     * @return bool
+     */
+    public function getQueueByWorkerService($id){
+        foreach($this->workers as $worker){
+            if ($worker['class'] === $id) {
+                return $worker['queue'];
+            }
+        }
+        return false;
     }
 }
