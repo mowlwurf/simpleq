@@ -28,6 +28,8 @@ app/console simpleq:demo:persist n
 app/console simpleq:scheduler:init
 # start the scheduler and watch it working :)
 app/console simpleq:scheduler:start
+app/console simpleq:scheduler:stop
+
 ```
 
 ## CheckStatus
