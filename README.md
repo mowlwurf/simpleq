@@ -10,16 +10,16 @@ Create a queue
 ===============
 
 ```yml 
-config.yml
-	simpleq:
-		queue:
-			dummy:
-				type: default
-				worker:
-					dummy:
-						class: simpleq.worker.dummy
-						limit: 10
-```
+    simpleq:
+	queue:
+	    dummy:
+		type: default
+		worker:
+		    dummy:
+			class: simpleq.worker.dummy
+			limit: 10
+```
+
 
 ```sh
 app/console simpleq:queue:create dummy
