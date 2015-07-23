@@ -41,3 +41,11 @@ simpleq:scheduler:history [<worker_service_id>]
 # worker
 simpleq:worker:status  
 ```
+
+## Clear
+
+```sh
+simpleq:queue:clear 
+simpleq:scheduler:clear              
+simpleq:scheduler:clear:history [<worker_service_id>]
+```
