@@ -14,8 +14,8 @@ simpleq:
 	        type: default
 	        worker:
 	            dummy:
-		        class: simpleq.worker.dummy
-		        limit: 10
+		            class: simpleq.worker.dummy
+		            limit: 10
 ```
 
 
