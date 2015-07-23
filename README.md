@@ -8,8 +8,8 @@ A Symfony bundle to create & handle queue for any needs. Configuration via confi
 ## Create a queue
 
 ```yml 
-    simpleq:
-	queue:
+simpleq:
+    queue:
 	    dummy:
 		type: default
 		worker:
