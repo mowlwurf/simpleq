@@ -11,11 +11,11 @@ A Symfony bundle to create & handle queue for any needs. Configuration via confi
 simpleq:
     queue:
         dummy:
-	    type: default
-	    worker:
-	        dummy:
-		    class: simpleq.worker.dummy
-		    limit: 10
+	        type: default
+	        worker:
+	            dummy:
+		        class: simpleq.worker.dummy
+		        limit: 10
 ```
 
 
