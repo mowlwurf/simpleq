@@ -1,13 +1,11 @@
-simpleq
+#simpleq
 =======
 
 A Symfony bundle to create & handle queue for any needs. Configuration via config.yml.
 
-Usage
-=====
+#Usage
 
-Create a queue
-===============
+## Create a queue
 
 ```yml 
     simpleq:
@@ -26,4 +24,14 @@ app/console simpleq:queue:create dummy
 app/console simpleq:demo:persist n
 app/console simpleq:scheduler:init
 app/console simpleq:scheduler:start
+```
+
+## CheckStatus
+
+```sh
+# queues
+simpleq:queue:check [<queue_name>]
+simpleq:scheduler:status
+simpleq:scheduler:history [<worker_service_id>]
+simpleq:worker:status  
 ```
