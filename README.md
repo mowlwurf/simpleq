@@ -9,7 +9,8 @@ Usage
 Create a queue
 ===============
 
-```yml config.yml
+```yml 
+config.yml
 	simpleq:
 		queue:
 			dummy:
