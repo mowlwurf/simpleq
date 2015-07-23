@@ -23,7 +23,8 @@ class WorkerProvider
      * @param ConfigProvider $config
      * @param ManagerRegistry $doctrine
      */
-    public function __construct(ConfigProvider $config, ManagerRegistry $doctrine){
+    public function __construct(ConfigProvider $config, ManagerRegistry $doctrine)
+    {
         $this->config = $config;
         $this->doctrine = $doctrine;
     }
@@ -31,7 +32,8 @@ class WorkerProvider
     /**
      * @return array
      */
-    public function getRegisteredWorkers(){
+    public function getRegisteredWorkers()
+    {
         return $this->config->getWorkerList();
     }
 
@@ -39,8 +41,10 @@ class WorkerProvider
      * @param string $name
      * @return array
      */
-    public function getActiveWorkers($name = null){
+    public function getActiveWorkers($name = null)
+    {
         $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
+
         return is_null($name) ? $repository->findAll() : $repository->findBy(['worker' => $name]);
     }
 
@@ -48,15 +52,18 @@ class WorkerProvider
      * @param int $pid
      * @return WorkingQueue
      */
-    public function getWorkingQueueEntryByPid($pid){
+    public function getWorkingQueueEntryByPid($pid)
+    {
         $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
+
         return $repository->findOneBy(['pid' => $pid]);
     }
 
     /**
      * @param string $name
      */
-    public function clearQueue($name = null){
+    public function clearQueue($name = null)
+    {
         $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
         $em = $this->doctrine->getManager();
         $entriesToDelete = is_null($name) ? $repository->findAll() : $repository->findBy(['worker' => $name]);
@@ -70,7 +77,8 @@ class WorkerProvider
      * @param int $pid
      * @param string $workerService
      */
-    public function pushWorkerToWorkingQueue($pid, $workerService){
+    public function pushWorkerToWorkingQueue($pid, $workerService)
+    {
         $worker = new WorkingQueue();
         $worker->setPid($pid);
         $worker->setStatus(WorkerStatus::WORKER_STATUS_OPEN_CODE);
@@ -84,7 +92,8 @@ class WorkerProvider
     /***
      * @param int $pid
      */
-    public function removeWorkingQueueEntry($pid){
+    public function removeWorkingQueueEntry($pid)
+    {
         $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
         $em = $this->doctrine->getManager();
         $em->remove($repository->findOneBy(['pid' => $pid]));
@@ -95,7 +104,8 @@ class WorkerProvider
      * @param $pid
      * @param $status
      */
-    public function pushWorkerStatus($pid, $status){
+    public function pushWorkerStatus($pid, $status)
+    {
         $worker = $this->getWorkingQueueEntryByPid($pid);
         $worker->setStatus($status);
         $this->doctrine->getManager()->persist($worker);
@@ -106,7 +116,8 @@ class WorkerProvider
      * @param $id
      * @return bool
      */
-    public function getWorkerQueue($id){
+    public function getWorkerQueue($id)
+    {
         return $this->config->getQueueByWorkerService($id);
     }
 }

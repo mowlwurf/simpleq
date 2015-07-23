@@ -11,7 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class QueueClearCommand extends ContainerAwareCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:queue:clear');
         $this->addArgument('name', InputArgument::REQUIRED);
     }
@@ -21,7 +22,8 @@ class QueueClearCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $output->write(sprintf('Clearing queue %s ..', $input->getArgument('name')));
         $provider = $this->getQueueProvider();
         $output->write('.');
@@ -32,7 +34,8 @@ class QueueClearCommand extends ContainerAwareCommand
     /**
      * @return QueueProvider
      */
-    protected function getQueueProvider(){
+    protected function getQueueProvider()
+    {
         return $this->getContainer()->get('simpleq.queue.provider');
     }
 }

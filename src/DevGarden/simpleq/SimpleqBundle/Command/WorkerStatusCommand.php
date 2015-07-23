@@ -9,7 +9,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class WorkerStatusCommand extends ContainerAwareCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:worker:status');
     }
 
@@ -18,15 +19,16 @@ class WorkerStatusCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $provider = $this->getWorkerProvider();
-        $workers  = $provider->getRegisteredWorkers();
-        if (count($workers) > 0){
-            foreach($workers as $id => $worker){
-                $output->writeln('Registered worker '.$id);
-                $output->writeln('Service: '.$worker['class']);
-                $output->writeln('Limit: '.$worker['limit']);
-                $output->writeln('Running: '. count($provider->getActiveWorkers($worker['class'])));
+        $workers = $provider->getRegisteredWorkers();
+        if (count($workers) > 0) {
+            foreach ($workers as $id => $worker) {
+                $output->writeln('Registered worker ' . $id);
+                $output->writeln('Service: ' . $worker['class']);
+                $output->writeln('Limit: ' . $worker['limit']);
+                $output->writeln('Running: ' . count($provider->getActiveWorkers($worker['class'])));
             }
         } else {
             $output->writeln('No workers registered.');
@@ -36,7 +38,8 @@ class WorkerStatusCommand extends ContainerAwareCommand
     /**
      * @return WorkerProvider
      */
-    protected function getWorkerProvider(){
+    protected function getWorkerProvider()
+    {
         return $this->getContainer()->get('simpleq.worker.provider');
     }
 }

@@ -21,7 +21,8 @@ class MappingListener
     /**
      * @param $name
      */
-    public function __construct($name = null){
+    public function __construct($name = null)
+    {
         $this->name = $name;
     }
 
@@ -31,14 +32,15 @@ class MappingListener
     public function loadClassMetadata(LoadClassMetadataEventArgs $eventArgs)
     {
         $this->eventArgs = $eventArgs;
-        $classMetaData   = $this->getClassMetaData();
+        $classMetaData = $this->getClassMetaData();
         $classMetaData->setPrimaryTable(['name' => sprintf('%s_%s', $classMetaData->getTableName(), $this->name)]);
     }
 
     /**
      * @return ClassMetadata
      */
-    protected function getClassMetaData(){
+    protected function getClassMetaData()
+    {
         return $this->eventArgs->getClassMetadata();
     }
 }

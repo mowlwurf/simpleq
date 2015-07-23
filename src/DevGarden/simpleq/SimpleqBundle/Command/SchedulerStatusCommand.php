@@ -5,13 +5,13 @@ namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerStatusCommand extends ContainerAwareCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:scheduler:status');
         $this->addArgument('name');
     }
@@ -21,7 +21,8 @@ class SchedulerStatusCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $name = ($input->getArgument('name')) ? $input->getArgument('name') : null;
         $provider = $this->getWorkerProvider();
         $activeWorkers = $provider->getActiveWorkers($name);
@@ -38,7 +39,8 @@ class SchedulerStatusCommand extends ContainerAwareCommand
     /**
      * @return WorkerProvider
      */
-    protected function getWorkerProvider(){
+    protected function getWorkerProvider()
+    {
         return $this->getContainer()->get('simpleq.worker.provider');
     }
 
@@ -46,7 +48,8 @@ class SchedulerStatusCommand extends ContainerAwareCommand
      * @param array $activeWorkers
      * @return array
      */
-    protected function mapWorkerQueueObjectsToArray($activeWorkers){
+    protected function mapWorkerQueueObjectsToArray($activeWorkers)
+    {
         $workers = array();
         foreach ($activeWorkers as $activeWorker) {
             $worker['id'] = $activeWorker->getId();
@@ -59,6 +62,7 @@ class SchedulerStatusCommand extends ContainerAwareCommand
             $worker['updated'] = $updateDate->format('Y-m-d H:i:s');
             $workers[] = $worker;
         }
+
         return $workers;
     }
 }

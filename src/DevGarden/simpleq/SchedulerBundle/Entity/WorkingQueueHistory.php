@@ -60,11 +60,21 @@ class WorkingQueueHistory
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
@@ -81,13 +91,13 @@ class WorkingQueueHistory
     }
 
     /**
-     * Get status
+     * Get pid
      *
-     * @return integer 
+     * @return integer
      */
-    public function getStatus()
+    public function getPid()
     {
-        return $this->status;
+        return $this->pid;
     }
 
     /**
@@ -104,13 +114,13 @@ class WorkingQueueHistory
     }
 
     /**
-     * Get pid
+     * Get worker
      *
-     * @return integer 
+     * @return string
      */
-    public function getPid()
+    public function getWorker()
     {
-        return $this->pid;
+        return $this->worker;
     }
 
     /**
@@ -127,13 +137,13 @@ class WorkingQueueHistory
     }
 
     /**
-     * Get worker
+     * Get created
      *
-     * @return string 
+     * @return \DateTime
      */
-    public function getWorker()
+    public function getCreated()
     {
-        return $this->worker;
+        return $this->created;
     }
 
     /**
@@ -150,13 +160,13 @@ class WorkingQueueHistory
     }
 
     /**
-     * Get created
+     * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getCreated()
+    public function getUpdated()
     {
-        return $this->created;
+        return $this->updated;
     }
 
     /**
@@ -173,13 +183,13 @@ class WorkingQueueHistory
     }
 
     /**
-     * Get updated
+     * Get archived
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getUpdated()
+    public function getArchived()
     {
-        return $this->updated;
+        return $this->archived;
     }
 
     /**
@@ -193,15 +203,5 @@ class WorkingQueueHistory
         $this->archived = $archived;
 
         return $this;
-    }
-
-    /**
-     * Get archived
-     *
-     * @return \DateTime 
-     */
-    public function getArchived()
-    {
-        return $this->archived;
     }
 }

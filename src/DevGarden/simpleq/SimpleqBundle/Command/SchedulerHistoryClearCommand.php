@@ -5,14 +5,14 @@ namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerHistoryClearCommand extends ContainerAwareCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:scheduler:clear:history');
         $this->addArgument('name', InputArgument::OPTIONAL);
         $this->setDescription('seriously?');
@@ -23,7 +23,8 @@ class SchedulerHistoryClearCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $name = ($input->getArgument('name')) ? $input->getArgument('name') : null;
         $provider = $this->getSchedulerHistoryProvider();
         $output->writeln('Starting to clear scheduler history ...');
@@ -34,7 +35,8 @@ class SchedulerHistoryClearCommand extends ContainerAwareCommand
     /**
      * @return WorkingQueueHistoryProvider
      */
-    protected function getSchedulerHistoryProvider(){
+    protected function getSchedulerHistoryProvider()
+    {
         return $this->getContainer()->get('simpleq.scheduler.history.provider');
     }
 
@@ -42,7 +44,8 @@ class SchedulerHistoryClearCommand extends ContainerAwareCommand
      * @param array $activeWorkers
      * @return array
      */
-    protected function mapWorkerQueueObjectsToArray($activeWorkers){
+    protected function mapWorkerQueueObjectsToArray($activeWorkers)
+    {
         $workers = array();
         foreach ($activeWorkers as $activeWorker) {
             $worker['id'] = $activeWorker->getId();
@@ -57,6 +60,7 @@ class SchedulerHistoryClearCommand extends ContainerAwareCommand
             $worker['archived'] = $archivedDate->format('Y-m-d H:i:s');
             $workers[] = $worker;
         }
+
         return $workers;
     }
 }

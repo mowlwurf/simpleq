@@ -22,7 +22,8 @@ class WorkingQueueHistoryProvider
      * @param ManagerRegistry $doctrine
      * @param WorkerProvider $workerProvider
      */
-    public function __construct(ManagerRegistry $doctrine, WorkerProvider $workerProvider){
+    public function __construct(ManagerRegistry $doctrine, WorkerProvider $workerProvider)
+    {
         $this->doctrine = $doctrine;
         $this->workerProvider = $workerProvider;
     }
@@ -30,8 +31,9 @@ class WorkingQueueHistoryProvider
     /**
      * @param int $pid
      */
-    public function archiveWorkingQueueEntry($pid){
-        $entity    = $this->workerProvider->getWorkingQueueEntryByPid($pid);
+    public function archiveWorkingQueueEntry($pid)
+    {
+        $entity = $this->workerProvider->getWorkingQueueEntryByPid($pid);
         $logEntity = new WorkingQueueHistory();
         $logEntity->setPid($entity->getPid());
         $logEntity->setStatus($entity->getStatus());
@@ -47,8 +49,10 @@ class WorkingQueueHistoryProvider
      * @param string $name
      * @return array
      */
-    public function getWorkerHistory($name = null){
+    public function getWorkerHistory($name = null)
+    {
         $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueueHistory');
+
         return is_null($name) ? $repository->findAll() : $repository->findBy(['worker' => $name]);
     }
 
@@ -57,7 +61,8 @@ class WorkingQueueHistoryProvider
      *
      * @param string $name
      */
-    public function clearWorkerHistory($name = null){
+    public function clearWorkerHistory($name = null)
+    {
         $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueueHistory');
         $entries = !is_null($name) ? $repository->findBy(['worker' => $name]) : $repository->findAll();
         foreach ($entries as $entry) {

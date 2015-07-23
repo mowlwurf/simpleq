@@ -11,7 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerInitCommand extends ContainerAwareCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:scheduler:init');
     }
 
@@ -21,7 +22,8 @@ class SchedulerInitCommand extends ContainerAwareCommand
      *
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $output->writeln('Init scheduler ...');
         $process = $this->getCreateEntityProcess();
         $process->execute('DevGarden/simpleq/SchedulerBundle/Entity');
@@ -29,7 +31,7 @@ class SchedulerInitCommand extends ContainerAwareCommand
 
         $arguments = array(
             'command' => 'doctrine:schema:update',
-            '--force'  => true,
+            '--force' => true,
         );
 
         $input = new ArrayInput($arguments);
@@ -40,7 +42,8 @@ class SchedulerInitCommand extends ContainerAwareCommand
     /**
      * @return CreateDoctrineEntityProcess
      */
-    protected function getCreateEntityProcess(){
+    protected function getCreateEntityProcess()
+    {
         return $this->getContainer()->get('simpleq.queue.create.process');
     }
 }

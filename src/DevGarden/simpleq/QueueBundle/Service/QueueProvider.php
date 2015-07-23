@@ -2,7 +2,6 @@
 
 namespace DevGarden\simpleq\QueueBundle\Service;
 
-use DevGarden\simpleq\QueueBundle\Entity\Demoqueue;
 use DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -33,17 +32,18 @@ class QueueProvider
         ConfigProvider $config,
         CreateDoctrineEntityProcess $entityProcess,
         ManagerRegistry $doctrine
-    ){
+    ) {
         $this->configProvider = $config;
-        $this->entityProcess  = $entityProcess;
-        $this->doctrine       = $doctrine;
+        $this->entityProcess = $entityProcess;
+        $this->doctrine = $doctrine;
     }
 
     /**
      * @param string $name
      * @throws \Exception
      */
-    public function generateQueue($name){
+    public function generateQueue($name)
+    {
         if (!$this->configProvider->getQueue($name)) {
             throw new \Exception(
                 sprintf(
@@ -106,7 +106,7 @@ class %s
 }
 
 txt;
-        file_put_contents(__DIR__ . '/../Entity/'.ucfirst($name).'.php',sprintf($txt, $name, ucfirst($name)));
+        file_put_contents(__DIR__ . '/../Entity/' . ucfirst($name) . '.php', sprintf($txt, $name, ucfirst($name)));
         $this->entityProcess->execute('DevGarden/simpleq/QueueBundle/Entity');
     }
 
@@ -115,7 +115,8 @@ txt;
      * @param mixed|string|array $task
      * @return array
      */
-    public function getQueueEntries($name, $task = null){
+    public function getQueueEntries($name, $task = null)
+    {
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
         if (is_null($task)) {
             return $repository->findAll();
@@ -123,6 +124,7 @@ txt;
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($name, $task);
         }
+
         return $repository->findBy(['task' => $task]);
     }
 
@@ -131,14 +133,16 @@ txt;
      * @param null $task
      * @return array|object
      */
-    public function getNextOpenQueueEntry($name, $task = null){
+    public function getNextOpenQueueEntry($name, $task = null)
+    {
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
         if (is_null($task)) {
-            return $repository->findBy(['status' => 'open'],['created' => 'ASC'], 1);
+            return $repository->findBy(['status' => 'open'], ['created' => 'ASC'], 1);
         }
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($name, $task);
         }
+
         return $repository->findOneBy(['task' => $task]);
     }
 
@@ -147,8 +151,10 @@ txt;
      * @param $tasks
      * @return array
      */
-    public function getQueueEntriesXOr($name, $tasks){
+    public function getQueueEntriesXOr($name, $tasks)
+    {
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
+
         return $repository->findAllJobsByQueueForTasks($name, $tasks);
 
     }
@@ -156,14 +162,16 @@ txt;
     /**
      * @return array
      */
-    public function getQueues(){
+    public function getQueues()
+    {
         return $this->configProvider->getQueueList();
     }
 
     /**
      * @param $name
      */
-    public function clearQueue($name){
+    public function clearQueue($name)
+    {
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
         $em = $this->doctrine->getManager();
         $entriesToDelete = $repository->findAll();
@@ -177,7 +185,8 @@ txt;
      * @param $queue
      * @param $id
      */
-    public function removeQueueEntry($queue, $id){
+    public function removeQueueEntry($queue, $id)
+    {
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($queue)));
         $em = $this->doctrine->getManager();
         $em->remove($repository->findOneBy(['id' => $id]));
@@ -189,11 +198,12 @@ txt;
      * @param int $id
      * @param array $args
      */
-    public function updateQueueEntry($queue, $id, array $args){
+    public function updateQueueEntry($queue, $id, array $args)
+    {
         $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($queue)));
-        $entry      = $repository->findOneBy(['id' => $id]);
+        $entry = $repository->findOneBy(['id' => $id]);
         foreach ($args as $arg => $val) {
-            $fnc   = sprintf('set%s',ucfirst($arg));
+            $fnc = sprintf('set%s', ucfirst($arg));
             $entry->$fnc($val);
         }
         $this->doctrine->getManager()->persist($entry);

@@ -12,7 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class SchedulerClearCommand extends ContainerAwareCommand
 {
 
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:scheduler:clear');
         $this->addArgument('name', InputArgument::OPTIONAL);
     }
@@ -22,7 +23,8 @@ class SchedulerClearCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $name = $input->getArgument('name') != '' ? $input->getArgument('name') : null;
         $output->write(sprintf('Clearing queue %s .', is_null($name) ? 'all' : $name));
         $output->write('.');
@@ -35,7 +37,8 @@ class SchedulerClearCommand extends ContainerAwareCommand
     /**
      * @return WorkerProvider
      */
-    protected function getWorkerProvider(){
+    protected function getWorkerProvider()
+    {
         return $this->getContainer()->get('simpleq.worker.provider');
     }
 

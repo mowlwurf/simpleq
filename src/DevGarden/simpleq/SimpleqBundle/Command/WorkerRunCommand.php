@@ -12,7 +12,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class WorkerRunCommand extends ContainerAwareCommand
 {
 
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:worker:run');
         $this->addArgument('service', InputArgument::REQUIRED, 'service id of the worker you want to run');
         $this->addArgument('jobId', InputArgument::REQUIRED);
@@ -27,12 +28,14 @@ class WorkerRunCommand extends ContainerAwareCommand
      *
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
-        try{
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
+        try {
             $pid = ($input->getArgument('pid')) ? $input->getArgument('pid') : getmypid();
             $task = ($input->getArgument('task')) ? $input->getArgument('task') : null;
             $workerClass = $this->getContainer()->get($input->getArgument('service'));
-            $workerClass->run($input->getArgument('jobId'), $pid, $input->getArgument('service'), $input->getArgument('data'));
+            $workerClass->run($input->getArgument('jobId'), $pid, $input->getArgument('service'),
+                $input->getArgument('data'));
         } catch (\Exception $e) {
             $output->writeln($e->getMessage());
         }
@@ -41,7 +44,8 @@ class WorkerRunCommand extends ContainerAwareCommand
     /**
      * @return WorkerProvider
      */
-    protected function getWorkerProvider(){
+    protected function getWorkerProvider()
+    {
         return $this->getContainer()->get('simpleq.worker.provider');
     }
 }

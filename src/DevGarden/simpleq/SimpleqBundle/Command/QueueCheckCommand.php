@@ -27,7 +27,7 @@ class QueueCheckCommand extends ContainerAwareCommand
         try {
             foreach ($queues as $key => $queue) {
                 $entries = $queueProvider->getQueueEntries($key);
-                if (!empty($entries)){
+                if (!empty($entries)) {
                     $table = $this->getHelper('table');
                     $output->writeln('Setting headers ...');
                     $table->setHeaders(array('ID', 'Status', 'Task', 'Created', 'Updated'));
@@ -39,7 +39,7 @@ class QueueCheckCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Queue %s contains %s tasks', $key, count($entries)));
             }
         } catch (\Exception $e) {
-            $output->writeln('Could not read database: '.$e->getMessage());
+            $output->writeln('Could not read database: ' . $e->getMessage());
         }
     }
 
@@ -47,7 +47,8 @@ class QueueCheckCommand extends ContainerAwareCommand
      * @param $entities
      * @return array
      */
-    public function MapQueueObjectsToArray($entities){
+    public function MapQueueObjectsToArray($entities)
+    {
         $arr = [];
         foreach ($entities as $entity) {
             $created = $entity->getCreated();
@@ -60,6 +61,7 @@ class QueueCheckCommand extends ContainerAwareCommand
                 'updated' => $updated->format('Y-m-d h:i:s')
             ];
         }
+
         return $arr;
     }
 
@@ -73,9 +75,10 @@ class QueueCheckCommand extends ContainerAwareCommand
 
     /**
      *
-     *  @return \Doctrine\ORM\EntityManager
+     * @return \Doctrine\ORM\EntityManager
      */
-    protected function getDoctrineManager(){
-        return  $this->getContainer()->get('doctrine')->getManager();
+    protected function getDoctrineManager()
+    {
+        return $this->getContainer()->get('doctrine')->getManager();
     }
 }

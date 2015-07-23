@@ -8,7 +8,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerStartCommand extends BaseDaemonCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:scheduler:start');
     }
 
@@ -18,9 +19,10 @@ class SchedulerStartCommand extends BaseDaemonCommand
      *
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $this->assertSingleInstance();
-        do{
+        do {
             $this->getSchedulerService()->processScheduler($output);
             //TODO bad hack to avoid spawning new workers before, recently spawned workers have been registered to working queue
             sleep(5);
@@ -30,7 +32,8 @@ class SchedulerStartCommand extends BaseDaemonCommand
     /**
      * @return SchedulerService
      */
-    protected function getSchedulerService(){
+    protected function getSchedulerService()
+    {
         return $this->getContainer()->get('simpleq.scheduler.service');
     }
 }

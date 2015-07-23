@@ -10,7 +10,8 @@ class BaseProcess extends Process
      * @param string $cmd
      * @param string $dir
      */
-    public function __construct($cmd, $dir = null){
+    public function __construct($cmd, $dir = null)
+    {
         parent::__construct($cmd, $dir);
     }
 
@@ -18,9 +19,10 @@ class BaseProcess extends Process
      * @param bool $verbose
      * @return bool
      */
-    protected function executeProcess($verbose = false){
-        try{
-            if ($verbose){
+    protected function executeProcess($verbose = false)
+    {
+        try {
+            if ($verbose) {
                 return $this->run();
             } else {
                 return $this->run(function ($type, $buffer) {
@@ -31,11 +33,13 @@ class BaseProcess extends Process
                     } else {
                         print $buffer;
                     }
+
                     return $noError;
                 });
             }
         } catch (\Exception $e) {
             print $e->getMessage();
+
             return false;
         }
     }
@@ -43,8 +47,10 @@ class BaseProcess extends Process
     /**
      * @return int|null
      */
-    protected function executeAsyncProcess(){
+    protected function executeAsyncProcess()
+    {
         $this->start();
+
         return;
     }
 

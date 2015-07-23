@@ -9,7 +9,8 @@ class CreateDoctrineEntityProcess extends BaseProcess
 {
     CONST CMD_PATTERN = 'app/console doctrine:generate:entities %s';
 
-    public function __construct(){
+    public function __construct()
+    {
         parent::__construct(self::CMD_PATTERN);
     }
 
@@ -18,10 +19,12 @@ class CreateDoctrineEntityProcess extends BaseProcess
      * @param bool $verbose
      * @return bool
      */
-    public function execute($id, $verbose = false){
+    public function execute($id, $verbose = false)
+    {
         $this->setCommandLine(
             sprintf(self::CMD_PATTERN, $id)
         );
+
         return $this->executeProcess($verbose);
     }
 }

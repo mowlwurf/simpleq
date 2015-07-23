@@ -34,7 +34,7 @@ class SchedulerService
         QueueProvider $queues,
         WorkerProvider $workers,
         JobProvider $jobs
-    ){
+    ) {
         $this->workers = $workers;
         $this->jobs = $jobs;
         $this->queues = $queues->getQueues();
@@ -43,16 +43,17 @@ class SchedulerService
     /**
      * @param OutputInterface $output
      */
-    public function processScheduler(OutputInterface $output){
+    public function processScheduler(OutputInterface $output)
+    {
         foreach ($this->queues as $qKey => $queue) {
             $workers = $queue['worker'];
-            if(!is_array($workers) || empty($workers)){
+            if (!is_array($workers) || empty($workers)) {
                 unset($this->queues[$qKey]);
-                $output->writeln('No workers registered for queue '. $qKey);
+                $output->writeln('No workers registered for queue ' . $qKey);
                 continue;
             }
             foreach ($workers as $key => $worker) {
-                $task  = null;
+                $task = null;
                 $limit = $worker['limit'];
                 // get already started worker for this type
                 $activeWorkers = $this->workers->getActiveWorkers($worker['class']);
@@ -61,7 +62,7 @@ class SchedulerService
                     $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
                     continue;
                 }
-                for($i=0;$i<$limit;$i++){
+                for ($i = 0; $i < $limit; $i++) {
                     $job = $this->provideJob($qKey, $task);
                     if (empty($job)) {
                         $output->writeln(
@@ -73,11 +74,11 @@ class SchedulerService
                         );
                         continue;
                     }
-                    try{
+                    try {
                         $process = $this->getNewWorkerProcess();
-                        $process->executeAsync($worker['class'],$job);
-                        $output->writeln('Spawned worker on pid '. $process->getPid());
-                    } catch(\Exception $e){
+                        $process->executeAsync($worker['class'], $job);
+                        $output->writeln('Spawned worker on pid ' . $process->getPid());
+                    } catch (\Exception $e) {
                         $output->writeln($e->getMessage());
                     }
                 }
@@ -90,15 +91,18 @@ class SchedulerService
      * @param string $task
      * @return object
      */
-    protected function provideJob($queue, $task = null){
+    protected function provideJob($queue, $task = null)
+    {
         $jobs = $this->jobs->provideJob($queue, $task);
+
         return $jobs[0];
     }
 
     /**
      * @return WorkerRunProcess
      */
-    protected function getNewWorkerProcess(){
+    protected function getNewWorkerProcess()
+    {
         return new WorkerRunProcess();
     }
 }

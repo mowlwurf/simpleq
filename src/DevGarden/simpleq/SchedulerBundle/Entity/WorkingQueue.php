@@ -52,11 +52,21 @@ class WorkingQueue
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get status
+     *
+     * @return integer
+     */
+    public function getStatus()
+    {
+        return $this->status;
     }
 
     /**
@@ -73,13 +83,13 @@ class WorkingQueue
     }
 
     /**
-     * Get status
+     * Get pid
      *
-     * @return integer 
+     * @return integer
      */
-    public function getStatus()
+    public function getPid()
     {
-        return $this->status;
+        return $this->pid;
     }
 
     /**
@@ -96,13 +106,13 @@ class WorkingQueue
     }
 
     /**
-     * Get pid
+     * Get worker
      *
-     * @return integer 
+     * @return string
      */
-    public function getPid()
+    public function getWorker()
     {
-        return $this->pid;
+        return $this->worker;
     }
 
     /**
@@ -119,13 +129,13 @@ class WorkingQueue
     }
 
     /**
-     * Get worker
+     * Get created
      *
-     * @return string 
+     * @return \DateTime
      */
-    public function getWorker()
+    public function getCreated()
     {
-        return $this->worker;
+        return $this->created;
     }
 
     /**
@@ -142,13 +152,13 @@ class WorkingQueue
     }
 
     /**
-     * Get created
+     * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getCreated()
+    public function getUpdated()
     {
-        return $this->created;
+        return $this->updated;
     }
 
     /**
@@ -162,15 +172,5 @@ class WorkingQueue
         $this->updated = $updated;
 
         return $this;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return \DateTime 
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
     }
 }

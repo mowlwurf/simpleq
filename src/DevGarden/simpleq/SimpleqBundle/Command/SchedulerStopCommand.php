@@ -7,7 +7,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerStopCommand extends BaseDaemonCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq.scheduler.stop');
     }
 
@@ -16,7 +17,8 @@ class SchedulerStopCommand extends BaseDaemonCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $output->writeln('Stopping scheduler daemon ...');
         $this->stopDaemon();
         $output->writeln('Stopped scheduler daemon');

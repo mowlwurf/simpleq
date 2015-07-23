@@ -4,7 +4,6 @@ namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Process\Process;
 
 
 /**
@@ -27,13 +26,13 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
     protected function assertSingleInstance($mode = 0666, $umask = 0000)
     {
         // Check if command is already running
-        $pid         = posix_getpid();
+        $pid = posix_getpid();
         $pidFilePath = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), self::PID_FILE_NAME);
-        $filesystem  = new Filesystem();
+        $filesystem = new Filesystem();
         if ($filesystem->exists($pidFilePath)) {
             $pidFileHandle = new \SplFileObject($pidFilePath, 'r');
-            $storedPID     = trim($pidFileHandle->fgets());
-            $pidProcPath   = sprintf('/proc/%s', $storedPID);
+            $storedPID = trim($pidFileHandle->fgets());
+            $pidProcPath = sprintf('/proc/%s', $storedPID);
             if ($filesystem->exists($pidProcPath)) {
                 throw new \RuntimeException(
                     sprintf('Command is already running as PID #%s (%s)', $storedPID, $pidFilePath)
@@ -52,6 +51,7 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
             throw new \RuntimeException(sprintf('Failed to chmod file %s', $pidFilePath));
         }
     }
+
     /**
      * Returns a valid file name description string for the commands name
      *
@@ -61,6 +61,7 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
     {
         return preg_replace('/[^a-zA-Z0-9_]/', '_', $this->getName());
     }
+
     /**
      * Get path to pid file directory
      *
@@ -71,11 +72,12 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
         return '/var/lock';
     }
 
-    public function stopDaemon(){
+    public function stopDaemon()
+    {
         $pidFilePath = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), self::PID_FILE_NAME);
         $pidFileHandle = new \SplFileObject($pidFilePath, 'r');
-        $storedPID     = trim($pidFileHandle->fgets());
-        $filesystem  = new Filesystem();
+        $storedPID = trim($pidFileHandle->fgets());
+        $filesystem = new Filesystem();
         $filesystem->remove($pidFilePath);
         posix_kill($storedPID, SIGKILL);
     }

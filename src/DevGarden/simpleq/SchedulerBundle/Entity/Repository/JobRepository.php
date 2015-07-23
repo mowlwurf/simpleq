@@ -17,6 +17,7 @@ class JobRepository extends EntityRepository
             }
             $taskPattern = substr($taskPattern, 0, -3);
         }
+
         return $this->getEntityManager()
             ->createQuery(
                 sprintf(

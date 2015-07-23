@@ -14,7 +14,8 @@ class JobProvider
     /**
      * @param QueueProvider $provider
      */
-    public function __construct(QueueProvider $provider){
+    public function __construct(QueueProvider $provider)
+    {
         $this->provider = $provider;
     }
 
@@ -23,7 +24,8 @@ class JobProvider
      * @param mixed|string|array $task
      * @return array
      */
-    public function provideJob($queue, $task = null){
+    public function provideJob($queue, $task = null)
+    {
         return $this->provider->getNextOpenQueueEntry($queue, $task);
     }
 
@@ -31,11 +33,13 @@ class JobProvider
      * @param $queue
      * @param $jobId
      */
-    public function removeJob($queue, $jobId){
+    public function removeJob($queue, $jobId)
+    {
         $this->provider->removeQueueEntry($queue, $jobId);
     }
 
-    public function updateJobStatus($queue, $jobId, $status){
+    public function updateJobStatus($queue, $jobId, $status)
+    {
         $args = ['status' => $status];
         $this->provider->updateQueueEntry($queue, $jobId, $args);
     }

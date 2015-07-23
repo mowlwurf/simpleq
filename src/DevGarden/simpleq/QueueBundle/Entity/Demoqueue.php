@@ -10,7 +10,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
  */
 class Demoqueue
 {
-   /**
+    /**
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -51,11 +51,21 @@ class Demoqueue
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Get task
+     *
+     * @return string
+     */
+    public function getTask()
+    {
+        return $this->task;
     }
 
     /**
@@ -72,13 +82,13 @@ class Demoqueue
     }
 
     /**
-     * Get task
+     * Get status
      *
-     * @return string 
+     * @return string
      */
-    public function getTask()
+    public function getStatus()
     {
-        return $this->task;
+        return $this->status;
     }
 
     /**
@@ -95,13 +105,13 @@ class Demoqueue
     }
 
     /**
-     * Get status
+     * Get data
      *
-     * @return string 
+     * @return string
      */
-    public function getStatus()
+    public function getData()
     {
-        return $this->status;
+        return $this->data;
     }
 
     /**
@@ -118,13 +128,13 @@ class Demoqueue
     }
 
     /**
-     * Get data
+     * Get created
      *
-     * @return string 
+     * @return \DateTime
      */
-    public function getData()
+    public function getCreated()
     {
-        return $this->data;
+        return $this->created;
     }
 
     /**
@@ -141,13 +151,13 @@ class Demoqueue
     }
 
     /**
-     * Get created
+     * Get updated
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
-    public function getCreated()
+    public function getUpdated()
     {
-        return $this->created;
+        return $this->updated;
     }
 
     /**
@@ -161,15 +171,5 @@ class Demoqueue
         $this->updated = $updated;
 
         return $this;
-    }
-
-    /**
-     * Get updated
-     *
-     * @return \DateTime 
-     */
-    public function getUpdated()
-    {
-        return $this->updated;
     }
 }

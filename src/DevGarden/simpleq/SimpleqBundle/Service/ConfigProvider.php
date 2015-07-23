@@ -17,11 +17,12 @@ class ConfigProvider
     /**
      * @param array $queues
      */
-    public function __construct(array $queues){
-        foreach ($queues as $key=> $queue) {
+    public function __construct(array $queues)
+    {
+        foreach ($queues as $key => $queue) {
             foreach ($queue['worker'] as $workerKey => $worker) {
                 $worker['queue'] = $key;
-                $worker['name']  = $workerKey;
+                $worker['name'] = $workerKey;
                 array_push($this->workers, $worker);
             }
         }
@@ -32,14 +33,16 @@ class ConfigProvider
      * @param string $name
      * @return bool
      */
-    public function getQueue($name){
+    public function getQueue($name)
+    {
         return isset($this->queues[$name]) && is_array($this->queues[$name]) ? $this->queues[$name] : false;
     }
 
     /**
      * @return array
      */
-    public function getQueueList(){
+    public function getQueueList()
+    {
         return $this->queues;
     }
 
@@ -48,19 +51,22 @@ class ConfigProvider
      * @param $name
      * @return bool
      */
-    public function getWorker($queue, $name){
+    public function getWorker($queue, $name)
+    {
         foreach ($this->workers as $worker) {
             if ($worker['queue'] == $queue && $worker['name'] == $name) {
                 return $worker;
             }
         }
+
         return false;
     }
 
     /**
      * @return array
      */
-    public function getWorkerList(){
+    public function getWorkerList()
+    {
         return $this->workers;
     }
 
@@ -68,12 +74,14 @@ class ConfigProvider
      * @param $id
      * @return bool
      */
-    public function getQueueByWorkerService($id){
-        foreach($this->workers as $worker){
+    public function getQueueByWorkerService($id)
+    {
+        foreach ($this->workers as $worker) {
             if ($worker['class'] === $id) {
                 return $worker['queue'];
             }
         }
+
         return false;
     }
 }

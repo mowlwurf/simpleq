@@ -10,7 +10,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DemoPersistCommand extends ContainerAwareCommand
 {
-    public function configure(){
+    public function configure()
+    {
         $this->setName('simpleq:demo:persist');
         $this->addArgument('times', InputArgument::OPTIONAL);
     }
@@ -20,19 +21,21 @@ class DemoPersistCommand extends ContainerAwareCommand
      * @param OutputInterface $output
      * @return int|null|void
      */
-    public function execute(InputInterface $input, OutputInterface $output){
+    public function execute(InputInterface $input, OutputInterface $output)
+    {
         $times = ($input->getArgument('times')) ? $input->getArgument('times') : 1;
-        for ($i=0; $i<$times; $i++){
+        for ($i = 0; $i < $times; $i++) {
             $output->writeln('Persist Demo Task');
-            try{
+            try {
                 $this->demoPersist();
             } catch (\Exception $e) {
-                $output->writeln('Error => '.$e->getMessage());
+                $output->writeln('Error => ' . $e->getMessage());
             }
         }
     }
 
-    public function demoPersist(){
+    public function demoPersist()
+    {
         $product = new Dummy();
         $product->setTask('test');
         $product->setStatus('open');
