@@ -1,3 +1,5 @@
+/src/DevGarden/simpleq/QueueBundle/Entity/*
+/.DS_Store
 /app/*.db3
 /.idea/
 /app/bootstrap.php.cache

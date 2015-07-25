@@ -56,31 +56,31 @@ class SchedulerService
                 $task = null;
                 $limit = $worker['limit'];
                 // get already started worker for this type
+                usleep(200000);
                 $activeWorkers = $this->workers->getActiveWorkers($worker['class']);
                 $countActiveWorkers = count($activeWorkers);
                 if ($countActiveWorkers >= $limit) {
                     $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
                     continue;
                 }
-                for ($i = 0; $i < $limit; $i++) {
-                    $job = $this->provideJob($qKey, $task);
-                    if (empty($job)) {
-                        $output->writeln(
-                            sprintf(
-                                'No jobs available for queue %s and task %s',
-                                $qKey,
-                                $task
-                            )
-                        );
-                        continue;
-                    }
-                    try {
-                        $process = $this->getNewWorkerProcess();
-                        $process->executeAsync($worker['class'], $job);
-                        $output->writeln('Spawned worker on pid ' . $process->getPid());
-                    } catch (\Exception $e) {
-                        $output->writeln($e->getMessage());
-                    }
+                $job = $this->provideJob($qKey, $task);
+                if (empty($job)) {
+                    $output->writeln(
+                        sprintf(
+                            'No jobs available for queue %s and task %s',
+                            $qKey,
+                            $task
+                        )
+                    );
+                    continue;
+                }
+                try {
+                    $this->getNewWorkerProcess()->executeAsync($worker['class'], $job);
+                    $output->writeln(
+                        sprintf('Spawned worker for job %s from queue %s', $job->getId(), $qKey)
+                    );
+                } catch (\Exception $e) {
+                    $output->writeln($e->getMessage());
                 }
             }
         }
@@ -94,8 +94,7 @@ class SchedulerService
     protected function provideJob($queue, $task = null)
     {
         $jobs = $this->jobs->provideJob($queue, $task);
-
-        return $jobs[0];
+        return !empty($jobs) ? $jobs[0] : false;
     }
 
     /**

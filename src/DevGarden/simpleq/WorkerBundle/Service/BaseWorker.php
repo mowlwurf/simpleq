@@ -78,11 +78,16 @@ class BaseWorker extends WorkerInterface
      * @param string $worker
      * @param string $data
      * @return array
+     * @throws \Exception
      */
     public function run($jobId, $pid, $worker, $data = null)
     {
-        $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId,
-            JobStatus::JOB_STATUS_RUNNING);
+        try{
+            $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId,
+                JobStatus::JOB_STATUS_RUNNING);
+        } catch(\Exception $e) {
+            throw new \Exception (sprintf('Job with id %s does not exist', $jobId));
+        }
         $this->workerProvider->pushWorkerToWorkingQueue($pid, $worker);
         $this->setProcessId($pid);
         try {

@@ -30,7 +30,7 @@ class QueueCheckCommand extends ContainerAwareCommand
                 if (!empty($entries)) {
                     $table = $this->getHelper('table');
                     $output->writeln('Setting headers ...');
-                    $table->setHeaders(array('ID', 'Status', 'Task', 'Created', 'Updated'));
+                    $table->setHeaders(array('ID', 'Status', 'Task', 'Data', 'Created', 'Updated'));
                     $output->writeln('Setting rows ...');
                     $table->setRows($this->mapQueueObjectsToArray($entries));
                     $output->writeln('Print output ...');
@@ -57,6 +57,7 @@ class QueueCheckCommand extends ContainerAwareCommand
                 'id' => $entity->getId(),
                 'status' => $entity->getStatus(),
                 'task' => $entity->getTask(),
+                'data' => $entity->getData(),
                 'created' => $created->format('Y-m-d h:i:s'),
                 'updated' => $updated->format('Y-m-d h:i:s')
             ];

@@ -2,31 +2,9 @@
 
 namespace DevGarden\simpleq\WorkerBundle\Process;
 
-use DevGarden\simpleq\SimpleqBundle\Process\BaseProcess;
-
-class WorkerRunProcess extends BaseProcess
+class WorkerRunProcess
 {
-    CONST CMD_PATTERN = 'app/console simpleq:worker:run %s %s %s';
-
-    public function __construct()
-    {
-        parent::__construct(self::CMD_PATTERN);
-    }
-
-    /**
-     * @param string $id
-     * @param $job
-     * @param bool $verbose
-     * @return bool
-     */
-    public function execute($id, $job, $verbose = false)
-    {
-        $this->setCommandLine(
-            sprintf(self::CMD_PATTERN, $id, $job->getId(), $job->getData())
-        );
-
-        return $this->executeProcess($verbose);
-    }
+    CONST CMD_PATTERN = 'app/console simpleq:worker:run %s %s \'%s\' &> /dev/null &';
 
     /**
      * @param string $id
@@ -35,11 +13,7 @@ class WorkerRunProcess extends BaseProcess
      */
     public function executeAsync($id, $job)
     {
-        ;
-        $this->setCommandLine(
-            sprintf(self::CMD_PATTERN, $id, $job->getId(), $job->getData())
-        );
-
-        return $this->executeAsyncProcess();
+        $cmd = sprintf(self::CMD_PATTERN, $id, $job->getId(), $job->getData());
+        shell_exec($cmd);
     }
 }

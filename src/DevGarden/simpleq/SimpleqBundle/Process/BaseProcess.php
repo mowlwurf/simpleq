@@ -44,14 +44,4 @@ class BaseProcess extends Process
         }
     }
 
-    /**
-     * @return int|null
-     */
-    protected function executeAsyncProcess()
-    {
-        $this->start();
-
-        return;
-    }
-
 }

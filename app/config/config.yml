@@ -96,11 +96,20 @@ monolog:
 # SimpleQ Configuration
 simpleq:
     queue:
-        demoqueue:
-            type: default
         dummy:
             type: default
             worker:
                 dummy:
                     class: simpleq.worker.dummy
                     limit: 10
+        #dummy_chain:
+        #    type: chain
+        #    worker:
+        #        chain_one:
+        #            class: simpleq.worker.dummy_chain_one
+        #            limit: 10
+        #            task: task_one
+        #        chain_two:
+        #            class: simpleq.worker.dummy_chain_two
+        #            limit: 10
+        #            task: task_two
