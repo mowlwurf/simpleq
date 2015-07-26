@@ -102,6 +102,7 @@ simpleq:
                 dummy:
                     class: simpleq.worker.dummy
                     limit: 10
+
         #dummy_chain:
         #    type: chain
         #    worker:

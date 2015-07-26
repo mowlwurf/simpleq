@@ -2,6 +2,9 @@
     "name": "devgarden/simpleq",
     "license": "proprietary",
     "type": "project",
+    "description": "Generic queue system based on Symfony. Light weight, easy and fast to configure and initiate.",
+    "keywords": ["queue" ,"symfony", "sf2", "queueing", "mq", "worker", "scheduler"],
+    "homepage": "https://bitbucket.org/mowlwurf/simpleq",
     "autoload": {
         "psr-4": {
             "": "src/",
