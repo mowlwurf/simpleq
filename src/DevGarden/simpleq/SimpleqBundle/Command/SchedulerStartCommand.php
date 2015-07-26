@@ -23,9 +23,7 @@ class SchedulerStartCommand extends BaseDaemonCommand
     {
         $this->assertSingleInstance();
         do {
-            $this->getSchedulerService()->processScheduler($output);
-            //TODO bad hack to avoid spawning new workers before, recently spawned workers have been registered to working queue
-            //sleep(1);
+            $this->getSchedulerService()->processScheduler($input, $output);
         } while (true);
     }
 

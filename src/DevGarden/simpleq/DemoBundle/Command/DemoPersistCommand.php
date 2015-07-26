@@ -23,14 +23,23 @@ class DemoPersistCommand extends ContainerAwareCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $times = ($input->getArgument('times')) ? $input->getArgument('times') : 1;
-        $data = $this->getDemoData(ceil($times/10));
+        $times = ($input->getArgument('times')) ? ceil($input->getArgument('times')/10) : 1;
+        $c = 0;
         for ($i = 1; $i < $times; $i++) {
-            $output->writeln('Persist Demo Task');
-            try {
-                $this->demoPersist(['url' => $data[0][1][$i]]);
-            } catch (\Exception $e) {
-                $output->writeln('Error => ' . $e->getMessage());
+            if ($c == 0) {
+                $data = $this->getDemoData($i);
+                $c++;
+                if ($c < 10){
+                    $c = 0;
+                }
+            }
+            foreach ($data[0][1] as $entry) {
+                $output->writeln('Persist Demo Task');
+                try {
+                    $this->demoPersist(['url' => $entry]);
+                } catch (\Exception $e) {
+                    $output->writeln('Error => ' . $e->getMessage());
+                }
             }
         }
     }
@@ -45,17 +54,16 @@ class DemoPersistCommand extends ContainerAwareCommand
      */
     protected function getDemoData($n){
         $jobData = [];
-        for($i=1;$i<=$n;$i++){
-            if ($i=1) {
-                $url = 'http://creepycandids.tumblr.com/';
-            } else {
-                $url = sprintf('http://creepycandids.tumblr.com/page/%d',$i);
-            }
-            $sh = file_get_contents($url);
-            if (preg_match_all('/.*src="(.*)"\sdata-width-lq/i', $sh, $result)) {
-                unset($result[0]);
-                array_push($jobData,$result);
-            }
+        if ($n==1) {
+            $url = 'http://creepycandids.tumblr.com/';
+            //$url = 'http://creepycandids.tumblr.com/page/3';
+        } else {
+            $url = sprintf('http://creepycandids.tumblr.com/page/%d',$n);
+        }
+        $sh = file_get_contents($url);
+        if (preg_match_all('/.*src="(.*)"\sdata-width-lq/i', $sh, $result)) {
+            unset($result[0]);
+            array_push($jobData,$result);
         }
         return $jobData;
     }

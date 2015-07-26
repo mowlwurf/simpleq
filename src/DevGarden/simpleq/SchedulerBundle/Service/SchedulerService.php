@@ -6,6 +6,7 @@ namespace DevGarden\simpleq\SchedulerBundle\Service;
 use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 use DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess;
 use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerService
@@ -41,10 +42,12 @@ class SchedulerService
     }
 
     /**
+     * @param InputInterface $input
      * @param OutputInterface $output
      */
-    public function processScheduler(OutputInterface $output)
+    public function processScheduler(InputInterface $input, OutputInterface $output)
     {
+        $output->setVerbosity($input->getOption('verbose'));
         foreach ($this->queues as $qKey => $queue) {
             $workers = $queue['worker'];
             if (!is_array($workers) || empty($workers)) {
@@ -55,7 +58,7 @@ class SchedulerService
             foreach ($workers as $key => $worker) {
                 $task = null;
                 $limit = $worker['limit'];
-                // get already started worker for this type
+                // get already started worker for this type not before they have registered to working_queue
                 usleep(200000);
                 $activeWorkers = $this->workers->getActiveWorkers($worker['class']);
                 $countActiveWorkers = count($activeWorkers);
@@ -82,6 +85,8 @@ class SchedulerService
                 } catch (\Exception $e) {
                     $output->writeln($e->getMessage());
                 }
+                // we have to wait here till worker changes the job status for his job, to avoid multiple worker register for the same job
+                usleep(200000);
             }
         }
     }

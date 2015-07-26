@@ -10,9 +10,13 @@ services:
     simpleq.worker.run.process:
         class: DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess
         scope: prototype
+    simpleq.base.worker.interface:
+        class: DevGarden\simpleq\WorkerBundle\Service\WorkerInterface
+        abstract: true
+        calls:
+            - [setWorkerProvider, [ "@simpleq.worker.provider" ]]
+            - [setJobProvider, [ "@simpleq.scheduler.job.provider" ]]
+            - [setHistoryProvider, [ "@simpleq.scheduler.history.provider" ]]
     simpleq.base.worker:
         class: DevGarden\simpleq\WorkerBundle\Service\BaseWorker
-        arguments:
-            - @simpleq.worker.provider
-            - @simpleq.scheduler.history.provider
-            - @simpleq.scheduler.job.provider
+        parent: simpleq.base.worker.interface

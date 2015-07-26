@@ -10,36 +10,6 @@ use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
 class BaseWorker extends WorkerInterface
 {
     /**
-     * @var WorkerProvider
-     */
-    protected $workerProvider;
-
-    /**
-     * @var JobProvider
-     */
-    protected $jobProvider;
-
-    /**
-     * @var WorkingQueueHistoryProvider
-     */
-    protected $historyProvider;
-
-    /**
-     * @param WorkerProvider $workerProvider
-     * @param WorkingQueueHistoryProvider $historyProvider
-     * @param JobProvider $jobProvider
-     */
-    public function __construct(
-        WorkerProvider $workerProvider,
-        WorkingQueueHistoryProvider $historyProvider,
-        JobProvider $jobProvider
-    ) {
-        $this->workerProvider = $workerProvider;
-        $this->historyProvider = $historyProvider;
-        $this->jobProvider = $jobProvider;
-    }
-
-    /**
      * @param int $statusCode WorkerStatus Code [open,running,failed,success]
      * @param string $statusMessage WorkerStatus Message
      */

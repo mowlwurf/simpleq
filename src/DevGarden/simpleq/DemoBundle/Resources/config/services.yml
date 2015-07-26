@@ -4,7 +4,4 @@ services:
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.worker.dummy:
         class: DevGarden\simpleq\DemoBundle\Worker\DummyWorker
-        arguments:
-            - @simpleq.worker.provider
-            - @simpleq.scheduler.history.provider
-            - @simpleq.scheduler.job.provider
+        parent: simpleq.base.worker.interface
