@@ -38,9 +38,21 @@ class JobProvider
         $this->provider->removeQueueEntry($queue, $jobId);
     }
 
+    /**
+     * @param $queue
+     * @param $jobId
+     * @param $status
+     */
     public function updateJobStatus($queue, $jobId, $status)
     {
         $args = ['status' => $status];
         $this->provider->updateQueueEntry($queue, $jobId, $args);
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueueRepository(){
+        return $this->provider->getQueueRepository();
     }
 }

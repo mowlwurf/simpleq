@@ -3,8 +3,6 @@
 namespace DevGarden\simpleq\WorkerBundle\Service;
 
 use DevGarden\simpleq\SchedulerBundle\Extension\JobStatus;
-use DevGarden\simpleq\SchedulerBundle\Service\JobProvider;
-use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
 use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
 
 class BaseWorker extends WorkerInterface
@@ -52,10 +50,13 @@ class BaseWorker extends WorkerInterface
      */
     public function run($jobId, $pid, $worker, $data = null)
     {
-        try{
-            $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId,
-                JobStatus::JOB_STATUS_RUNNING);
-        } catch(\Exception $e) {
+        try {
+            $this->jobProvider->updateJobStatus(
+                $this->workerProvider->getWorkerQueue($worker),
+                $jobId,
+                JobStatus::JOB_STATUS_RUNNING
+            );
+        } catch (\Exception $e) {
             throw new \Exception (sprintf('Job with id %s does not exist', $jobId));
         }
         $this->workerProvider->pushWorkerToWorkingQueue($pid, $worker);
@@ -75,15 +76,14 @@ class BaseWorker extends WorkerInterface
                 JobStatus::JOB_STATUS_FAILED);
         }
         $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_SUCCESS_CODE, WorkerStatus::WORKER_STATUS_SUCCESS_MESSAGE);
-        try {
-            $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId,
-                JobStatus::JOB_STATUS_FINISHED);
-            $this->jobProvider->removeJob($this->workerProvider->getWorkerQueue($worker), $jobId);
-            $this->historyProvider->archiveWorkingQueueEntry($pid);
-            $this->workerProvider->removeWorkingQueueEntry($pid);
-        } catch (\Exception $e) {
-            $this->run($jobId, $pid, $worker);
-        }
+        $this->jobProvider->updateJobStatus(
+            $this->workerProvider->getWorkerQueue($worker),
+            $jobId,
+            JobStatus::JOB_STATUS_FINISHED
+        );
+        $this->jobProvider->removeJob($this->workerProvider->getWorkerQueue($worker), $jobId);
+        $this->historyProvider->archiveWorkingQueueEntry($pid);
+        $this->workerProvider->removeWorkingQueueEntry($pid);
 
         return $this->getWorkerStatus();
     }
@@ -96,6 +96,13 @@ class BaseWorker extends WorkerInterface
     {
         $this->setWorkerStatus($code, $message);
         $this->workerProvider->pushWorkerStatus($this->getProcessId(), $code);
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueueRepository(){
+        return $this->jobProvider->getQueueRepository();
     }
 
     /**

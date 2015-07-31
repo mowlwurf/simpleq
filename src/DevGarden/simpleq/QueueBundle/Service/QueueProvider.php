@@ -8,6 +8,8 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 
 class QueueProvider
 {
+    const QUEUE_REPOSITORY = 'QueueBundle';
+
     /**
      * @var ConfigProvider
      */
@@ -74,7 +76,7 @@ class %s
     protected $id;
 
     /**
-     * @ORM\Column(type="string", length=32)
+     * @ORM\Column(type="string", length=32, nullable=true)
      */
     protected $task;
 
@@ -117,7 +119,7 @@ txt;
      */
     public function getQueueEntries($name, $task = null)
     {
-        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
+        $repository = $this->doctrine->getRepository(sprintf('%s:%s', self::QUEUE_REPOSITORY, ucfirst($name)));
         if (is_null($task)) {
             return $repository->findAll();
         }
@@ -135,7 +137,7 @@ txt;
      */
     public function getNextOpenQueueEntry($name, $task = null)
     {
-        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
+        $repository = $this->doctrine->getRepository(sprintf('%s:%s', self::QUEUE_REPOSITORY, ucfirst($name)));
         if (is_null($task)) {
             return $repository->findBy(['status' => 'open'], ['created' => 'ASC'], 1);
         }
@@ -153,7 +155,7 @@ txt;
      */
     public function getQueueEntriesXOr($name, $tasks)
     {
-        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
+        $repository = $this->doctrine->getRepository(sprintf('%s:%s', self::QUEUE_REPOSITORY, ucfirst($name)));
 
         return $repository->findAllJobsByQueueForTasks($name, $tasks);
 
@@ -172,7 +174,7 @@ txt;
      */
     public function clearQueue($name)
     {
-        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($name)));
+        $repository = $this->doctrine->getRepository(sprintf('%s:%s', self::QUEUE_REPOSITORY, ucfirst($name)));
         $em = $this->doctrine->getManager();
         $entriesToDelete = $repository->findAll();
         foreach ($entriesToDelete as $entryToDelete) {
@@ -187,7 +189,7 @@ txt;
      */
     public function removeQueueEntry($queue, $id)
     {
-        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($queue)));
+        $repository = $this->doctrine->getRepository(sprintf('%s:%s', self::QUEUE_REPOSITORY, ucfirst($queue)));
         $em = $this->doctrine->getManager();
         $em->remove($repository->findOneBy(['id' => $id]));
         $em->flush();
@@ -200,7 +202,7 @@ txt;
      */
     public function updateQueueEntry($queue, $id, array $args)
     {
-        $repository = $this->doctrine->getRepository(sprintf('QueueBundle:%s', ucfirst($queue)));
+        $repository = $this->doctrine->getRepository(sprintf('%s:%s', self::QUEUE_REPOSITORY, ucfirst($queue)));
         $entry = $repository->findOneBy(['id' => $id]);
         foreach ($args as $arg => $val) {
             $fnc = sprintf('set%s', ucfirst($arg));
@@ -208,5 +210,12 @@ txt;
         }
         $this->doctrine->getManager()->persist($entry);
         $this->doctrine->getManager()->flush();
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueueRepository(){
+        return self::QUEUE_REPOSITORY;
     }
 }
