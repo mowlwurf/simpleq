@@ -22,8 +22,10 @@ class SchedulerStartCommand extends BaseDaemonCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $this->assertSingleInstance();
+        $scheduler = $this->getSchedulerService();
         do {
-            $this->getSchedulerService()->processScheduler($input, $output);
+            $output->setVerbosity($input->getOption('verbose'));
+            $scheduler->processScheduler($output);
         } while (true);
     }
 

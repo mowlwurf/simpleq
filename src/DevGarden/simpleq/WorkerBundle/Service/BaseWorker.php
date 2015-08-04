@@ -50,16 +50,6 @@ class BaseWorker extends WorkerInterface
      */
     public function run($jobId, $pid, $worker, $data = null)
     {
-        try {
-            $this->jobProvider->updateJobStatus(
-                $this->workerProvider->getWorkerQueue($worker),
-                $jobId,
-                JobStatus::JOB_STATUS_RUNNING
-            );
-        } catch (\Exception $e) {
-            throw new \Exception (sprintf('Job with id %s does not exist', $jobId));
-        }
-        $this->workerProvider->pushWorkerToWorkingQueue($pid, $worker);
         $this->setProcessId($pid);
         try {
             $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_PENDING_CODE,

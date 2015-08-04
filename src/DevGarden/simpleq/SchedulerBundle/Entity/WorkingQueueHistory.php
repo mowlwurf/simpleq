@@ -24,7 +24,7 @@ class WorkingQueueHistory
     protected $status;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=32)
      */
     protected $pid;
 

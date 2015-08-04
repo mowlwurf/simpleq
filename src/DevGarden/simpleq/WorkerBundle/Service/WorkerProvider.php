@@ -6,9 +6,13 @@ use DevGarden\simpleq\SchedulerBundle\Entity\WorkingQueue;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\ObjectRepository;
 
 class WorkerProvider
 {
+    const SCHEDULER_REPOSITORY = 'SchedulerBundle';
+    const SCHEDULER_WORKING_QUEUE = 'WorkingQueue';
+
     /**
      * @var ConfigProvider
      */
@@ -20,6 +24,11 @@ class WorkerProvider
     protected $doctrine;
 
     /**
+     * @var ObjectRepository
+     */
+    protected $repository;
+
+    /**
      * @param ConfigProvider $config
      * @param ManagerRegistry $doctrine
      */
@@ -27,6 +36,12 @@ class WorkerProvider
     {
         $this->config = $config;
         $this->doctrine = $doctrine;
+        $this->repository = $this->doctrine->getRepository(sprintf(
+            '%s:%s',
+            self::SCHEDULER_REPOSITORY,
+            self::SCHEDULER_WORKING_QUEUE
+        ));
+        $this->doctrine->getConnection()->getConfiguration()->setSQLLogger(null);
     }
 
     /**
@@ -43,9 +58,7 @@ class WorkerProvider
      */
     public function getActiveWorkers($name = null)
     {
-        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
-
-        return is_null($name) ? $repository->findAll() : $repository->findBy(['worker' => $name]);
+        return is_null($name) ? $this->repository->findAll() : $this->repository->findBy(['worker' => $name]);
     }
 
     /**
@@ -54,9 +67,7 @@ class WorkerProvider
      */
     public function getWorkingQueueEntryByPid($pid)
     {
-        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
-
-        return $repository->findOneBy(['pid' => $pid]);
+        return $this->repository->findOneBy(['pid' => $pid]);
     }
 
     /**
@@ -64,9 +75,8 @@ class WorkerProvider
      */
     public function clearQueue($name = null)
     {
-        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
         $em = $this->doctrine->getManager();
-        $entriesToDelete = is_null($name) ? $repository->findAll() : $repository->findBy(['worker' => $name]);
+        $entriesToDelete = is_null($name) ? $this->repository->findAll() : $this->repository->findBy(['worker' => $name]);
         foreach ($entriesToDelete as $entryToDelete) {
             $em->remove($entryToDelete);
         }
@@ -74,18 +84,31 @@ class WorkerProvider
     }
 
     /**
-     * @param int $pid
      * @param string $workerService
+     * @return string $tempPid
      */
-    public function pushWorkerToWorkingQueue($pid, $workerService)
+    public function pushWorkerToWorkingQueue($workerService)
     {
+        $tempPid = md5(rand(10000, 999999).microtime().$workerService);
         $worker = new WorkingQueue();
-        $worker->setPid($pid);
+        $worker->setPid($tempPid);
         $worker->setStatus(WorkerStatus::WORKER_STATUS_OPEN_CODE);
         $worker->setWorker($workerService);
         $worker->setCreated(new \DateTime());
         $worker->setUpdated(new \DateTime());
         $this->doctrine->getManager()->persist($worker);
+        $this->doctrine->getManager()->flush();
+        return $tempPid;
+    }
+
+    /**
+     * @param string $tempPid
+     * @param int $pid
+     */
+    public function updateWorkerPid($tempPid, $pid){
+        $entry = $this->repository->findOneBy(['pid' => $tempPid]);
+        $entry->setPid($pid);
+        $this->doctrine->getManager()->persist($entry);
         $this->doctrine->getManager()->flush();
     }
 
@@ -94,9 +117,8 @@ class WorkerProvider
      */
     public function removeWorkingQueueEntry($pid)
     {
-        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueue');
         $em = $this->doctrine->getManager();
-        $em->remove($repository->findOneBy(['pid' => $pid]));
+        $em->remove($this->repository->findOneBy(['pid' => $pid]));
         $em->flush();
     }
 

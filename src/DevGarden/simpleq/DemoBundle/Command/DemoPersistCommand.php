@@ -23,6 +23,7 @@ class DemoPersistCommand extends ContainerAwareCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->setVerbosity($input->getOption('verbose'));
         $times = ($input->getArgument('times')) ? ceil($input->getArgument('times')/10) : 1;
         $c = 0;
         for ($i = 1; $i < $times; $i++) {
@@ -55,10 +56,10 @@ class DemoPersistCommand extends ContainerAwareCommand
     protected function getDemoData($n){
         $jobData = [];
         if ($n==1) {
-            $url = 'http://creepycandids.tumblr.com/';
+            $url = 'http://creepycandids.tumblr.com/page/81';
             //$url = 'http://creepycandids.tumblr.com/page/3';
         } else {
-            $url = sprintf('http://creepycandids.tumblr.com/page/%d',$n);
+            $url = sprintf('http://creepycandids.tumblr.com/page/%d',$n+80);
         }
         $sh = file_get_contents($url);
         if (preg_match_all('/.*src="(.*)"\sdata-width-lq/i', $sh, $result)) {

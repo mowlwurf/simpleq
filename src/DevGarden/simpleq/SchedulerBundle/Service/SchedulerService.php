@@ -4,6 +4,7 @@ namespace DevGarden\simpleq\SchedulerBundle\Service;
 
 
 use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
+use DevGarden\simpleq\SchedulerBundle\Extension\JobStatus;
 use DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess;
 use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
 use Symfony\Component\Console\Input\InputInterface;
@@ -42,12 +43,11 @@ class SchedulerService
     }
 
     /**
-     * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws \Exception
      */
-    public function processScheduler(InputInterface $input, OutputInterface $output)
+    public function processScheduler(OutputInterface $output)
     {
-        $output->setVerbosity($input->getOption('verbose'));
         foreach ($this->queues as $qKey => $queue) {
             $workers = $queue['worker'];
             if (!is_array($workers) || empty($workers)) {
@@ -55,40 +55,95 @@ class SchedulerService
                 $output->writeln('No workers registered for queue ' . $qKey);
                 continue;
             }
-            foreach ($workers as $key => $worker) {
-                $task = null;
-                $limit = $worker['limit'];
-                // get already started worker for this type not before they have registered to working_queue
-                usleep(200000);
-                $activeWorkers = $this->workers->getActiveWorkers($worker['class']);
-                $countActiveWorkers = count($activeWorkers);
-                if ($countActiveWorkers >= $limit) {
-                    $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
-                    continue;
-                }
-                $job = $this->provideJob($qKey, $task);
-                if (empty($job)) {
-                    $output->writeln(
-                        sprintf(
-                            'No jobs available for queue %s and task %s',
-                            $qKey,
-                            $task
-                        )
-                    );
-                    continue;
-                }
-                try {
-                    $this->getNewWorkerProcess()->executeAsync($worker['class'], $job);
-                    $output->writeln(
-                        sprintf('Spawned worker for job %s from queue %s', $job->getId(), $qKey)
-                    );
-                } catch (\Exception $e) {
-                    $output->writeln($e->getMessage());
-                }
-                // we have to wait here till worker changes the job status for his job, to avoid multiple worker register for the same job
-                usleep(200000);
-            }
+            $this->spawnWorkers($workers, $qKey, $output);
         }
+    }
+
+    /**
+     * @param array $workers
+     * @param string $queue
+     * @param OutputInterface $output
+     * @throws \Exception
+     */
+    protected function spawnWorkers(array $workers, $queue, OutputInterface $output){
+        foreach ($workers as $key => $worker) {
+            $task = null;
+            if ($this->isWorkerLimitReached($worker)) {
+                $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
+                continue;
+            }
+            $job = $this->getJob($queue, $task, $worker['class']);
+            if (!$job) {
+                $output->writeln(
+                    sprintf(
+                        'No jobs available for queue %s and task %s',
+                        $queue,
+                        $task
+                    )
+                );
+                continue;
+            }
+            $tempPid = $this->registerWorker($worker['class']);
+            try {
+                $this->getNewWorkerProcess()->executeAsync($worker['class'], $job, $tempPid);
+                $output->writeln(
+                    sprintf('Spawned worker for job %s from queue %s', $job->getId(), $queue)
+                );
+            } catch (\Exception $e) {
+                $output->writeln($e->getMessage());
+            }
+            $job = $tempPid = null;
+        }
+    }
+
+    /**
+     * @param string $service
+     * @return string
+     * @throws \Exception
+     */
+    protected function registerWorker($service){
+        try {
+            return $this->workers->pushWorkerToWorkingQueue($service);
+        } catch (\Exception $e) {
+            throw new \Exception (sprintf(
+                'Worker %s cannot be pushed to WorkingQueue: %s',
+                $service,
+                $e->getMessage()
+            ));
+        }
+    }
+
+    /**
+     * @param string $queue
+     * @param string $task
+     * @param string $service
+     * @return bool|object
+     * @throws \Exception
+     */
+    protected function getJob($queue, $task, $service){
+        try {
+            $job = $this->provideJob($queue, $task);
+            if (!$job) {
+                return false;
+            }
+            $this->jobs->updateJobStatus(
+                $this->workers->getWorkerQueue($service),
+                $job->getId(),
+                JobStatus::JOB_STATUS_RUNNING
+            );
+            return $job;
+        } catch (\Exception $e) {
+            throw new \Exception ('Could not provide job for worker ' . $service);
+        }
+    }
+
+    /**
+     * @param array $worker
+     * @return bool
+     */
+    protected function isWorkerLimitReached(array $worker){
+        $activeWorkers = $this->workers->getActiveWorkers($worker['class']);
+        return count($activeWorkers) >= $worker['limit'];
     }
 
     /**
