@@ -79,8 +79,8 @@ class BaseWorker extends WorkerInterface
     }
 
     /**
-     * @param $code
-     * @param $message
+     * @param int $code
+     * @param string $message
      */
     protected function pushWorkerStatus($code, $message)
     {
@@ -107,7 +107,7 @@ class BaseWorker extends WorkerInterface
     /**
      * execute the job, should set WorkerStatus to FAILED on exception
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
-     * @param string $data
+     * @param $data
      * @return int|void
      */
     public function execute($data)

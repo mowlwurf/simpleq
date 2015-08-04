@@ -47,8 +47,8 @@ class ConfigProvider
     }
 
     /**
-     * @param $queue
-     * @param $name
+     * @param string $queue
+     * @param string $name
      * @return bool
      */
     public function getWorker($queue, $name)
@@ -71,8 +71,8 @@ class ConfigProvider
     }
 
     /**
-     * @param $id
-     * @return bool
+     * @param string $id
+     * @return mixed|string|bool
      */
     public function getQueueByWorkerService($id)
     {

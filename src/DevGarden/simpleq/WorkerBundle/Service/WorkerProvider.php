@@ -123,8 +123,8 @@ class WorkerProvider
     }
 
     /**
-     * @param $pid
-     * @param $status
+     * @param int $pid
+     * @param int $status
      */
     public function pushWorkerStatus($pid, $status)
     {
@@ -135,8 +135,8 @@ class WorkerProvider
     }
 
     /**
-     * @param $id
-     * @return bool
+     * @param string $id
+     * @return bool|string
      */
     public function getWorkerQueue($id)
     {

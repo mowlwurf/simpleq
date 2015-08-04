@@ -2,10 +2,16 @@
 
 namespace DevGarden\simpleq\SchedulerBundle\Entity\Repository;
 
+use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 use Doctrine\ORM\EntityRepository;
 
 class JobRepository extends EntityRepository
 {
+    /**
+     * @param string $queue
+     * @param string $tasks
+     * @return array
+     */
     public function findAllJobsByQueueForTasks($queue, $tasks)
     {
         $taskPattern = false;
@@ -21,7 +27,8 @@ class JobRepository extends EntityRepository
         return $this->getEntityManager()
             ->createQuery(
                 sprintf(
-                    'SELECT p FROM QueueBundle:%s WHERE %s ORDER BY created DESC LIMIT 1',
+                    'SELECT p FROM %s:%s WHERE %s ORDER BY created DESC LIMIT 1',
+                    QueueProvider::QUEUE_REPOSITORY,
                     ucfirst($queue),
                     $taskPattern
                 )

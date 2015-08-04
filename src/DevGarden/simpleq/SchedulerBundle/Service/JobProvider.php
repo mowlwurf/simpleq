@@ -30,8 +30,8 @@ class JobProvider
     }
 
     /***
-     * @param $queue
-     * @param $jobId
+     * @param string $queue
+     * @param int $jobId
      */
     public function removeJob($queue, $jobId)
     {
@@ -39,9 +39,9 @@ class JobProvider
     }
 
     /**
-     * @param $queue
-     * @param $jobId
-     * @param $status
+     * @param string $queue
+     * @param int $jobId
+     * @param string $status
      */
     public function updateJobStatus($queue, $jobId, $status)
     {
