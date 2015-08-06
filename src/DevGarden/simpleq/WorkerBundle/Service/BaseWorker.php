@@ -52,26 +52,46 @@ class BaseWorker extends WorkerInterface
     {
         $this->setProcessId($pid);
         try {
-            $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_PENDING_CODE,
-                WorkerStatus::WORKER_STATUS_PENDING_MESSAGE);
+            $this->pushWorkerStatus(
+                WorkerStatus::WORKER_STATUS_PENDING_CODE,
+                WorkerStatus::WORKER_STATUS_PENDING_MESSAGE
+            );
             $this->prepare($data);
-            $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_RUNNING_CODE,
-                WorkerStatus::WORKER_STATUS_RUNNING_MESSAGE);
+            $this->pushWorkerStatus(
+                WorkerStatus::WORKER_STATUS_RUNNING_CODE,
+                WorkerStatus::WORKER_STATUS_RUNNING_MESSAGE
+            );
             $this->execute($data);
             $this->endJob($data);
+            $this->pushWorkerStatus(
+                WorkerStatus::WORKER_STATUS_SUCCESS_CODE,
+                WorkerStatus::WORKER_STATUS_SUCCESS_MESSAGE
+            );
         } catch (\Exception $e) {
-            $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_FAILED_CODE,
-                WorkerStatus::WORKER_STATUS_FAILED_MESSAGE);
-            $this->jobProvider->updateJobStatus($this->workerProvider->getWorkerQueue($worker), $jobId,
-                JobStatus::JOB_STATUS_FAILED);
+            $this->pushWorkerStatus(
+                WorkerStatus::WORKER_STATUS_FAILED_CODE,
+                WorkerStatus::WORKER_STATUS_FAILED_MESSAGE
+            );
+            try {
+                $this->jobProvider->updateJobStatus(
+                    $this->workerProvider->getWorkerQueue($worker),
+                    $jobId,
+                    JobStatus::JOB_STATUS_FAILED
+                );
+            } catch (\Exception $e) {
+                // maybe do sth. here
+            }
         }
-        $this->pushWorkerStatus(WorkerStatus::WORKER_STATUS_SUCCESS_CODE, WorkerStatus::WORKER_STATUS_SUCCESS_MESSAGE);
-        $this->jobProvider->updateJobStatus(
-            $this->workerProvider->getWorkerQueue($worker),
-            $jobId,
-            JobStatus::JOB_STATUS_FINISHED
-        );
-        $this->jobProvider->removeJob($this->workerProvider->getWorkerQueue($worker), $jobId);
+        try {
+            $this->jobProvider->updateJobStatus(
+                $this->workerProvider->getWorkerQueue($worker),
+                $jobId,
+                JobStatus::JOB_STATUS_FINISHED
+            );
+            $this->jobProvider->removeJob($this->workerProvider->getWorkerQueue($worker), $jobId);
+        } catch (\Exception $e) {
+            // maybe do sth. here
+        }
         $this->historyProvider->archiveWorkingQueueEntry($pid);
         $this->workerProvider->removeWorkingQueueEntry($pid);
 
@@ -91,7 +111,8 @@ class BaseWorker extends WorkerInterface
     /**
      * @return string
      */
-    public function getQueueRepository(){
+    public function getQueueRepository()
+    {
         return $this->jobProvider->getQueueRepository();
     }
 
