@@ -55,7 +55,6 @@ class SchedulerService
      */
     public function processScheduler(OutputInterface $output)
     {
-        print 'start '.microtime(true).PHP_EOL;
         foreach ($this->queues as $qKey => $queue) {
             $workers = $queue['worker'];
             if (!is_array($workers) || empty($workers)) {
@@ -63,11 +62,8 @@ class SchedulerService
                 $output->writeln('No workers registered for queue ' . $qKey);
                 continue;
             }
-            print microtime(true).PHP_EOL;
             $this->spawnWorkers($workers, $qKey, $output);
-            print microtime(true).PHP_EOL;
         }
-        print 'end '.microtime(true).PHP_EOL;
     }
 
     /**

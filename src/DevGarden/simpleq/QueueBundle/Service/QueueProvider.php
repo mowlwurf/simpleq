@@ -78,7 +78,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="%s", indexes={@ORM\Index(name="newEntryRequest", columns={"status", "created"}), @ORM\Index(name="getEntryByTask", columns={"task"})} )
+ * @ORM\Table(name="%s", indexes={@ORM\Index(name="newEntryRequest", columns={"status"}), @ORM\Index(name="getEntryByTask", columns={"task"})} )
  */
 class %s
 {
@@ -153,7 +153,7 @@ txt;
     {
         $repository = $this->loadRepository($queue);
         if (is_null($task)) {
-            return $repository->findBy(['status' => 'open'], ['created' => 'ASC'], 1);
+            return $repository->findBy(['status' => 'open'], null, 1);
         }
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($queue, $task);
