@@ -17,3 +17,4 @@ services:
             - @simpleq.queue.provider
             - @simpleq.worker.provider
             - @simpleq.scheduler.job.provider
+            - @simpleq.worker.run.process

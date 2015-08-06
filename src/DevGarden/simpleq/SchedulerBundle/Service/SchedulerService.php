@@ -27,18 +27,26 @@ class SchedulerService
     private $queues;
 
     /**
+     * @var WorkerRunProcess
+     */
+    private $process;
+
+    /**
      * @param QueueProvider $queues
      * @param WorkerProvider $workers
      * @param JobProvider $jobs
+     * @param WorkerRunProcess $process
      */
     public function __construct(
         QueueProvider $queues,
         WorkerProvider $workers,
-        JobProvider $jobs
+        JobProvider $jobs,
+        WorkerRunProcess $process
     ) {
         $this->workers = $workers;
         $this->jobs = $jobs;
         $this->queues = $queues->getQueues();
+        $this->process = $process;
     }
 
     /**
@@ -47,6 +55,7 @@ class SchedulerService
      */
     public function processScheduler(OutputInterface $output)
     {
+        print 'start '.microtime(true).PHP_EOL;
         foreach ($this->queues as $qKey => $queue) {
             $workers = $queue['worker'];
             if (!is_array($workers) || empty($workers)) {
@@ -54,8 +63,11 @@ class SchedulerService
                 $output->writeln('No workers registered for queue ' . $qKey);
                 continue;
             }
+            print microtime(true).PHP_EOL;
             $this->spawnWorkers($workers, $qKey, $output);
+            print microtime(true).PHP_EOL;
         }
+        print 'end '.microtime(true).PHP_EOL;
     }
 
     /**
@@ -85,7 +97,7 @@ class SchedulerService
             }
             $tempPid = $this->registerWorker($worker['class']);
             try {
-                $this->getNewWorkerProcess()->executeAsync($worker['class'], $job, $tempPid);
+                $this->process->executeAsync($worker['class'], $job, $tempPid);
                 $output->writeln(
                     sprintf('Spawned worker for job %s from queue %s', $job->getId(), $queue)
                 );
@@ -161,13 +173,5 @@ class SchedulerService
         $jobs = $this->jobs->provideJob($queue, $task);
 
         return !empty($jobs) ? $jobs[0] : false;
-    }
-
-    /**
-     * @return WorkerRunProcess
-     */
-    protected function getNewWorkerProcess()
-    {
-        return new WorkerRunProcess();
     }
 }

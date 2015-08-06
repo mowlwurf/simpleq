@@ -9,7 +9,6 @@ services:
             - @doctrine
     simpleq.worker.run.process:
         class: DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess
-        scope: prototype
     simpleq.base.worker.interface:
         class: DevGarden\simpleq\WorkerBundle\Service\WorkerInterface
         abstract: true
