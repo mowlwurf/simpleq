@@ -24,13 +24,13 @@ class DemoPersistCommand extends ContainerAwareCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $output->setVerbosity($input->getOption('verbose'));
-        $times = ($input->getArgument('times')) ? ceil($input->getArgument('times')/10) : 1;
+        $times = ($input->getArgument('times')) ? ceil($input->getArgument('times') / 10) : 1;
         $c = 0;
         for ($i = 1; $i < $times; $i++) {
             if ($c == 0) {
                 $data = $this->getDemoData($i);
                 $c++;
-                if ($c < 10){
+                if ($c < 10) {
                     $c = 0;
                 }
             }
@@ -53,19 +53,21 @@ class DemoPersistCommand extends ContainerAwareCommand
      * @param int $n amount jobs ordered
      * @return array
      */
-    protected function getDemoData($n){
+    protected function getDemoData($n)
+    {
         $jobData = [];
-        if ($n==1) {
+        if ($n == 1) {
             $url = 'http://creepycandids.tumblr.com/page/81';
             //$url = 'http://creepycandids.tumblr.com/page/3';
         } else {
-            $url = sprintf('http://creepycandids.tumblr.com/page/%d',$n+80);
+            $url = sprintf('http://creepycandids.tumblr.com/page/%d', $n + 80);
         }
         $sh = file_get_contents($url);
         if (preg_match_all('/.*src="(.*)"\sdata-width-lq/i', $sh, $result)) {
             unset($result[0]);
-            array_push($jobData,$result);
+            array_push($jobData, $result);
         }
+
         return $jobData;
     }
 

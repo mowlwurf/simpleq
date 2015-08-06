@@ -47,21 +47,24 @@ abstract class WorkerInterface
     /**
      * @param WorkerProvider $workerProvider
      */
-    public function setWorkerProvider($workerProvider){
+    public function setWorkerProvider($workerProvider)
+    {
         $this->workerProvider = $workerProvider;
     }
 
     /**
      * @param JobProvider $jobProvider
      */
-    public function setJobProvider($jobProvider){
+    public function setJobProvider($jobProvider)
+    {
         $this->jobProvider = $jobProvider;
     }
 
     /**
      * @param WorkingQueueHistoryProvider $historyProvider
      */
-    public function setHistoryProvider($historyProvider){
+    public function setHistoryProvider($historyProvider)
+    {
         $this->historyProvider = $historyProvider;
     }
 }

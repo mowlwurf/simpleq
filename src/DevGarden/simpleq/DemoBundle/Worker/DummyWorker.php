@@ -17,7 +17,9 @@ class DummyWorker extends BaseWorker
     {
         print "execute job" . PHP_EOL;
         $data = json_decode($data);
-        if(!file_put_contents(__DIR__ . '/../../../../../images/'. md5($data->url) .'.jpg',file_get_contents($data->url))){
+        if (!file_put_contents(__DIR__ . '/../../../../../images/' . md5($data->url) . '.jpg',
+            file_get_contents($data->url))
+        ) {
             print 'Cant put file';
             throw new \Exception('Cant put file');
         }

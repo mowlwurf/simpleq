@@ -52,7 +52,8 @@ class JobProvider
     /**
      * @return string
      */
-    public function getQueueRepository(){
+    public function getQueueRepository()
+    {
         return $this->provider->getQueueRepository();
     }
 }

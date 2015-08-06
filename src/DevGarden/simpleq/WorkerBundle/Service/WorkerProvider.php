@@ -89,7 +89,7 @@ class WorkerProvider
      */
     public function pushWorkerToWorkingQueue($workerService)
     {
-        $tempPid = md5(rand(10000, 999999).microtime().$workerService);
+        $tempPid = md5(rand(10000, 999999) . microtime() . $workerService);
         $worker = new WorkingQueue();
         $worker->setPid($tempPid);
         $worker->setStatus(WorkerStatus::WORKER_STATUS_OPEN_CODE);
@@ -98,6 +98,7 @@ class WorkerProvider
         $worker->setUpdated(new \DateTime());
         $this->doctrine->getManager()->persist($worker);
         $this->doctrine->getManager()->flush();
+
         return $tempPid;
     }
 
@@ -105,7 +106,8 @@ class WorkerProvider
      * @param string $tempPid
      * @param int $pid
      */
-    public function updateWorkerPid($tempPid, $pid){
+    public function updateWorkerPid($tempPid, $pid)
+    {
         $entry = $this->repository->findOneBy(['pid' => $tempPid]);
         $entry->setPid($pid);
         $this->doctrine->getManager()->merge($entry);

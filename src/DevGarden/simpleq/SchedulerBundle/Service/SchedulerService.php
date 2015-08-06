@@ -7,7 +7,6 @@ use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 use DevGarden\simpleq\SchedulerBundle\Extension\JobStatus;
 use DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess;
 use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerService
@@ -65,7 +64,8 @@ class SchedulerService
      * @param OutputInterface $output
      * @throws \Exception
      */
-    protected function spawnWorkers(array $workers, $queue, OutputInterface $output){
+    protected function spawnWorkers(array $workers, $queue, OutputInterface $output)
+    {
         foreach ($workers as $key => $worker) {
             $task = null;
             if ($this->isWorkerLimitReached($worker)) {
@@ -101,7 +101,8 @@ class SchedulerService
      * @return string
      * @throws \Exception
      */
-    protected function registerWorker($service){
+    protected function registerWorker($service)
+    {
         try {
             return $this->workers->pushWorkerToWorkingQueue($service);
         } catch (\Exception $e) {
@@ -120,7 +121,8 @@ class SchedulerService
      * @return bool|object
      * @throws \Exception
      */
-    protected function getJob($queue, $task, $service){
+    protected function getJob($queue, $task, $service)
+    {
         try {
             $job = $this->provideJob($queue, $task);
             if (!$job) {
@@ -131,6 +133,7 @@ class SchedulerService
                 $job->getId(),
                 JobStatus::JOB_STATUS_RUNNING
             );
+
             return $job;
         } catch (\Exception $e) {
             throw new \Exception ('Could not provide job for worker ' . $service);
@@ -141,8 +144,10 @@ class SchedulerService
      * @param array $worker
      * @return bool
      */
-    protected function isWorkerLimitReached(array $worker){
+    protected function isWorkerLimitReached(array $worker)
+    {
         $activeWorkers = $this->workers->getActiveWorkers($worker['class']);
+
         return count($activeWorkers) >= $worker['limit'];
     }
 
@@ -154,6 +159,7 @@ class SchedulerService
     protected function provideJob($queue, $task = null)
     {
         $jobs = $this->jobs->provideJob($queue, $task);
+
         return !empty($jobs) ? $jobs[0] : false;
     }
 

@@ -46,7 +46,7 @@ class QueueProvider
         $this->doctrine = $doctrine;
         try {
             $queues = $this->configProvider->getQueueList();
-            foreach ($queues as $queue){
+            foreach ($queues as $queue) {
                 $this->loadRepository($queue);
             }
         } catch (\Exception $e) {
@@ -159,6 +159,7 @@ txt;
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($queue, $task);
         }
+
         return $repository->findOneBy(['task' => $task]);
     }
 
@@ -233,7 +234,8 @@ txt;
      * @param string $queue
      * @return ObjectRepository
      */
-    protected function loadRepository($queue){
+    protected function loadRepository($queue)
+    {
         if (!isset($this->repositoryCache[$queue])) {
             $this->repositoryCache[$queue] = $this->doctrine->getRepository(sprintf(
                 '%s:%s',
@@ -248,7 +250,8 @@ txt;
     /**
      * @return string
      */
-    public function getQueueRepository(){
+    public function getQueueRepository()
+    {
         return self::QUEUE_REPOSITORY;
     }
 }
