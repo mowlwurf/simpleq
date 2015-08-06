@@ -108,7 +108,7 @@ class WorkerProvider
     public function updateWorkerPid($tempPid, $pid){
         $entry = $this->repository->findOneBy(['pid' => $tempPid]);
         $entry->setPid($pid);
-        $this->doctrine->getManager()->persist($entry);
+        $this->doctrine->getManager()->merge($entry);
         $this->doctrine->getManager()->flush();
     }
 
@@ -118,7 +118,9 @@ class WorkerProvider
     public function removeWorkingQueueEntry($pid)
     {
         $em = $this->doctrine->getManager();
-        $em->remove($this->repository->findOneBy(['pid' => $pid]));
+        $entity = $this->repository->findOneBy(['pid' => $pid]);
+        $entity = $em->merge($entity);
+        $em->remove($entity);
         $em->flush();
     }
 
@@ -130,7 +132,7 @@ class WorkerProvider
     {
         $worker = $this->getWorkingQueueEntryByPid($pid);
         $worker->setStatus($status);
-        $this->doctrine->getManager()->persist($worker);
+        $this->doctrine->getManager()->merge($worker);
         $this->doctrine->getManager()->flush();
     }
 

@@ -9,6 +9,7 @@ class WorkerRunProcess
     /**
      * @param string $id
      * @param object $job
+     * @param string $pid
      * @return int|null
      */
     public function executeAsync($id, $job, $pid)

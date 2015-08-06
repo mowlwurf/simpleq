@@ -192,6 +192,7 @@ txt;
         $em = $this->doctrine->getManager();
         $entriesToDelete = $repository->findAll();
         foreach ($entriesToDelete as $entryToDelete) {
+            $entryToDelete = $em->merge($entryToDelete);
             $em->remove($entryToDelete);
         }
         $em->flush();
@@ -205,7 +206,9 @@ txt;
     {
         $repository = $this->loadRepository($queue);
         $em = $this->doctrine->getManager();
-        $em->remove($repository->findOneBy(['id' => $id]));
+        $entity = $repository->findOneBy(['id' => $id]);
+        $entity = $em->merge($entity);
+        $em->remove($entity);
         $em->flush();
     }
 
@@ -222,7 +225,7 @@ txt;
             $fnc = sprintf('set%s', ucfirst($arg));
             $entry->$fnc($val);
         }
-        $this->doctrine->getManager()->persist($entry);
+        $this->doctrine->getManager()->merge($entry);
         $this->doctrine->getManager()->flush();
     }
 
