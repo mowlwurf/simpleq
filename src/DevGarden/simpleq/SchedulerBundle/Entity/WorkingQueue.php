@@ -7,7 +7,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="working_queue")
+ * @ORM\Table(name="working_queue", uniqueConstraints={@ORM\UniqueConstraint(name="pid", columns={"pid"})}, indexes={@ORM\Index(name="getActiveWorkers", columns={"worker"})} )
  */
 class WorkingQueue
 {

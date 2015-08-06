@@ -89,7 +89,7 @@ class WorkerProvider
      */
     public function pushWorkerToWorkingQueue($workerService)
     {
-        $tempPid = md5(rand(10000, 999999) . microtime() . $workerService);
+        $tempPid = md5(microtime() . $workerService);
         $worker = new WorkingQueue();
         $worker->setPid($tempPid);
         $worker->setStatus(WorkerStatus::WORKER_STATUS_OPEN_CODE);

@@ -6,7 +6,6 @@ use DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectRepository;
-
 class QueueProvider
 {
     const QUEUE_REPOSITORY = 'QueueBundle';
@@ -79,7 +78,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="%s")
+ * @ORM\Table(name="%s", indexes={@ORM\Index(name="newEntryRequest", columns={"status", "created"}), @ORM\Index(name="getEntryByTask", columns={"task"})} )
  */
 class %s
 {
