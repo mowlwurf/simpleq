@@ -6,6 +6,9 @@ use DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\DBAL\Driver\PDOConnection;
+use PDO;
+
 class QueueProvider
 {
     const QUEUE_REPOSITORY = 'QueueBundle';
@@ -24,6 +27,11 @@ class QueueProvider
      * @var ManagerRegistry
      */
     protected $doctrine;
+
+    /**
+     * @var PDOConnection
+     */
+    protected $connection;
 
     /**
      * @var array
@@ -51,7 +59,8 @@ class QueueProvider
         } catch (\Exception $e) {
             // repository may not be generated here
         }
-        $this->doctrine->getConnection()->getConfiguration()->setSQLLogger(null);
+        $this->connection = $this->doctrine->getConnection();
+        $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
     /**
@@ -151,15 +160,24 @@ txt;
      */
     public function getNextOpenQueueEntry($queue, $task = null)
     {
-        $repository = $this->loadRepository($queue);
         if (is_null($task)) {
-            return $repository->findBy(['status' => 'open'], null, 1);
+            $statement = <<<'SQL'
+SELECT id, task, data FROM %s_ WHERE status = 'open' LIMIT 1
+SQL;
+            $preparedStatement = $this->connection->prepare(sprintf($statement,$queue));
+            $preparedStatement->execute();
+            return $preparedStatement->fetch(PDO::FETCH_ASSOC);
         }
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($queue, $task);
         }
-
-        return $repository->findOneBy(['task' => $task]);
+        $statement = <<<'SQL'
+SELECT id, task, data FROM %s_ WHERE status = 'open' AND task = :task LIMIT 1
+SQL;
+        $preparedStatement = $this->connection->prepare(sprintf($statement,$queue));
+        $preparedStatement->bindValue('task', $task, PDOConnection::PARAM_STR);
+        $preparedStatement->execute();
+        return $preparedStatement->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -188,14 +206,7 @@ txt;
      */
     public function clearQueue($queue)
     {
-        $repository = $this->loadRepository($queue);
-        $em = $this->doctrine->getManager();
-        $entriesToDelete = $repository->findAll();
-        foreach ($entriesToDelete as $entryToDelete) {
-            $entryToDelete = $em->merge($entryToDelete);
-            $em->remove($entryToDelete);
-        }
-        $em->flush();
+        $this->connection->exec(sprintf('TRUNCATE %s_', $queue));
     }
 
     /**
@@ -204,12 +215,12 @@ txt;
      */
     public function removeQueueEntry($queue, $id)
     {
-        $repository = $this->loadRepository($queue);
-        $em = $this->doctrine->getManager();
-        $entity = $repository->findOneBy(['id' => $id]);
-        $entity = $em->merge($entity);
-        $em->remove($entity);
-        $em->flush();
+        $statement = <<<'SQL'
+DELETE FROM %s_ WHERE id = :id
+SQL;
+        $preparedStatement = $this->connection->prepare(sprintf($statement,$queue));
+        $preparedStatement->bindValue('id', $id, PDOConnection::PARAM_INT);
+        $preparedStatement->execute();
     }
 
     /**
@@ -219,14 +230,21 @@ txt;
      */
     public function updateQueueEntry($queue, $id, array $args)
     {
-        $repository = $this->loadRepository($queue);
-        $entry = $repository->findOneBy(['id' => $id]);
+        $updates = null;
+        $statement = <<<'SQL'
+UPDATE %s_ SET %s WHERE id = :id
+SQL;
+
         foreach ($args as $arg => $val) {
-            $fnc = sprintf('set%s', ucfirst($arg));
-            $entry->$fnc($val);
+            $updates[] = sprintf("%s = '%s'", $arg, $val);
         }
-        $this->doctrine->getManager()->merge($entry);
-        $this->doctrine->getManager()->flush();
+        $preparedStatement = $this->connection->prepare(sprintf(
+            $statement,
+            $queue,
+            implode(',', $updates)
+        ));
+        $preparedStatement->bindValue('id', $id, PDOConnection::PARAM_INT);
+        $preparedStatement->execute();
     }
 
     /**

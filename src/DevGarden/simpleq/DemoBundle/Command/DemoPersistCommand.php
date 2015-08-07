@@ -57,10 +57,10 @@ class DemoPersistCommand extends ContainerAwareCommand
     {
         $jobData = [];
         if ($n == 1) {
-            $url = 'http://creepycandids.tumblr.com/page/81';
+            $url = 'http://creepycandids.tumblr.com/page/91';
             //$url = 'http://creepycandids.tumblr.com/page/3';
         } else {
-            $url = sprintf('http://creepycandids.tumblr.com/page/%d', $n + 80);
+            $url = sprintf('http://creepycandids.tumblr.com/page/%d', $n + 90);
         }
         $sh = file_get_contents($url);
         if (preg_match_all('/.*src="(.*)"\sdata-width-lq/i', $sh, $result)) {

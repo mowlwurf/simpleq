@@ -95,7 +95,7 @@ class SchedulerService
             try {
                 $this->process->executeAsync($worker['class'], $job, $tempPid);
                 $output->writeln(
-                    sprintf('Spawned worker for job %s from queue %s', $job->getId(), $queue)
+                    sprintf('Spawned worker for job %s from queue %s', $job['id'], $queue)
                 );
             } catch (\Exception $e) {
                 $output->writeln($e->getMessage());
@@ -138,7 +138,7 @@ class SchedulerService
             }
             $this->jobs->updateJobStatus(
                 $this->workers->getWorkerQueue($service),
-                $job->getId(),
+                $job['id'],
                 JobStatus::JOB_STATUS_RUNNING
             );
 
@@ -154,9 +154,7 @@ class SchedulerService
      */
     protected function isWorkerLimitReached(array $worker)
     {
-        $activeWorkers = $this->workers->getActiveWorkers($worker['class']);
-
-        return count($activeWorkers) >= $worker['limit'];
+        return $this->workers->getActiveWorkers($worker['class']) >= $worker['limit'];
     }
 
     /**
@@ -166,8 +164,6 @@ class SchedulerService
      */
     protected function provideJob($queue, $task = null)
     {
-        $jobs = $this->jobs->provideJob($queue, $task);
-
-        return !empty($jobs) ? $jobs[0] : false;
+        return $this->jobs->provideJob($queue, $task);
     }
 }
