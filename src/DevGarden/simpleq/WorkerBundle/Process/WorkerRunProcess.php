@@ -14,7 +14,7 @@ class WorkerRunProcess
      */
     public function executeAsync($id, $job, $pid)
     {
-        $cmd = sprintf(self::CMD_PATTERN, $id, $job->getId(), $job->getData(), $pid);
+        $cmd = sprintf(self::CMD_PATTERN, $id, $job['id'], $job['data'], $pid);
         shell_exec($cmd);
     }
 }
