@@ -1,5 +1,7 @@
 # Worker
 
+***
+
 ## Build
 
 To build your custom worker, extend the BaseWorker to implement logic for automatic scheduler processing.
@@ -9,6 +11,8 @@ class DummyWorker extends BaseWorker
 {
 }
 ```
+
+***
 
 You can use 4 functions to execute your code now. 
 
@@ -27,6 +31,8 @@ contains code which should be executed while worker is on status 'running'
 ### endJob
 
 contains code which should be executed after the job execution, like cleanup jobs etc.
+
+***
 
 ## Example
 

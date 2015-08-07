@@ -1,5 +1,7 @@
 # Queue
 
+***
+
 ## Queue creation
 
 ### Create a new queue config
@@ -50,6 +52,8 @@ $job->setUpdated(new \DateTime());
 $this->getContainer()->get('doctrine')->getManager()->persist($job);
 $this->getContainer()->get('doctrine')->getManager()->flush();
 ```
+
+***
 
 ## Check
 

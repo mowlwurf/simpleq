@@ -1,5 +1,7 @@
 # Scheduler
 
+***
+
 ## Initialize
 
 To start scheduling your workers, you need to initialise the scheduler.
