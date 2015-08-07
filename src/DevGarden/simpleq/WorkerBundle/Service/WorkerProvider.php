@@ -112,12 +112,14 @@ SQL;
     public function pushWorkerToWorkingQueue($workerService)
     {
         $tempPid = md5(microtime() . $workerService);
-        $worker = new WorkingQueue();
+        $time    = new \DateTime();
+        $worker  = new WorkingQueue();
+
         $worker->setPid($tempPid);
         $worker->setStatus(WorkerStatus::WORKER_STATUS_OPEN_CODE);
         $worker->setWorker($workerService);
-        $worker->setCreated(new \DateTime());
-        $worker->setUpdated(new \DateTime());
+        $worker->setCreated($time);
+        $worker->setUpdated($time);
         $this->doctrine->getManager()->persist($worker);
         $this->doctrine->getManager()->flush();
 
