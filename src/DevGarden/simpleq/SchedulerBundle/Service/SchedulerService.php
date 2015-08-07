@@ -154,7 +154,7 @@ class SchedulerService
      */
     protected function isWorkerLimitReached(array $worker)
     {
-        return $this->workers->getActiveWorkers($worker['class']) >= $worker['limit'];
+        return $this->workers->getActiveWorkerCount($worker['class']) >= $worker['limit'];
     }
 
     /**

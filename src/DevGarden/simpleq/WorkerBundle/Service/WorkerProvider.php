@@ -64,7 +64,7 @@ class WorkerProvider
      * @param string $name
      * @return array
      */
-    public function getActiveWorkers($name = null)
+    public function getActiveWorkerCount($name = null)
     {
         if (is_null($name)) {
             $preparedStatement = $this->connection->exec(sprintf('SELECT count(id) FROM %s_', self::SCHEDULER_WORKING_QUEUE_TABLE));
@@ -77,6 +77,15 @@ SQL;
             $preparedStatement->execute();
         }
         return $preparedStatement->fetchColumn();
+    }
+
+    /**
+     * @param string $name
+     * @return array
+     */
+    public function getActiveWorkers($name = null)
+    {
+        return is_null($name) ? $this->repository->findAll() : $this->repository->findBy(['worker' => $name]);
     }
 
     /**
@@ -111,17 +120,20 @@ SQL;
      */
     public function pushWorkerToWorkingQueue($workerService)
     {
-        $tempPid = md5(microtime() . $workerService);
-        $time    = new \DateTime();
-        $worker  = new WorkingQueue();
+        $tempPid   = md5(microtime() . $workerService);
+        $time      = new \DateTime();
+        $statement = <<<'SQL'
+INSERT INTO %s_ (`pid`,`status`,`worker`,`created`,`updated`)
+VALUES (:pid,:status,:worker,:created,:updated)
+SQL;
 
-        $worker->setPid($tempPid);
-        $worker->setStatus(WorkerStatus::WORKER_STATUS_OPEN_CODE);
-        $worker->setWorker($workerService);
-        $worker->setCreated($time);
-        $worker->setUpdated($time);
-        $this->doctrine->getManager()->persist($worker);
-        $this->doctrine->getManager()->flush();
+        $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
+        $preparedStatement->bindValue('pid', $tempPid, PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('status', WorkerStatus::WORKER_STATUS_OPEN_CODE, PDOConnection::PARAM_INT);
+        $preparedStatement->bindValue('worker', $workerService, PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('created', $time->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('updated', $time->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->execute();
 
         return $tempPid;
     }

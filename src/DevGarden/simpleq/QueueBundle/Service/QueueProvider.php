@@ -51,14 +51,6 @@ class QueueProvider
         $this->configProvider = $config;
         $this->entityProcess = $entityProcess;
         $this->doctrine = $doctrine;
-        try {
-            $queues = $this->configProvider->getQueueList();
-            foreach ($queues as $queue) {
-                $this->loadRepository($queue);
-            }
-        } catch (\Exception $e) {
-            // repository may not be generated here
-        }
         $this->connection = $this->doctrine->getConnection();
         $this->connection->getConfiguration()->setSQLLogger(null);
     }
