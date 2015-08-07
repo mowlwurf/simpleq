@@ -1,6 +1,6 @@
 simpleq
 =======
-
+:ballot_box_with_check:
 A Symfony bundle to create & handle queues for any needs. Configuration via config.yml.
 
 #Dependencies
