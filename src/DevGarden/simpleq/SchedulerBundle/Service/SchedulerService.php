@@ -75,7 +75,7 @@ class SchedulerService
     protected function spawnWorkers(array $workers, $queue, OutputInterface $output)
     {
         foreach ($workers as $key => $worker) {
-            $task = null;
+            $task = isset($worker['task']) ? $worker['task'] : null;
             if ($this->isWorkerLimitReached($worker)) {
                 $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
                 continue;
@@ -154,7 +154,8 @@ class SchedulerService
      */
     protected function isWorkerLimitReached(array $worker)
     {
-        return $this->workers->getActiveWorkerCount($worker['class']) >= $worker['limit'];
+        $limit = isset($worker['limit']) && $worker['limit'] > 0 ? $worker['limit'] : 10;
+        return $this->workers->getActiveWorkerCount($worker['class']) >= $limit;
     }
 
     /**

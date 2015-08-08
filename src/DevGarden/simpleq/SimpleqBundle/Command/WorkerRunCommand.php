@@ -3,6 +3,7 @@
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 
+use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
 use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,7 +20,6 @@ class WorkerRunCommand extends ContainerAwareCommand
         $this->addArgument('jobId', InputArgument::REQUIRED);
         $this->addArgument('data', InputArgument::REQUIRED);
         $this->addArgument('pid', InputArgument::OPTIONAL);
-        $this->addArgument('task', InputArgument::OPTIONAL);
     }
 
     /**
@@ -30,17 +30,29 @@ class WorkerRunCommand extends ContainerAwareCommand
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        try {
-            $ownPid = getmypid();
-            $pid = ($input->getArgument('pid')) ? $input->getArgument('pid') : $ownPid;
-            $this->getWorkerProvider()->updateWorkerPid($pid, $ownPid);
-            $task = ($input->getArgument('task')) ? $input->getArgument('task') : null;
-            $workerClass = $this->getContainer()->get($input->getArgument('service'));
-            $workerClass->run($input->getArgument('jobId'), $ownPid, $input->getArgument('service'),
-                $input->getArgument('data'));
-        } catch (\Exception $e) {
-            $output->writeln($e->getMessage());
-        }
+        $workerProvider = $this->getWorkerProvider();
+        $retry = $workerProvider->getWorkerRetry($input->getArgument('service'));
+        $retry = $retry == 0 ? 1 : $retry;
+        $ownPid = getmypid();
+        $pid = ($input->getArgument('pid')) ? $input->getArgument('pid') : $ownPid;
+        $workerProvider->updateWorkerPid($pid, $ownPid);
+        $workerClass = $this->getContainer()->get($input->getArgument('service'));
+        do{
+            try {
+                $workerClass->run(
+                    $input->getArgument('jobId'),
+                    $ownPid,
+                    $input->getArgument('service'),
+                    $input->getArgument('data')
+                );
+                $retry = 0;
+            } catch (\Exception $e) {
+                $retry--;
+                $output->writeln($e->getMessage());
+            }
+        } while ($retry > 0);
+        $this->getHistoryProvider()->archiveWorkingQueueEntry($ownPid);
+        $workerProvider->removeWorkingQueueEntry($ownPid);
     }
 
     /**
@@ -49,5 +61,13 @@ class WorkerRunCommand extends ContainerAwareCommand
     protected function getWorkerProvider()
     {
         return $this->getContainer()->get('simpleq.worker.provider');
+    }
+
+    /**
+     * @return WorkingQueueHistoryProvider
+     */
+    protected function getHistoryProvider()
+    {
+        return $this->getContainer()->get('simpleq.scheduler.history.provider');
     }
 }

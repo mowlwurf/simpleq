@@ -105,8 +105,8 @@ simpleq:
             worker:
                 dummy:
                     class: simpleq.worker.dummy
-                    limit: 10
-
+                    limit: 1
+                    retry: 100
         #dummy_chain:
         #    type: chain
         #    worker:

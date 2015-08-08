@@ -81,6 +81,7 @@ class BaseWorker extends WorkerInterface
             } catch (\Exception $e) {
                 // maybe do sth. here
             }
+            throw new \Exception('Worker failed');
         }
         try {
             $this->jobProvider->updateJobStatus(
@@ -92,8 +93,6 @@ class BaseWorker extends WorkerInterface
         } catch (\Exception $e) {
             // maybe do sth. here
         }
-        $this->historyProvider->archiveWorkingQueueEntry($pid);
-        $this->workerProvider->removeWorkingQueueEntry($pid);
 
         return $this->getWorkerStatus();
     }

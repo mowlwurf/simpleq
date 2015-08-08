@@ -187,6 +187,15 @@ SQL;
      */
     public function getWorkerQueue($id)
     {
-        return $this->config->getQueueByWorkerService($id);
+        return $this->config->getWorkerAttributeByServiceId('queue', $id);
+    }
+
+    /**
+     * @param string $id
+     * @return bool|int
+     */
+    public function getWorkerRetry($id)
+    {
+        return $this->config->getWorkerAttributeByServiceId('retry', $id);
     }
 }

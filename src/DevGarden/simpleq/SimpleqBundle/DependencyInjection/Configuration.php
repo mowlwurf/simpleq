@@ -34,6 +34,8 @@ class Configuration implements ConfigurationInterface
         $workerChildChilds->children()->integerNode('limit');
         // worker child task
         $workerChildChilds->children()->scalarNode('task');
+        // worker child task
+        $workerChildChilds->children()->integerNode('retry');
 
         return $treeBuilder;
     }

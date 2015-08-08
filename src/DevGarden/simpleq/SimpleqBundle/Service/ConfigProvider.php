@@ -71,14 +71,15 @@ class ConfigProvider
     }
 
     /**
+     * @param string $attr
      * @param string $id
-     * @return mixed|string|bool
+     * @return bool|mixed|string
      */
-    public function getQueueByWorkerService($id)
+    public function getWorkerAttributeByServiceId($attr, $id)
     {
         foreach ($this->workers as $worker) {
             if ($worker['class'] === $id) {
-                return $worker['queue'];
+                return isset($worker[$attr]) ? $worker[$attr] : 0;
             }
         }
 
