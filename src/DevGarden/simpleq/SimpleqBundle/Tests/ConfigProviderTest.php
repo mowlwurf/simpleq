@@ -19,7 +19,8 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 'worker' => [
                     'dummy' => [
                         'class' => 'DummyClass',
-                        'limit' => 10
+                        'limit' => 10,
+                        'retry' => 10
                     ]
                 ]
             ],
@@ -55,7 +56,8 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 'worker' => [
                     'dummy' => [
                         'class' => 'DummyClass',
-                        'limit' => 10
+                        'limit' => 10,
+                        'retry' => 10
                     ]
                 ]
             ],
@@ -74,12 +76,20 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetQueueByWorkerServiceValid()
     {
-        $this->assertEquals('valid', $this->config->getQueueByWorkerService('DummyClass'));
+        $this->assertEquals('valid', $this->config->getWorkerAttributeByServiceId('queue', 'DummyClass'));
     }
 
     public function testGetQueueByWorkerServiceInValid()
     {
-        $this->assertFalse($this->config->getQueueByWorkerService('invalid'));
+        $this->assertFalse($this->config->getWorkerAttributeByServiceId('queue', 'invalid'));
+    }
+
+    public function testGetRetryByWorkerServiceValid(){
+        $this->assertEquals(10, $this->config->getWorkerAttributeByServiceId('retry', 'DummyClass'));
+    }
+
+    public function testGetRetryByWorkerServiceNoRetryDefined(){
+        $this->assertEquals(0, $this->config->getWorkerAttributeByServiceId('retry', 'Dummy2Class'));
     }
 
     public function testGetWorkerValid()
@@ -87,6 +97,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'class' => 'DummyClass',
             'limit' => 10,
+            'retry' => 10,
             'queue' => 'valid',
             'name' => 'dummy'
         ];
@@ -104,6 +115,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
             [
                 'class' => 'DummyClass',
                 'limit' => 10,
+                'retry' => 10,
                 'queue' => 'valid',
                 'name' => 'dummy'
             ],

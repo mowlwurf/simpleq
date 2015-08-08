@@ -4,11 +4,10 @@
 parameters:
     database_host:     127.0.0.1
     database_port:     ~
-    database_name:     simpleq
     database_user:     simpleq
     database_password: ~
-    # You should uncomment this if you want use pdo_sqlite
-    database_path: "%kernel.root_dir%/queuestorage.db3"
+    simpleq_database_path: "%kernel.root_dir%/queuestorage.db3"
+    simpleq_database_name: simpleq
 
     mailer_transport:  smtp
     mailer_host:       127.0.0.1

@@ -134,6 +134,7 @@ txt;
      */
     public function getQueueEntries($queue, $task = null)
     {
+        $this->doctrine->getManager()->flush();
         $repository = $this->loadRepository($queue);
         if (is_null($task)) {
             return $repository->findAll();
@@ -148,7 +149,7 @@ txt;
     /**
      * @param string $queue
      * @param mixed|string|array $task
-     * @return array|object
+     * @return array|object|bool
      */
     public function getNextOpenQueueEntry($queue, $task = null)
     {
@@ -161,7 +162,7 @@ SQL;
             return $preparedStatement->fetch(PDO::FETCH_ASSOC);
         }
         if (is_array($task)) {
-            return $this->getQueueEntriesXOr($queue, $task);
+            return $this->getQueueEntriesXOr($queue, $task, 1);
         }
         $statement = <<<'SQL'
 SELECT id, task, data FROM %s_ WHERE status = 'open' AND task = :task LIMIT 1
@@ -175,14 +176,30 @@ SQL;
     /**
      * @param string $queue
      * @param string $tasks
+     * @param int $limit
      * @return array
      */
-    public function getQueueEntriesXOr($queue, $tasks)
+    public function getQueueEntriesXOr($queue, $tasks, $limit = 0)
     {
-        $repository = $this->loadRepository($queue);
-
-        return $repository->findAllJobsByQueueForTasks($queue, $tasks);
-
+        $taskPattern = false;
+        if (!is_array($tasks)) {
+            $taskPattern = 'task = \'' . $tasks . '\'';
+        } else {
+            foreach ($tasks as $task) {
+                $taskPattern .= 'task = \'' . $task . '\' OR ';
+            }
+            $taskPattern = substr($taskPattern, 0, -3);
+        }
+        $preparedStatement = $this->connection->prepare(
+            sprintf(
+                'SELECT * FROM %s_ WHERE %s %s',
+                $queue,
+                $taskPattern,
+                $limit != 0 ? 'LIMIT '.$limit : ''
+            )
+        );
+        $preparedStatement->execute();
+        return $limit == 1 ? $preparedStatement->fetch(PDO::FETCH_ASSOC): $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -241,11 +258,12 @@ SQL;
 
     /**
      * @param string $queue
+     * @param bool $prototype
      * @return ObjectRepository
      */
-    protected function loadRepository($queue)
+    protected function loadRepository($queue, $prototype = false)
     {
-        if (!isset($this->repositoryCache[$queue])) {
+        if (!isset($this->repositoryCache[$queue]) || $prototype) {
             $this->repositoryCache[$queue] = $this->doctrine->getRepository(sprintf(
                 '%s:%s',
                 self::QUEUE_REPOSITORY,

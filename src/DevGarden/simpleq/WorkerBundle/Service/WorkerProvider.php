@@ -67,7 +67,8 @@ class WorkerProvider
     public function getActiveWorkerCount($name = null)
     {
         if (is_null($name)) {
-            $preparedStatement = $this->connection->exec(sprintf('SELECT count(id) FROM %s_', self::SCHEDULER_WORKING_QUEUE_TABLE));
+            $preparedStatement = $this->connection->prepare(sprintf('SELECT count(id) FROM %s_', self::SCHEDULER_WORKING_QUEUE_TABLE));
+            $preparedStatement->execute();
         } else {
             $statement = <<<'SQL'
 SELECT count(id) FROM %s_ WHERE worker = :worker
@@ -90,7 +91,7 @@ SQL;
 
     /**
      * @param int $pid
-     * @return WorkingQueue
+     * @return WorkingQueue|bool
      */
     public function getWorkingQueueEntryByPid($pid)
     {

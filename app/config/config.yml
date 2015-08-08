@@ -55,7 +55,7 @@ doctrine:
         driver:   pdo_mysql
         host:     "%database_host%"
         port:     "%database_port%"
-        dbname:   "%database_name%"
+        dbname:   "%simpleq_database_name%"
         user:     "%database_user%"
         password: "%database_password%"
         charset:  UTF8
@@ -66,7 +66,7 @@ doctrine:
         #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
         #   2. Uncomment database_path in parameters.yml.dist
         #   3. Uncomment next line:
-        #path:     "%database_path%"
+        #path:     "%simpleq_database_path%"
 
     orm:
         auto_generate_proxy_classes: "%kernel.debug%"
