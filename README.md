@@ -45,7 +45,7 @@ Your project should be able to run with the following dependencies:
 | performance optimization of scheduler | (v0.4) | :rocket: :trophy: | x100 faster, xn cheaper |
 | queue or worker config attribute retry int $times | (v0.5) | :ballot_box_with_check: | failed jobs stay in queue to enable re-queuing |
 | enable queue & config task handling | (v0.5) | :ballot_box_with_check: | got resolved one version earlier |
-| testing db for phpunit | (~v0.7) | :construction: | |
-| enable chainbehaviour | (~v0.8) | :grey_question: | |
+| testing db for phpunit | (v0.5) | :ballot_box_with_check: | providers fully tested now |
+| enable chainbehaviour | (~v0.8) | :construction: | |
 | full featured stable release | (v1.0) | :grey_question: | |
 | webinterface to show queue,worker & scheduler status | (v1.1) | :grey_question: | maybe extra package |
