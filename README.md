@@ -47,7 +47,7 @@ Your project should be able to run with the following dependencies:
 | enable queue & config task handling | (v0.5) | :ballot_box_with_check: | got resolved one version earlier |
 | testing db for phpunit | (v0.5) | :ballot_box_with_check: | providers fully tested now |
 | queue option history to create and use job queue history | (v0.6) | :ballot_box_with_check: | |
-| queue option donotclearfailedjobs to enable custom handling for failed jobs | (v0.6) | :ballot_box_with_check: | |
+| queue option delete_on_failure to enable custom handling for failed jobs | (v0.6) | :ballot_box_with_check: | |
 | enable chainbehaviour | (v0.7) | :construction: | |
 | full featured stable release | (v1.0) | :grey_question: | |
 | webinterface to show queue,worker & scheduler status | (v1.1) | :grey_question: | maybe extra package |
