@@ -36,7 +36,7 @@ contains code which should be executed after the job execution, like cleanup job
 
 ## Example
 
-The given example would inject a custom service to the worker. After this, function prepare will validate data, while worker status is on 'pending'.
+The given example would inject a custom service to the worker. After this, the prepare function will validate data, while worker status is on 'pending'.
 
 ```php
 class DummyWorker extends BaseWorker
