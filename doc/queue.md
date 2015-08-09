@@ -61,14 +61,14 @@ Defines retries to attempt on job failure for each worker.
 
 ### Create your new configured queue
 
-After you added your queue config block, you just need to execute the following command to create your new queue.
+After adding your queue config block, you just need to execute the following command to create your new queue.
 
 ```sh
 app/console simpleq:queue:create dummy
 ```
 
 That's it! You can fill the queue with jobs now.
-f.e.
+e.g. with your own custom persist command. For demonstration you should have a look to the following demo command.
 
 ```sh
 app/console simpleq:demo:persist n
