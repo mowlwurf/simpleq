@@ -27,6 +27,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
             ],
             'valid2' => [
                 'type' => 'default',
+                'delete_on_failure' => false,
                 'worker' => [
                     'dummy2' => [
                         'class' => 'Dummy2Class',
@@ -65,6 +66,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
             ],
             'valid2' => [
                 'type' => 'default',
+                'delete_on_failure' => false,
                 'worker' => [
                     'dummy2' => [
                         'class' => 'Dummy2Class',
@@ -137,5 +139,21 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetQueueHistoryAttributeByQueueIdFalse(){
         $this->assertEquals(0, $this->config->getQueueAttributeByQueueId('history', 'valid2'));
+    }
+
+    public function testGetQueueHistoryAttributeByQueueIdNotExist(){
+        $this->assertEquals(false, $this->config->getQueueAttributeByQueueId('history', 'invalid'));
+    }
+
+    public function testGetQueueDeleteOnFailureAttributeByQueueIdTrue(){
+        $this->assertTrue($this->config->getQueueAttributeByQueueId('delete_on_failure', 'valid'));
+    }
+
+    public function testGetQueueDeleteOnFailureAttributeByQueueIdFalse(){
+        $this->assertEquals(0, $this->config->getQueueAttributeByQueueId('delete_on_failure', 'valid2'));
+    }
+
+    public function testGetQueueDeleteOnFailureAttributeByQueueIdNotExist(){
+        $this->assertEquals(false, $this->config->getQueueAttributeByQueueId('delete_on_failure', 'invalid'));
     }
 }

@@ -13,18 +13,51 @@ simpleq:
     queue:
         dummy:                                      // name of queue
             type: default                           // type of queue [default, chain]
+            history: true                           // activates history table for queue (optional default: false)
+            delete_on_failure: false                // deactivates job deletion when job failed, to enable custom failure handling (optional default: true)
             worker:                                 // set of workers registered to queue
                 dummy:                              // name of first (maybe only) worker
                     class: simpleq.worker.dummy     // service id of worker service class
-                    limit: 10                       // limit of active workers at once, of given type
+                    task: dummyTask                 // task id for which worker is registered (optional default: null)
+                    limit: 10                       // limit of active workers at once, of given type (optional default: 10)
+                    retry: 100                      // number of retries on failure (optional default: 0)
 ```
 
-#### type
+***
+
+#### QueueAttributes
+
+##### type
 The type of a queue defines the worker processing order. Default means there is no dependency between workers,
 and any worker could be started at any time.
 The chain type defines a queue holding a fix order of processing tasks. 
 f.e. the job item should be processed by first worker initially and after this it should be automatically processed by the second worker.
 Given order in config reflects processing order, for queue type chain.
+
+##### history (bool : false)
+With this flag you can enable queue history for your queue. Finished jobs will be automatically be archived.
+Failed jobs only get archived if 'delete_on_failure' flag is true.
+
+##### delete_on_failure (bool : true)
+This flag defines, whether to delete (& archive, depending on 'history' flag) a failed job automatically or not.
+
+***
+
+#### WorkerAttributes
+
+##### class
+Use a existent service id to define worker class.
+
+##### task (string : null)
+Defines a specific task for which a worker is registered.
+
+##### limit (int : 10)
+Defines limit for spawning workers of given type.
+
+##### retry (int : 0)
+Defines retries to attempt on job failure for each worker.
+
+***
 
 ### Create your new configured queue
 

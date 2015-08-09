@@ -27,6 +27,8 @@ class Configuration implements ConfigurationInterface
         $prototype->children()->scalarNode('type');
         // child history
         $prototype->children()->booleanNode('history');
+        // child delete_on_failure
+        $prototype->children()->booleanNode('delete_on_failure');
         // child worker(s)
         $workerChild = $prototype->children()->arrayNode('worker');
         $workerChildChilds = $workerChild->prototype('array');

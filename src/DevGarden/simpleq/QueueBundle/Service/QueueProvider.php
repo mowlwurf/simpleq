@@ -153,6 +153,14 @@ txt;
 
     /**
      * @param string $queue
+     * @return bool
+     */
+    public function deleteOnFailure($queue){
+        return $this->configProvider->getQueueAttributeByQueueId('delete_on_failure', $queue);
+    }
+
+    /**
+     * @param string $queue
      * @param int $id
      * @return bool|object
      */

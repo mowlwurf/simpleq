@@ -56,10 +56,20 @@ class JobProvider
     }
 
     /**
+     * @param $queue
+     * @return bool
+     */
+    public function hasToDeleteFailedJob($queue)
+    {
+        return $this->provider->deleteOnFailure($queue);
+    }
+
+    /**
      * @param string $queue
      * @return bool
      */
-    public function hasToArchiveJob($queue){
+    public function hasToArchiveJob($queue)
+    {
         return $this->provider->hasQueueHistory($queue);
     }
 

@@ -79,6 +79,12 @@ class BaseWorker extends WorkerInterface
                     $jobId,
                     JobStatus::JOB_STATUS_FAILED
                 );
+                if ($this->jobProvider->hasToDeleteFailedJob($queue)) {
+                    if ($this->jobProvider->hasToArchiveJob($queue)) {
+                        $this->jobProvider->archiveJob($queue, $jobId);
+                    }
+                    $this->jobProvider->removeJob($queue, $jobId);
+                }
             } catch (\Exception $e) {
                 // maybe do sth. here
             }
