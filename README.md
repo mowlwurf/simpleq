@@ -30,6 +30,7 @@ Your project should be able to run with the following dependencies:
 ###### Learn how to register, create and handle queues in the [Queue chapter](doc/queue.md)
 ###### Learn how to initialize, check & control scheduler in the [Scheduler chapter](doc/scheduler.md)
 ###### Learn how to build and run your worker in the [Worker chapter](doc/worker.md)
+###### Learn how to cluster queues & workers [Cluster chapter](doc/cluster.md)
 
 ***
 
