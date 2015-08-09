@@ -14,7 +14,7 @@ class DummyWorker extends BaseWorker
 
 ***
 
-You can use 4 functions to execute your code now. 
+You can use four functions to execute your code now. 
 
 ### __construct
 
@@ -36,23 +36,26 @@ contains code which should be executed after the job execution, like cleanup job
 
 ## Example
 
-The given example would inject a custom service to the worker. After this, function prepare will validate data, while worker status is on 'pending'
+The given example would inject a custom service to the worker. After this, function prepare will validate data, while worker status is on 'pending'.
 
 ```php
-public function __construct(YourService $service)
+class DummyWorker extends BaseWorker
 {
-    $this->service = $service;
-}
-public function prepare($data)
-{
-    $this->service->validate($data);
-}
-public function execute($data)
-{
-    $this->processData($data);
-}
+    public function __construct(YourService $service)
+    {
+        $this->service = $service;
+    }
+    public function prepare($data)
+    {
+        $this->service->validate($data);
+    }
+    public function execute($data)
+    {
+        $this->processData($data);
+    }
 public function endJob($data)
 {
     $this->cleanUp();
+}
 }
 ```
