@@ -11,7 +11,7 @@ class BaseWorker extends WorkerInterface
      * @param int $statusCode WorkerStatus Code [open,running,failed,success]
      * @param string $statusMessage WorkerStatus Message
      */
-    public function setWorkerStatus($statusCode, $statusMessage)
+    final public function setWorkerStatus($statusCode, $statusMessage)
     {
         $this->status = ['code' => $statusCode, 'message' => $statusMessage];
     }
@@ -19,7 +19,7 @@ class BaseWorker extends WorkerInterface
     /**
      * @return array
      */
-    public function getWorkerStatus()
+    final public function getWorkerStatus()
     {
         return $this->status;
     }
@@ -27,7 +27,7 @@ class BaseWorker extends WorkerInterface
     /**
      * @param int $processId
      */
-    public function setProcessId($processId)
+    final public function setProcessId($processId)
     {
         $this->processId = $processId;
     }
@@ -35,7 +35,7 @@ class BaseWorker extends WorkerInterface
     /**
      * @return int
      */
-    public function getProcessId()
+    final public function getProcessId()
     {
         return $this->processId;
     }
@@ -48,7 +48,7 @@ class BaseWorker extends WorkerInterface
      * @return array
      * @throws \Exception
      */
-    public function run($jobId, $pid, $worker, $data = null)
+    final public function run($jobId, $pid, $worker, $data = null)
     {
         $this->setProcessId($pid);
         try {
@@ -101,7 +101,7 @@ class BaseWorker extends WorkerInterface
      * @param int $code
      * @param string $message
      */
-    protected function pushWorkerStatus($code, $message)
+    final protected function pushWorkerStatus($code, $message)
     {
         $this->setWorkerStatus($code, $message);
         $this->workerProvider->pushWorkerStatus($this->getProcessId(), $code);
@@ -110,7 +110,7 @@ class BaseWorker extends WorkerInterface
     /**
      * @return string
      */
-    public function getQueueRepository()
+    final public function getQueueRepository()
     {
         return $this->jobProvider->getQueueRepository();
     }
