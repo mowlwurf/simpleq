@@ -14,3 +14,8 @@ services:
             - { name: doctrine.event_listener, event: loadClassMetadata }
     simpleq.queue.create.process:
         class: DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess
+    simpleq.queue.history.provider:
+        class: DevGarden\simpleq\QueueBundle\Service\JobQueueHistoryProvider
+        arguments:
+            - @doctrine
+            - @simpleq.queue.provider

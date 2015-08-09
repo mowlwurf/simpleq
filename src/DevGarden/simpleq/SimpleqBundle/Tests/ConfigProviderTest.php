@@ -16,6 +16,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
         $this->config = new ConfigProvider([
             'valid' => [
                 'type' => 'default',
+                'history' => true,
                 'worker' => [
                     'dummy' => [
                         'class' => 'DummyClass',
@@ -53,6 +54,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
         $expected = [
             'valid' => [
                 'type' => 'default',
+                'history' => true,
                 'worker' => [
                     'dummy' => [
                         'class' => 'DummyClass',
@@ -127,5 +129,13 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $this->assertEquals($expected, $this->config->getWorkerList());
+    }
+
+    public function testGetQueueHistoryAttributeByQueueIdTrue(){
+        $this->assertTrue($this->config->getQueueAttributeByQueueId('history', 'valid'));
+    }
+
+    public function testGetQueueHistoryAttributeByQueueIdFalse(){
+        $this->assertEquals(0, $this->config->getQueueAttributeByQueueId('history', 'valid2'));
     }
 }

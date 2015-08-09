@@ -2,6 +2,7 @@
 
 namespace DevGarden\simpleq\SchedulerBundle\Service;
 
+use DevGarden\simpleq\QueueBundle\Service\JobQueueHistoryProvider;
 use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 
 class JobProvider
@@ -12,11 +13,18 @@ class JobProvider
     private $provider;
 
     /**
-     * @param QueueProvider $provider
+     * @var JobQueueHistoryProvider
      */
-    public function __construct(QueueProvider $provider)
+    private $history;
+
+    /**
+     * @param QueueProvider $provider
+     * @param JobQueueHistoryProvider $history
+     */
+    public function __construct(QueueProvider $provider, JobQueueHistoryProvider $history)
     {
         $this->provider = $provider;
+        $this->history = $history;
     }
 
     /**
@@ -36,6 +44,23 @@ class JobProvider
     public function removeJob($queue, $jobId)
     {
         $this->provider->removeQueueEntry($queue, $jobId);
+    }
+
+    /**
+     * @param string $queue
+     * @param int $jobId
+     */
+    public function archiveJob($queue, $jobId)
+    {
+        $this->history->archiveQueueEntry($queue, $jobId);
+    }
+
+    /**
+     * @param string $queue
+     * @return bool
+     */
+    public function hasToArchiveJob($queue){
+        return $this->provider->hasQueueHistory($queue);
     }
 
     /**

@@ -49,8 +49,9 @@ class QueueProviderTest extends DBTestCase
                         ]
                     ]
                 ],
-                'valid_two' => [
+                'validTwo' => [
                     'type' => 'default',
+                    'history' => true,
                     'worker' => [
                         'dummy_two' => [
                             'class' => 'Dummy2Class',
@@ -106,6 +107,14 @@ class QueueProviderTest extends DBTestCase
         */
     }
 
+    public function testGenerateQueueHistory(){
+        $this->expectOutputRegex('/generating\sDevGarden\\\\simpleq\\\\QueueBundle\\\\Entity\\\\ValidTwo/');
+        $this->assertFalse($this->hasOutput());
+        $this->queueProvider->generateQueue('validTwo');
+        $this->assertTrue(file_exists(__DIR__ . '/../Entity/ValidTwo.php'));
+        $this->assertTrue(file_exists(__DIR__ . '/../Entity/ValidTwoHistory.php'));
+    }
+
     /**
      * @param array $data
      */
@@ -128,7 +137,7 @@ class QueueProviderTest extends DBTestCase
     /**
      * @expectedException \Exception
      */
-    public function testGenerateQueueInValid(){
+    public function testGenerateQueueInvalid(){
         $this->queueProvider->generateQueue('invalid');
         $this->assertFalse(file_exists(__DIR__ . '/../Entity/Invalid.php'));
     }
@@ -246,6 +255,8 @@ class QueueProviderTest extends DBTestCase
 
     public function testCleanUp(){
         $this->assertTrue(unlink(__DIR__ . '/../Entity/Valid.php'));
+        $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwo.php'));
+        $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwoHistory.php'));
     }
 
     /**

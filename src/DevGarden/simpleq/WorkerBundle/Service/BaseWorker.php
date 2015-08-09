@@ -50,6 +50,7 @@ class BaseWorker extends WorkerInterface
      */
     final public function run($jobId, $pid, $worker, $data = null)
     {
+        $queue = $this->workerProvider->getWorkerQueue($worker);
         $this->setProcessId($pid);
         try {
             $this->pushWorkerStatus(
@@ -74,7 +75,7 @@ class BaseWorker extends WorkerInterface
             );
             try {
                 $this->jobProvider->updateJobStatus(
-                    $this->workerProvider->getWorkerQueue($worker),
+                    $queue,
                     $jobId,
                     JobStatus::JOB_STATUS_FAILED
                 );
@@ -85,11 +86,14 @@ class BaseWorker extends WorkerInterface
         }
         try {
             $this->jobProvider->updateJobStatus(
-                $this->workerProvider->getWorkerQueue($worker),
+                $queue,
                 $jobId,
                 JobStatus::JOB_STATUS_FINISHED
             );
-            $this->jobProvider->removeJob($this->workerProvider->getWorkerQueue($worker), $jobId);
+            if ($this->jobProvider->hasToArchiveJob($queue)) {
+                $this->jobProvider->archiveJob($queue, $jobId);
+            }
+            $this->jobProvider->removeJob($queue, $jobId);
         } catch (\Exception $e) {
             // maybe do sth. here
         }

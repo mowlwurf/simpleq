@@ -61,7 +61,8 @@ class QueueProvider
      */
     public function generateQueue($name)
     {
-        if (!$this->configProvider->getQueue($name)) {
+        $queue = $this->configProvider->getQueue($name);
+        if (!$queue) {
             throw new \Exception(
                 sprintf(
                     'Queue %s is undefined, defined queues are [\'%s\']',
@@ -79,7 +80,7 @@ use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="%s", indexes={@ORM\Index(name="newEntryRequest", columns={"status"}), @ORM\Index(name="getEntryByTask", columns={"task"})} )
+ * @ORM\Table(name="%s"%s)
  */
 class %s
 {
@@ -120,11 +121,45 @@ class %s
      * @ORM\Column(type="datetime")
      */
     protected $updated;
+
+    %s
 }
 
 txt;
-        file_put_contents(__DIR__ . '/../Entity/' . ucfirst($name) . '.php', sprintf($txt, $name, ucfirst($name)));
+        $indexes = ', indexes={@ORM\Index(name="newEntryRequest", columns={"status"}), @ORM\Index(name="getEntryByTask", columns={"task"})}';
+        file_put_contents(__DIR__ . '/../Entity/' . ucfirst($name) . '.php', sprintf($txt, $name, $indexes, ucfirst($name), ''));
+        if ($queue['history']) {
+            $archivedExt = <<<'txt'
+/**
+ * @var \DateTime $archived
+ *
+ * @Gedmo\Timestampable(on="create")
+ * @ORM\Column(type="datetime")
+ */
+protected $archived;
+txt;
+            file_put_contents(__DIR__ . '/../Entity/' . ucfirst($name) . 'History.php', sprintf($txt, $name.'_history', '', ucfirst($name).'History', $archivedExt));
+        }
         $this->entityProcess->execute('DevGarden/simpleq/QueueBundle/Entity');
+    }
+
+    /**
+     * @param string $queue
+     * @return bool
+     */
+    public function hasQueueHistory($queue){
+        return $this->configProvider->getQueueAttributeByQueueId('history', $queue);
+    }
+
+    /**
+     * @param string $queue
+     * @param int $id
+     * @return bool|object
+     */
+    public function getQueueEntryById($queue, $id)
+    {
+        $repository = $this->loadRepository($queue);
+        return $repository->findOneBy(['id' => $id]);
     }
 
     /**
@@ -134,7 +169,6 @@ txt;
      */
     public function getQueueEntries($queue, $task = null)
     {
-        $this->doctrine->getManager()->flush();
         $repository = $this->loadRepository($queue);
         if (is_null($task)) {
             return $repository->findAll();

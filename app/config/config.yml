@@ -110,11 +110,11 @@ simpleq:
         #dummy_chain:
         #    type: chain
         #    worker:
-        #        chain_one:
+        #        dummy_one:
         #            class: simpleq.worker.dummy_chain_one
         #            limit: 10
         #            task: task_one
-        #        chain_two:
+        #        dummy_two:
         #            class: simpleq.worker.dummy_chain_two
         #            limit: 10
         #            task: task_two

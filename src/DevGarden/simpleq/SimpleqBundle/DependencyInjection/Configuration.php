@@ -25,6 +25,8 @@ class Configuration implements ConfigurationInterface
         $prototype->cannotBeEmpty();
         // child type
         $prototype->children()->scalarNode('type');
+        // child history
+        $prototype->children()->booleanNode('history');
         // child worker(s)
         $workerChild = $prototype->children()->arrayNode('worker');
         $workerChildChilds = $workerChild->prototype('array');
@@ -34,7 +36,7 @@ class Configuration implements ConfigurationInterface
         $workerChildChilds->children()->integerNode('limit');
         // worker child task
         $workerChildChilds->children()->scalarNode('task');
-        // worker child task
+        // worker child retry
         $workerChildChilds->children()->integerNode('retry');
 
         return $treeBuilder;

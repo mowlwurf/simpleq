@@ -75,6 +75,21 @@ class ConfigProvider
      * @param string $id
      * @return bool|mixed|string
      */
+    public function getQueueAttributeByQueueId($attr, $id){
+        foreach ($this->queues as $key => $queue) {
+            if ($key == $id) {
+                return isset($queue[$attr]) ? $queue[$attr] : 0;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $attr
+     * @param string $id
+     * @return bool|mixed|string
+     */
     public function getWorkerAttributeByServiceId($attr, $id)
     {
         foreach ($this->workers as $worker) {
