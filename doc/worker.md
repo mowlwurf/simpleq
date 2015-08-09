@@ -53,9 +53,9 @@ class DummyWorker extends BaseWorker
     {
         $this->processData($data);
     }
-public function endJob($data)
-{
-    $this->cleanUp();
-}
+    public function endJob($data)
+    {
+        $this->cleanUp();
+    }
 }
 ```
