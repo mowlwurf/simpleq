@@ -2,7 +2,7 @@
 
 ***
 
-## Initialize
+## Initialise
 
 To start scheduling your workers, you need to initialise the scheduler.
 
@@ -19,7 +19,7 @@ app/console simpleq:scheduler:start
 app/console simpleq:scheduler:stop
 ```
 
-Scheduler is registering started workers to his working queue. This queue can be checked by 
+The Scheduler is registering started workers in his working queue. This queue can be checked by 
 
 ```sh
 simpleq:scheduler:status
