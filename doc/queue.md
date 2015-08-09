@@ -31,7 +31,7 @@ simpleq:
 The type of a queue defines the worker processing order. Default means there is no dependency between workers,
 and any worker could be started at any time.
 The chain type defines a queue holding a fix order of processing tasks. 
-f.e. the job item should be processed by first worker initially and after this it should be automatically processed by the second worker.
+e.g. the job item should be processed by first worker initially and after this it should be automatically processed by the second worker.
 Given order in config reflects processing order, for queue type chain.
 
 ##### history (bool : false)
@@ -39,7 +39,7 @@ With this flag you can enable queue history for your queue. Finished jobs will b
 Failed jobs only get archived if 'delete_on_failure' flag is true.
 
 ##### delete_on_failure (bool : true)
-This flag defines, whether to delete (& archive, depending on 'history' flag) a failed job automatically or not.
+This flag defines, whether to delete a failed job automatically or not.
 
 ***
 
