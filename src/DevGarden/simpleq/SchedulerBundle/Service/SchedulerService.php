@@ -76,17 +76,22 @@ class SchedulerService
     {
         foreach ($workers as $key => $worker) {
             $task = isset($worker['task']) ? $worker['task'] : null;
-            if ($this->isWorkerLimitReached($worker)) {
-                $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
-                continue;
+            try {
+                if ($this->isWorkerLimitReached($worker)) {
+                    $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
+                    continue;
+                }
+            } catch (\Exception $e) {
+                $output->writeln('Could not connect to WorkingQueue. Dont forget to run simpleq:scheduler:init first');
+                exit;
             }
             $job = $this->getJob($queue, $task, $worker['class']);
             if (!$job) {
                 $output->writeln(
                     sprintf(
-                        'No jobs available for queue %s and task %s',
+                        'No jobs available for queue: %s and task: %s',
                         $queue,
-                        $task
+                        empty($task) ? 'none' : $task
                     )
                 );
                 continue;

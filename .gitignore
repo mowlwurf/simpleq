@@ -1,5 +1,6 @@
 /*.db3
 /images/*
+/src/DevGarden/simpleq/SchedulerBundle/Entity/*
 /src/DevGarden/simpleq/QueueBundle/Entity/*
 /.DS_Store
 /app/*.db3
