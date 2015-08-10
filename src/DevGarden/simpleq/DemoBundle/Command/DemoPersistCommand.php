@@ -2,6 +2,7 @@
 
 namespace DevGarden\simpleq\DemoBundle\Command;
 
+use DevGarden\simpleq\QueueBundle\Entity\Chain;
 use DevGarden\simpleq\QueueBundle\Entity\Dummy;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -57,10 +58,10 @@ class DemoPersistCommand extends ContainerAwareCommand
     {
         $jobData = [];
         if ($n == 1) {
-            $url = 'http://creepycandids.tumblr.com/page/151';
+            $url = 'http://creepycandids.tumblr.com/';
             //$url = 'http://creepycandids.tumblr.com/page/3';
         } else {
-            $url = sprintf('http://creepycandids.tumblr.com/page/%d', $n + 150);
+            $url = sprintf('http://creepycandids.tumblr.com/page/%d', $n);
         }
         $sh = file_get_contents($url);
         if (preg_match_all('/.*src="(.*)"\sdata-width-lq/i', $sh, $result)) {
@@ -76,7 +77,7 @@ class DemoPersistCommand extends ContainerAwareCommand
      */
     public function demoPersist(array $data)
     {
-        $job = new Dummy();
+        $job = new Chain();
         $job->setTask('download');
         $job->setStatus('open');
         $job->setData(json_encode($data));

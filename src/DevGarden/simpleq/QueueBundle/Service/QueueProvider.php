@@ -128,7 +128,7 @@ class %s
 txt;
         $indexes = ', indexes={@ORM\Index(name="newEntryRequest", columns={"status"}), @ORM\Index(name="getEntryByTask", columns={"task"})}';
         file_put_contents(__DIR__ . '/../Entity/' . ucfirst($name) . '.php', sprintf($txt, $name, $indexes, ucfirst($name), ''));
-        if ($queue['history']) {
+        if ($this->hasQueueHistory($name)) {
             $archivedExt = <<<'txt'
 /**
  * @var \DateTime $archived
@@ -149,6 +149,22 @@ txt;
      */
     public function hasQueueHistory($queue){
         return $this->configProvider->getQueueAttributeByQueueId('history', $queue);
+    }
+
+    /**
+     * @param string $queue
+     * @return bool
+     */
+    public function hasTaskChain($queue){
+        return $this->configProvider->getQueueAttributeByQueueId('type', $queue) == 'chain';
+    }
+
+    /**
+     * @param string $queue
+     * @return array
+     */
+    public function getTaskChain($queue){
+        return $this->configProvider->getQueueAttributeByQueueId('task_chain', $queue);
     }
 
     /**

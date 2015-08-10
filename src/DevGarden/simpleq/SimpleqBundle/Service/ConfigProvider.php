@@ -20,10 +20,18 @@ class ConfigProvider
     public function __construct(array $queues)
     {
         foreach ($queues as $key => $queue) {
+            $isChain = $queue['type'] == 'chain' ? true : false;
+            $queueTaskChain = [];
             foreach ($queue['worker'] as $workerKey => $worker) {
                 $worker['queue'] = $key;
                 $worker['name'] = $workerKey;
                 array_push($this->workers, $worker);
+                if ($isChain) {
+                    array_push($queueTaskChain, $worker['task']);
+                }
+            }
+            if ($isChain) {
+                $queues[$key]['task_chain'] = $queueTaskChain;
             }
         }
         $this->queues = $queues;

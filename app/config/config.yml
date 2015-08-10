@@ -100,21 +100,24 @@ monolog:
 # SimpleQ Configuration
 simpleq:
     queue:
-        dummy:
-            type: default
-            worker:
-                dummy:
-                    class: simpleq.worker.dummy
-                    limit: 10
-                    retry: 100
-        #dummy_chain:
-        #    type: chain
+        #dummy:
+        #    type: default
         #    worker:
-        #        dummy_one:
-        #            class: simpleq.worker.dummy_chain_one
+        #        dummy:
+        #            class: simpleq.worker.dummy.download
         #            limit: 10
-        #            task: task_one
-        #        dummy_two:
-        #            class: simpleq.worker.dummy_chain_two
-        #            limit: 10
-        #            task: task_two
+        #            retry: 100
+        chain:
+            type: chain
+            delete_on_failure: false
+            worker:
+                dummy_one:
+                    class: simpleq.worker.dummy.download
+                    limit: 1
+                    task: download
+                    retry: 5
+                dummy_two:
+                    class: simpleq.worker.dummy.transform
+                    limit: 1
+                    task: transform
+                    retry: 3

@@ -11,6 +11,7 @@ class DummyWorker extends BaseWorker
     {
         print "prepare job" . PHP_EOL;
         // use your job preparing code here (f.e. worker configuration)
+        return $data;
     }
 
     public function execute($data)
@@ -23,6 +24,7 @@ class DummyWorker extends BaseWorker
             print 'Cant put file';
             throw new \Exception('Cant put file');
         }
+        return json_encode(['file' => __DIR__ . '/../../../../../images/' . md5($data->url) . '.jpg']);
         // use your job executing code here (this is the main job process, its possible to only overwrite this parent function)
     }
 
@@ -30,5 +32,6 @@ class DummyWorker extends BaseWorker
     {
         print "finishing job" . PHP_EOL;
         // use your job finalizing code here (f.e. clean up jobs)
+        return $data;
     }
 }

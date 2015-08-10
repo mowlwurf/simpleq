@@ -75,12 +75,31 @@ class JobProvider
 
     /**
      * @param string $queue
-     * @param int $jobId
-     * @param string $status
+     * @return bool
      */
-    public function updateJobStatus($queue, $jobId, $status)
+    public function hasTaskChain($queue)
     {
-        $args = ['status' => $status];
+        return $this->provider->hasTaskChain($queue);
+    }
+
+    /**
+     * @param string $queue
+     * @return array
+     */
+    public function getTaskChain($queue)
+    {
+        return $this->provider->getTaskChain($queue);
+    }
+
+    /**
+     * @param string $queue
+     * @param int $jobId
+     * @param string $key
+     * @param string $value
+     */
+    public function updateJobAttribute($queue, $jobId, $key, $value)
+    {
+        $args = [$key => $value];
         $this->provider->updateQueueEntry($queue, $jobId, $args);
     }
 

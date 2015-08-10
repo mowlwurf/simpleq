@@ -199,4 +199,13 @@ SQL;
     {
         return $this->config->getWorkerAttributeByServiceId('retry', $id);
     }
+
+    /**
+     * @param string $id
+     * @return bool|string
+     */
+    public function getWorkerTask($id)
+    {
+        return $this->config->getWorkerAttributeByServiceId('task', $id);
+    }
 }

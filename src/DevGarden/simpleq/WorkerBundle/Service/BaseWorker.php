@@ -57,13 +57,13 @@ class BaseWorker extends WorkerInterface
                 WorkerStatus::WORKER_STATUS_PENDING_CODE,
                 WorkerStatus::WORKER_STATUS_PENDING_MESSAGE
             );
-            $this->prepare($data);
+            $data = $this->prepare($data);
             $this->pushWorkerStatus(
                 WorkerStatus::WORKER_STATUS_RUNNING_CODE,
                 WorkerStatus::WORKER_STATUS_RUNNING_MESSAGE
             );
-            $this->execute($data);
-            $this->endJob($data);
+            $data = $this->execute($data);
+            $data = $this->endJob($data);
             $this->pushWorkerStatus(
                 WorkerStatus::WORKER_STATUS_SUCCESS_CODE,
                 WorkerStatus::WORKER_STATUS_SUCCESS_MESSAGE
@@ -74,9 +74,10 @@ class BaseWorker extends WorkerInterface
                 WorkerStatus::WORKER_STATUS_FAILED_MESSAGE
             );
             try {
-                $this->jobProvider->updateJobStatus(
+                $this->jobProvider->updateJobAttribute(
                     $queue,
                     $jobId,
+                    'status',
                     JobStatus::JOB_STATUS_FAILED
                 );
                 if ($this->jobProvider->hasToDeleteFailedJob($queue)) {
@@ -88,22 +89,32 @@ class BaseWorker extends WorkerInterface
             } catch (\Exception $e) {
                 // maybe do sth. here
             }
-            throw new \Exception('Worker failed');
+            throw new \Exception('Worker failed ' . $e->getMessage());
         }
-        try {
-            $this->jobProvider->updateJobStatus(
-                $queue,
-                $jobId,
-                JobStatus::JOB_STATUS_FINISHED
-            );
-            if ($this->jobProvider->hasToArchiveJob($queue)) {
-                $this->jobProvider->archiveJob($queue, $jobId);
+        if ($this->jobProvider->hasTaskChain($queue)) {
+            $taskChain = $this->jobProvider->getTaskChain($queue);
+            $member = array_search($this->workerProvider->getWorkerTask($worker), $taskChain);
+        }
+        if ($this->jobProvider->hasTaskChain($queue) && isset($taskChain[$member+1])) {
+            $this->jobProvider->updateJobAttribute($queue, $jobId, 'status', JobStatus::JOB_STATUS_OPEN);
+            $this->jobProvider->updateJobAttribute($queue, $jobId, 'task', $taskChain[$member+1]);
+            $this->jobProvider->updateJobAttribute($queue, $jobId, 'data', $data);
+        } else {
+            try {
+                $this->jobProvider->updateJobAttribute(
+                    $queue,
+                    $jobId,
+                    'status',
+                    JobStatus::JOB_STATUS_FINISHED
+                );
+                if ($this->jobProvider->hasToArchiveJob($queue)) {
+                    $this->jobProvider->archiveJob($queue, $jobId);
+                }
+                $this->jobProvider->removeJob($queue, $jobId);
+            } catch (\Exception $e) {
+                // maybe do sth. here
             }
-            $this->jobProvider->removeJob($queue, $jobId);
-        } catch (\Exception $e) {
-            // maybe do sth. here
         }
-
         return $this->getWorkerStatus();
     }
 
@@ -129,27 +140,32 @@ class BaseWorker extends WorkerInterface
      * prepare to execute stuff must be done before the worker execute its job
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
      * @param $data
+     * @return mixed|void
      */
     public function prepare($data)
     {
+        return $data;
     }
 
     /**
      * execute the job, should set WorkerStatus to FAILED on exception
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
      * @param $data
-     * @return int|void
+     * @return mixed|void
      */
     public function execute($data)
     {
+        return $data;
     }
 
     /**
      * do stuff like clean up jobs
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
      * @param $data
+     * @return mixed|void
      */
     public function endJob($data)
     {
+        return $data;
     }
 }

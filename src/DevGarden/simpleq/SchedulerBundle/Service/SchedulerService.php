@@ -141,9 +141,10 @@ class SchedulerService
             if (!$job) {
                 return false;
             }
-            $this->jobs->updateJobStatus(
+            $this->jobs->updateJobAttribute(
                 $this->workers->getWorkerQueue($service),
                 $job['id'],
+                'status',
                 JobStatus::JOB_STATUS_RUNNING
             );
 
