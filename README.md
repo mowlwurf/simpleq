@@ -43,7 +43,7 @@ Your project should be able to run with the following dependencies:
 | first running prototype | (v0.1) | :moyai: | including processing bugs and memory leaks |
 | removed scheduler process conflicts, by moving worker registration and job status trigger to scheduler | (v0.2) | :ballot_box_with_check: | no processing bugs |
 | optimized scheduler process, added indices, deactivated doctrine logging and profiling | (v0.3) | :ballot_box_with_check: | no memory leaks |
-| performance optimization of scheduler | (v0.4) | :rocket: :trophy: | x100 faster, xn cheaper |
+| performance optimization of scheduler | (v0.4) | :rocket: | x100 faster, xn cheaper |
 | queue or worker config attribute retry int $times | (v0.5) | :ballot_box_with_check: | failed jobs stay in queue to enable re-queuing |
 | enable queue & config task handling | (v0.5) | :ballot_box_with_check: | got resolved one version earlier |
 | testing db for phpunit | (v0.5) | :ballot_box_with_check: | providers fully tested now |
