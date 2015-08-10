@@ -1,10 +1,10 @@
 # Clustering Queues
 
-With simpleq you are able to cluster queues to multiple servers, by simply configuring the queue on multiple servers, 
-split up your job persists to the different queues and build up your workers to send final data to the same target.
+With Simpleq you are able to cluster queues to multiple servers, by simply configuring the queue on multiple servers, 
+split up your job persists to different queues and build up your workers to send the final data to one and the same target.
 
 1. Custom Persist Service
-- persist
+- persist job
 2. QueueServer1|QS2|QSn
 - scheduler triggers
 3. Custom Worker Service
