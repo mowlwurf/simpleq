@@ -8,7 +8,7 @@ use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 use DevGarden\simpleq\SchedulerBundle\Extension\JobStatus;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use DevGarden\simpleq\SimpleqBundle\Tests\DBTestCase;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
 
 
 class QueueProviderTest extends DBTestCase
@@ -69,21 +69,22 @@ class QueueProviderTest extends DBTestCase
             $testData = $this->getDataSet();
             $data = $testData->getTable('valid_');
             $c = $data->getRowCount();
-            for ( $i = 0; $i < $c; $i++) {
+            for ($i = 0; $i < $c; $i++) {
                 $row = $data->getRow($i);
                 $this->persistTestEntry($row);
             }
         }
     }
 
-    public function tearDown(){
-        $connection = $this->getDoctrine()->getConnection();
-        $connection->exec('TRUNCATE valid_');
-        $this->testDataObj = null;
+    public function tearDown()
+    {
+        $connection = $this->getDoctrine();
+        $connection->exec('TRUNCATE valid');
         $this->testDataArr = null;
     }
 
-    public function testGenerateQueueValid(){
+    public function testGenerateQueueValid()
+    {
         $this->expectOutputRegex('/generating\sDevGarden\\\\simpleq\\\\QueueBundle\\\\Entity\\\\Valid/');
         $this->assertFalse($this->hasOutput());
         $this->queueProvider->generateQueue('valid');
@@ -107,7 +108,8 @@ class QueueProviderTest extends DBTestCase
         */
     }
 
-    public function testGenerateQueueHistory(){
+    public function testGenerateQueueHistory()
+    {
         $this->expectOutputRegex('/generating\sDevGarden\\\\simpleq\\\\QueueBundle\\\\Entity\\\\ValidTwo/');
         $this->assertFalse($this->hasOutput());
         $this->queueProvider->generateQueue('validTwo');
@@ -118,7 +120,8 @@ class QueueProviderTest extends DBTestCase
     /**
      * @param array $data
      */
-    protected function persistTestEntry(array $data){
+    protected function persistTestEntry(array $data)
+    {
         $entry = new Valid();
         $entry->setTask($data['task']);
         $entry->setStatus($data['status']);
@@ -126,10 +129,9 @@ class QueueProviderTest extends DBTestCase
         $entry->setCreated(new \DateTime($data['created']));
         $entry->setUpdated(new \DateTime($data['updated']));
 
-        $this->testDataObj[] = $entry;
         $this->testDataArr[] = $data;
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->kernel->getContainer()->get('doctrine')->getManager();
         $em->persist($entry);
         $em->flush();
     }
@@ -137,123 +139,126 @@ class QueueProviderTest extends DBTestCase
     /**
      * @expectedException \Exception
      */
-    public function testGenerateQueueInvalid(){
+    public function testGenerateQueueInvalid()
+    {
         $this->queueProvider->generateQueue('invalid');
         $this->assertFalse(file_exists(__DIR__ . '/../Entity/Invalid.php'));
     }
 
-    public function testGetQueueEntriesWithoutTask(){
+    public function testGetQueueEntriesWithoutTask()
+    {
         $entries = $this->queueProvider->getQueueEntries('valid');
-        $this->assertEquals($this->testDataObj, $entries);
+        $this->assertEquals($this->testDataArr, $entries);
     }
 
-    public function testGetQueueEntriesWithTask(){
+    public function testGetQueueEntriesWithTask()
+    {
         $entries = $this->queueProvider->getQueueEntries('valid', 'test');
-        array_shift($this->testDataObj);
-        array_pop($this->testDataObj);
-        $this->assertEquals($this->testDataObj, $entries);
+        array_shift($this->testDataArr);
+        array_pop($this->testDataArr);
+        $this->assertEquals($this->testDataArr, $entries);
     }
 
-    public function testGetQueueEntriesWithTasks(){
-        $entries = $this->queueProvider->getQueueEntries('valid', ['test','test2']);
+    public function testGetQueueEntriesWithTasks()
+    {
+        $entries = $this->queueProvider->getQueueEntries('valid', ['test', 'test2']);
         array_shift($this->testDataArr);
         $this->assertEquals($this->testDataArr, $entries);
     }
 
-    public function testGetQueueEntriesWithTaskNotExist(){
+    public function testGetQueueEntriesWithTaskNotExist()
+    {
         $entries = $this->queueProvider->getQueueEntries('valid', 'foo');
         $this->assertEquals([], $entries);
     }
 
-    public function testGetNextOpenQueueEntryWithoutTask(){
+    public function testGetNextOpenQueueEntryWithoutTask()
+    {
         $expected = array_shift($this->testDataArr);
-        unset($expected['created'],$expected['updated'],$expected['status']);
+        unset($expected['created'], $expected['updated'], $expected['status']);
         $this->assertEquals($expected, $this->queueProvider->getNextOpenQueueEntry('valid'));
     }
 
-    public function testGetNextOpenQueueEntryWithTask(){
+    public function testGetNextOpenQueueEntryWithTask()
+    {
         $expected = $this->testDataArr[1];
-        unset($expected['created'],$expected['updated'],$expected['status']);
-        $this->assertEquals($expected, $this->queueProvider->getNextOpenQueueEntry('valid','test'));
+        unset($expected['created'], $expected['updated'], $expected['status']);
+        $this->assertEquals($expected, $this->queueProvider->getNextOpenQueueEntry('valid', 'test'));
     }
 
-    public function testGetNextOpenQueueEntryWithTasks(){
+    public function testGetNextOpenQueueEntryWithTasks()
+    {
         $expected = $this->testDataArr[1];
-        $this->assertEquals($expected, $this->queueProvider->getNextOpenQueueEntry('valid',['test','test2']));
+        $this->assertEquals($expected, $this->queueProvider->getNextOpenQueueEntry('valid', ['test', 'test2']));
     }
 
-    public function testGetNextOpenQueueEntryWithTaskNotExist(){
-        $this->assertFalse($this->queueProvider->getNextOpenQueueEntry('valid','foo'));
+    public function testGetNextOpenQueueEntryWithTaskNotExist()
+    {
+        $this->assertFalse($this->queueProvider->getNextOpenQueueEntry('valid', 'foo'));
     }
 
-    public function testRemoveQueueEntryValid(){
+    public function testRemoveQueueEntryValid()
+    {
         $this->queueProvider->removeQueueEntry('valid', 1);
-        array_shift($this->testDataObj);
-        $this->assertEquals($this->testDataObj, $this->queueProvider->getQueueEntries('valid'));
+        array_shift($this->testDataArr);
+        $this->assertEquals($this->testDataArr, $this->queueProvider->getQueueEntries('valid'));
     }
 
     /**
      * @expectedException \Doctrine\DBAL\DBALException
      */
-    public function testRemoveQueueEntryInvalidQueue(){
+    public function testRemoveQueueEntryInvalidQueue()
+    {
         $this->queueProvider->removeQueueEntry('invalid', 1);
-        $this->assertEquals($this->testDataObj, $this->queueProvider->getQueueEntries('valid'));
+        $this->assertEquals($this->testDataArr, $this->queueProvider->getQueueEntries('valid'));
     }
 
-    public function testRemoveQueueEntryInvalidId(){
+    public function testRemoveQueueEntryInvalidId()
+    {
         $this->queueProvider->removeQueueEntry('valid', 10);
-        $this->assertEquals($this->testDataObj, $this->queueProvider->getQueueEntries('valid'));
+        $this->assertEquals($this->testDataArr, $this->queueProvider->getQueueEntries('valid'));
     }
 
-    public function testUpdateQueueEntryValid(){
+    public function testUpdateQueueEntryValid()
+    {
         $this->queueProvider->updateQueueEntry('valid', 1, ['status' => JobStatus::JOB_STATUS_FINISHED]);
-        $entries = $this->queueProvider->getQueueEntries('valid', ['test','']);
+        $entries = $this->queueProvider->getQueueEntries('valid', ['test', '']);
         $this->assertEquals(JobStatus::JOB_STATUS_FINISHED, $entries[0]['status']);
     }
 
     /**
      * @expectedException \Doctrine\DBAL\DBALException
      */
-    public function testUpdateQueueEntryInvalidQueue(){
+    public function testUpdateQueueEntryInvalidQueue()
+    {
         $this->queueProvider->updateQueueEntry('invalid', 1, ['status' => JobStatus::JOB_STATUS_FINISHED]);
     }
 
-    public function testUpdateQueueEntryInvalidId(){
+    public function testUpdateQueueEntryInvalidId()
+    {
         $this->queueProvider->updateQueueEntry('valid', 10, ['status' => JobStatus::JOB_STATUS_FINISHED]);
         $entries = $this->queueProvider->getQueueEntries('valid');
-        $this->assertEquals(JobStatus::JOB_STATUS_OPEN, $entries[0]->getStatus());
+        $this->assertEquals(JobStatus::JOB_STATUS_OPEN, $entries[0]['status']);
     }
 
     /**
      * @expectedException \Doctrine\DBAL\DBALException
      */
-    public function testUpdateQueueEntryInvalidArgsNull(){
+    public function testUpdateQueueEntryInvalidArgsNull()
+    {
         $this->queueProvider->updateQueueEntry('valid', 1, ['null' => JobStatus::JOB_STATUS_FINISHED]);
     }
 
     /**
      * @expectedException \Doctrine\DBAL\DBALException
      */
-    public function testUpdateQueueEntryInvalidArgsFoo(){
+    public function testUpdateQueueEntryInvalidArgsFoo()
+    {
         $this->queueProvider->updateQueueEntry('valid', 1, ['foo' => JobStatus::JOB_STATUS_FINISHED]);
     }
 
-    public function testLoadRepositoryValid(){
-        $reflection = new \ReflectionClass('DevGarden\simpleq\QueueBundle\Service\QueueProvider');
-        $reflectionMethod = $reflection->getMethod('loadRepository');
-        $reflectionMethod->setAccessible(true);
-        $repo = $reflectionMethod->invokeArgs($this->queueProvider, ['valid', true]);
-        $this->assertEquals(
-            $this->getDoctrine()->getRepository(sprintf(
-                '%s:%s',
-                'QueueBundle',
-                'Valid'
-            )),
-            $repo
-        );
-    }
-
-    public function testCleanUp(){
+    public function testCleanUp()
+    {
         $this->assertTrue(unlink(__DIR__ . '/../Entity/Valid.php'));
         $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwo.php'));
         $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwoHistory.php'));
@@ -262,56 +267,62 @@ class QueueProviderTest extends DBTestCase
     /**
      * @return CreateDoctrineEntityProcess
      */
-    protected function getEntityProcess(){
+    protected function getEntityProcess()
+    {
         return $this->kernel->getContainer()->get('simpleq.queue.create.process');
     }
 
     /**
-     * @return ManagerRegistry
+     * @return Connection
      */
-    protected function getDoctrine(){
-        return $this->kernel->getContainer()->get('doctrine');
+    protected function getDoctrine()
+    {
+        return $this->kernel->getContainer()->get('doctrine')->getConnection();
     }
 
     /**
      * @return \PHPUnit_Extensions_Database_DataSet_IDataSet
      */
-    public function getDataSet(){
+    public function getDataSet()
+    {
         $time = new \DateTime();
         $timeFormat = $time->format('Y-m-d h:i:s');
-        return $this->createArrayDataSet(['valid_' => [
-            [
-                'id' => '1',
-                'task' => '',
-                'status' => 'open',
-                'data' => '{"test":"testval"}',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
-            ],
-            [
-                'id' => '2',
-                'task' => 'test',
-                'status' => 'open',
-                'data' => '{"test":"testval2"}',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
-            ],
-            [
-                'id' => '3',
-                'task' => 'test',
-                'status' => 'open',
-                'data' => '{"test":"testval2"}',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
-            ],
-            [
-                'id' => '4',
-                'task' => 'test2',
-                'status' => 'failed',
-                'data' => '{"test":"testval2"}',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
+
+        return $this->createArrayDataSet([
+            'valid_' => [
+                [
+                    'id' => '1',
+                    'task' => '',
+                    'status' => 'open',
+                    'data' => '{"test":"testval"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id' => '2',
+                    'task' => 'test',
+                    'status' => 'open',
+                    'data' => '{"test":"testval2"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id' => '3',
+                    'task' => 'test',
+                    'status' => 'open',
+                    'data' => '{"test":"testval2"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id' => '4',
+                    'task' => 'test2',
+                    'status' => 'failed',
+                    'data' => '{"test":"testval2"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ]
             ]
-        ]]);
+        ]);
     }
 }

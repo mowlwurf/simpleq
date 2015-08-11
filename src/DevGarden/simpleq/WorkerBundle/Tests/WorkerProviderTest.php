@@ -7,7 +7,7 @@ use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use DevGarden\simpleq\SimpleqBundle\Tests\DBTestCase;
 use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
 use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
 
 class WorkerProviderTest extends DBTestCase
 {
@@ -63,78 +63,91 @@ class WorkerProviderTest extends DBTestCase
 
         // persist testdata
         $testData = $this->getDataSet();
-        $data = $testData->getTable('working_queue_');
+        $data = $testData->getTable('working_queue');
         $c = $data->getRowCount();
-        for ( $i = 0; $i < $c; $i++) {
+        for ($i = 0; $i < $c; $i++) {
             $row = $data->getRow($i);
             $this->persistTestEntry($row);
         }
     }
 
-    public function tearDown(){
-        $connection = $this->getDoctrine()->getConnection();
-        $connection->exec('TRUNCATE working_queue_');
-        $this->testDataObj = null;
+    public function tearDown()
+    {
+        $connection = $this->getDoctrine();
+        $connection->exec('TRUNCATE working_queue');
         $this->testDataArr = null;
     }
 
-    public function testGetActiveWorkerCountWithoutName(){
+    public function testGetActiveWorkerCountWithoutName()
+    {
         $this->assertEquals(4, $this->workerProvider->getActiveWorkerCount());
     }
 
-    public function testGetActiveWorkerCountWithName(){
+    public function testGetActiveWorkerCountWithName()
+    {
         $this->assertEquals(2, $this->workerProvider->getActiveWorkerCount('DummyClass'));
     }
 
-    public function testGetActiveWorkerCountWithWrongName(){
+    public function testGetActiveWorkerCountWithWrongName()
+    {
         $this->assertEquals(0, $this->workerProvider->getActiveWorkerCount('foo'));
     }
 
-    public function testGetActiveWorkersWithoutName(){
-        $this->assertEquals($this->testDataObj, $this->workerProvider->getActiveWorkers());
+    public function testGetActiveWorkersWithoutName()
+    {
+        $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers());
     }
 
-    public function testGetActiveWorkersWithName(){
-        array_pop($this->testDataObj);
-        array_pop($this->testDataObj);
-        $this->assertEquals($this->testDataObj, $this->workerProvider->getActiveWorkers('DummyClass'));
+    public function testGetActiveWorkersWithName()
+    {
+        array_pop($this->testDataArr);
+        array_pop($this->testDataArr);
+        $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers('DummyClass'));
     }
 
-    public function testGetActiveWorkersWithNameNotExist(){
+    public function testGetActiveWorkersWithNameNotExist()
+    {
         $this->assertEquals([], $this->workerProvider->getActiveWorkers('foo'));
     }
 
-    public function testGetWorkingQueueEntryByPid(){
-        $this->assertEquals(array_shift($this->testDataObj), $this->workerProvider->getWorkingQueueEntryByPid(21));
+    public function testGetWorkingQueueEntryByPid()
+    {
+        $this->assertEquals(array_shift($this->testDataArr), $this->workerProvider->getWorkingQueueEntryByPid(21));
     }
 
-    public function testGetWorkingQueueEntryByPidNotExist(){
+    public function testGetWorkingQueueEntryByPidNotExist()
+    {
         $this->assertEquals(false, $this->workerProvider->getWorkingQueueEntryByPid(1));
     }
 
-    public function testClearQueueWithName(){
+    public function testClearQueueWithName()
+    {
         $this->workerProvider->clearQueue('DummyClass');
-        array_shift($this->testDataObj);
-        array_shift($this->testDataObj);
-        $this->assertEquals($this->testDataObj, $this->workerProvider->getActiveWorkers());
+        array_shift($this->testDataArr);
+        array_shift($this->testDataArr);
+        $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers());
     }
 
-    public function testClearQueueWithoutName(){
+    public function testClearQueueWithoutName()
+    {
         $this->workerProvider->clearQueue();
         $this->assertEquals([], $this->workerProvider->getActiveWorkers());
     }
 
-    public function testClearQueueWithNameNotExist(){
+    public function testClearQueueWithNameNotExist()
+    {
         $this->workerProvider->clearQueue('foo');
-        $this->assertEquals($this->testDataObj, $this->workerProvider->getActiveWorkers());
+        $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers());
     }
 
-    public function testPushWorkerToWorkingQueue(){
+    public function testPushWorkerToWorkingQueue()
+    {
         $this->assertRegExp('/^[a-zA-Z0-9]+$/', $this->workerProvider->pushWorkerToWorkingQueue('DummyClass'));
         $this->assertEquals(3, $this->workerProvider->getActiveWorkerCount('DummyClass'));
     }
 
-    public function testUpdateWorkerPid(){
+    public function testUpdateWorkerPid()
+    {
         $this->workerProvider->updateWorkerPid(
             $this->workerProvider->pushWorkerToWorkingQueue('DummyClass'),
             2
@@ -142,62 +155,72 @@ class WorkerProviderTest extends DBTestCase
         $this->assertNotFalse($this->workerProvider->getWorkingQueueEntryByPid(2));
     }
 
-    public function testUpdateWorkerPidInvalidTempPid(){
+    public function testUpdateWorkerPidInvalidTempPid()
+    {
         $this->workerProvider->updateWorkerPid(
             'invalid',
             2
         );
-        $this->assertNull($this->workerProvider->getWorkingQueueEntryByPid(2));
+        $this->assertFalse($this->workerProvider->getWorkingQueueEntryByPid(2));
     }
 
-    public function testRemoveWorkingQueueEntry(){
+    public function testRemoveWorkingQueueEntry()
+    {
         $this->workerProvider->removeWorkingQueueEntry(21);
-        array_shift($this->testDataObj);
-        $this->assertEquals($this->testDataObj, $this->workerProvider->getActiveWorkers());
+        array_shift($this->testDataArr);
+        $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers());
     }
 
-    public function testRemoveWorkingQueueEntryInvalid(){
+    public function testRemoveWorkingQueueEntryInvalid()
+    {
         $this->workerProvider->removeWorkingQueueEntry(1);
-        $this->assertEquals($this->testDataObj, $this->workerProvider->getActiveWorkers());
+        $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers());
     }
 
-    public function testPushWorkerStatus(){
+    public function testPushWorkerStatus()
+    {
         $this->workerProvider->pushWorkerStatus(21, WorkerStatus::WORKER_STATUS_SUCCESS_CODE);
         $statement = <<<'SQL'
-SELECT status FROM simpleq_test.working_queue_ WHERE pid = 21
+SELECT status FROM simpleq_test.working_queue WHERE pid = 21
 SQL;
-        $prepareStatement = $this->getDoctrine()->getConnection()->prepare($statement);
+        $prepareStatement = $this->getDoctrine()->prepare($statement);
         $prepareStatement->execute();
         $this->assertEquals(WorkerStatus::WORKER_STATUS_SUCCESS_CODE, $prepareStatement->fetchColumn());
     }
 
-    public function testGetWorkerQueue(){
+    public function testGetWorkerQueue()
+    {
         $this->assertEquals('valid', $this->workerProvider->getWorkerQueue('DummyClass'));
     }
 
-    public function testGetWorkerQueueNotExist(){
+    public function testGetWorkerQueueNotExist()
+    {
         $this->assertFalse($this->workerProvider->getWorkerQueue('foo'));
     }
 
-    public function testGetWorkerRetry(){
+    public function testGetWorkerRetry()
+    {
         $this->assertEquals(10, $this->workerProvider->getWorkerRetry('DummyClass'));
     }
 
-    public function testGetWorkerRetryNotExist(){
+    public function testGetWorkerRetryNotExist()
+    {
         $this->assertFalse($this->workerProvider->getWorkerRetry('foo'));
     }
 
     /**
-     * @return ManagerRegistry
+     * @return Connection
      */
-    protected function getDoctrine(){
-        return $this->kernel->getContainer()->get('doctrine');
+    protected function getDoctrine()
+    {
+        return $this->kernel->getContainer()->get('doctrine')->getConnection();
     }
 
     /**
      * @param array $data
      */
-    protected function persistTestEntry(array $data){
+    protected function persistTestEntry(array $data)
+    {
         $entry = new WorkingQueue();
         $entry->setPid($data['pid']);
         $entry->setStatus($data['status']);
@@ -205,10 +228,9 @@ SQL;
         $entry->setCreated(new \DateTime($data['created']));
         $entry->setUpdated(new \DateTime($data['updated']));
 
-        $this->testDataObj[] = $entry;
         $this->testDataArr[] = $data;
 
-        $em = $this->getDoctrine()->getManager();
+        $em = $this->kernel->getContainer()->get('doctrine')->getManager();
         $em->persist($entry);
         $em->flush();
     }
@@ -216,42 +238,46 @@ SQL;
     /**
      * @return \PHPUnit_Extensions_Database_DataSet_IDataSet
      */
-    public function getDataSet(){
+    public function getDataSet()
+    {
         $time = new \DateTime();
         $timeFormat = $time->format('Y-m-d h:i:s');
-        return $this->createArrayDataSet(['working_queue_' => [
-            [
-                'id' => '1',
-                'status' => '100',
-                'pid' => '21',
-                'worker' => 'DummyClass',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
-            ],
-            [
-                'id' => '2',
-                'status' => '500',
-                'pid' => '22',
-                'worker' => 'DummyClass',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
-            ],
-            [
-                'id' => '3',
-                'status' => '200',
-                'pid' => '23',
-                'worker' => 'Dummy2Class',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
-            ],
-            [
-                'id' => '4',
-                'status' => '300',
-                'pid' => '24',
-                'worker' => 'Dummy2Class',
-                'created' => $timeFormat,
-                'updated' => $timeFormat
-            ],
-        ]]);
+
+        return $this->createArrayDataSet([
+            'working_queue' => [
+                [
+                    'id' => '1',
+                    'status' => '100',
+                    'pid' => '21',
+                    'worker' => 'DummyClass',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id' => '2',
+                    'status' => '500',
+                    'pid' => '22',
+                    'worker' => 'DummyClass',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id' => '3',
+                    'status' => '200',
+                    'pid' => '23',
+                    'worker' => 'Dummy2Class',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id' => '4',
+                    'status' => '300',
+                    'pid' => '24',
+                    'worker' => 'Dummy2Class',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+            ]
+        ]);
     }
 }

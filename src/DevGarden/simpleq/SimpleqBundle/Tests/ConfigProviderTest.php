@@ -43,12 +43,12 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                         'class' => 'DummyClass',
                         'limit' => 10,
                         'retry' => 10,
-                        'task'  => 'task_one'
+                        'task' => 'task_one'
                     ],
                     'dummy2' => [
                         'class' => 'Dummy2Class',
                         'limit' => 10,
-                        'task'  => 'task_two'
+                        'task' => 'task_two'
                     ]
                 ]
             ]
@@ -99,15 +99,15 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                         'class' => 'DummyClass',
                         'limit' => 10,
                         'retry' => 10,
-                        'task'  => 'task_one'
+                        'task' => 'task_one'
                     ],
                     'dummy2' => [
                         'class' => 'Dummy2Class',
                         'limit' => 10,
-                        'task'  => 'task_two'
+                        'task' => 'task_two'
                     ]
                 ],
-                'task_chain' => ['task_one','task_two']
+                'task_chain' => ['task_one', 'task_two']
             ]
         ];
         $this->assertEquals($expected, $this->config->getQueueList());
@@ -123,11 +123,13 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->config->getWorkerAttributeByServiceId('queue', 'invalid'));
     }
 
-    public function testGetRetryByWorkerServiceValid(){
+    public function testGetRetryByWorkerServiceValid()
+    {
         $this->assertEquals(10, $this->config->getWorkerAttributeByServiceId('retry', 'DummyClass'));
     }
 
-    public function testGetRetryByWorkerServiceNoRetryDefined(){
+    public function testGetRetryByWorkerServiceNoRetryDefined()
+    {
         $this->assertEquals(0, $this->config->getWorkerAttributeByServiceId('retry', 'Dummy2Class'));
     }
 
@@ -168,66 +170,79 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 'class' => 'DummyClass',
                 'limit' => 10,
                 'retry' => 10,
-                'task'  => 'task_one',
+                'task' => 'task_one',
                 'queue' => 'valid3',
-                'name'  => 'dummy'
+                'name' => 'dummy'
             ],
             [
                 'class' => 'Dummy2Class',
                 'limit' => 10,
-                'task'  => 'task_two',
+                'task' => 'task_two',
                 'queue' => 'valid3',
-                'name'  => 'dummy2'
+                'name' => 'dummy2'
             ]
         ];
         $this->assertEquals($expected, $this->config->getWorkerList());
     }
 
-    public function testGetQueueHistoryAttributeByQueueIdTrue(){
+    public function testGetQueueHistoryAttributeByQueueIdTrue()
+    {
         $this->assertTrue($this->config->getQueueAttributeByQueueId('history', 'valid'));
     }
 
-    public function testGetQueueHistoryAttributeByQueueIdFalse(){
+    public function testGetQueueHistoryAttributeByQueueIdFalse()
+    {
         $this->assertEquals(0, $this->config->getQueueAttributeByQueueId('history', 'valid2'));
     }
 
-    public function testGetQueueHistoryAttributeByQueueIdNotExist(){
+    public function testGetQueueHistoryAttributeByQueueIdNotExist()
+    {
         $this->assertEquals(false, $this->config->getQueueAttributeByQueueId('history', 'invalid'));
     }
 
-    public function testGetQueueDeleteOnFailureAttributeByQueueIdTrue(){
+    public function testGetQueueDeleteOnFailureAttributeByQueueIdTrue()
+    {
         $this->assertTrue($this->config->getQueueAttributeByQueueId('delete_on_failure', 'valid'));
     }
 
-    public function testGetQueueDeleteOnFailureAttributeByQueueIdFalse(){
+    public function testGetQueueDeleteOnFailureAttributeByQueueIdFalse()
+    {
         $this->assertEquals(0, $this->config->getQueueAttributeByQueueId('delete_on_failure', 'valid2'));
     }
 
-    public function testGetQueueDeleteOnFailureAttributeByQueueIdNotExist(){
+    public function testGetQueueDeleteOnFailureAttributeByQueueIdNotExist()
+    {
         $this->assertEquals(false, $this->config->getQueueAttributeByQueueId('delete_on_failure', 'invalid'));
     }
 
-    public function testQueueTypeChainAttributeByQueueIdTrue(){
+    public function testQueueTypeChainAttributeByQueueIdTrue()
+    {
         $this->assertEquals('chain', $this->config->getQueueAttributeByQueueId('type', 'valid3'));
     }
 
-    public function testQueueTypeChainAttributeByQueueIdFalse(){
+    public function testQueueTypeChainAttributeByQueueIdFalse()
+    {
         $this->assertEquals('default', $this->config->getQueueAttributeByQueueId('type', 'valid'));
     }
 
-    public function testQueueTypeChainAttributeByQueueIdInvalid(){
+    public function testQueueTypeChainAttributeByQueueIdInvalid()
+    {
         $this->assertEquals(false, $this->config->getQueueAttributeByQueueId('type', 'invalid'));
     }
 
-    public function testGetQueueTaskChainAttributeByQueueIdValidTrue(){
-        $this->assertEquals(['task_one', 'task_two'], $this->config->getQueueAttributeByQueueId('task_chain', 'valid3'));
+    public function testGetQueueTaskChainAttributeByQueueIdValidTrue()
+    {
+        $this->assertEquals(['task_one', 'task_two'],
+            $this->config->getQueueAttributeByQueueId('task_chain', 'valid3'));
     }
 
-    public function testGetQueueTaskChainAttributeByQueueIdValidFalse(){
+    public function testGetQueueTaskChainAttributeByQueueIdValidFalse()
+    {
         $this->assertEquals(0, $this->config->getQueueAttributeByQueueId('task_chain', 'valid'));
     }
 
-    public function testGetQueueTaskChainAttributeByQueueIdInvalid(){
+    public function testGetQueueTaskChainAttributeByQueueIdInvalid()
+    {
         $this->assertEquals(false, $this->config->getQueueAttributeByQueueId('task_chain', 'invalid'));
     }
 }
