@@ -21,7 +21,21 @@ simpleq:
                     task: dummyTask                 // task id for which worker is registered (optional default: null)
                     limit: 10                       // limit of active workers at once, of given type (optional default: 10)
                     retry: 100                      // number of retries on failure (optional default: 0)
+        chain:
+            type: chain
+            history: true                           // entity will be archived after last chain task has been processed
+            worker: 
+                first:                              // first worker with task one limited by 2 parallel processes and 5 retries on failure
+                    class: your.first.service.id
+                    task: one                       // after task one is processed, the base worker interface will trigger an update of job task and data
+                    limit: 2
+                    retry: 5
+                second:                             // second worker with task two limited by 5 parallel processes without any retries on failure
+                    class: your.second.service.id
+                    task: two
+                    limit: 5
 ```
+(For more information, have a look here [WorkerChapter](doc/worker.md))
 
 ***
 

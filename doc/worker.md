@@ -47,15 +47,17 @@ class DummyWorker extends BaseWorker
     }
     public function prepare($data)
     {
-        $this->service->validate($data);
+        return $this->service->validate($data);
     }
     public function execute($data)
     {
-        $this->processData($data);
+        return $this->processData($data);
     }
     public function endJob($data)
     {
-        $this->cleanUp();
+        return $this->cleanUp();
     }
 }
 ```
+
+If workers are processing in chain, result of endJob will be updated to job data field, when task and status are updated too, for next worker in chain.
