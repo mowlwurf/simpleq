@@ -6,7 +6,7 @@ namespace DevGarden\simpleq\SchedulerBundle\Service;
 use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 use DevGarden\simpleq\SchedulerBundle\Extension\JobStatus;
 use DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess;
-use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
+use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerService

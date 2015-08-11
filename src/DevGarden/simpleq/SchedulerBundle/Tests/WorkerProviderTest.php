@@ -1,12 +1,12 @@
 <?php
 
-namespace DevGarden\simpleq\WorkerBundle\Tests;
+namespace DevGarden\simpleq\SchedulerBundle\Tests;
 
 use DevGarden\simpleq\SchedulerBundle\Entity\WorkingQueue;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use DevGarden\simpleq\SimpleqBundle\Tests\DBTestCase;
 use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
-use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
+use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
 use Doctrine\DBAL\Connection;
 
 class WorkerProviderTest extends DBTestCase

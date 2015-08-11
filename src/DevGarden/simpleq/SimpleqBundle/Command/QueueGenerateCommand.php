@@ -55,16 +55,6 @@ class QueueGenerateCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param $name
-     */
-    protected function registerDoctrineEvent($name)
-    {
-        $mappingListener = new MappingListener($name);
-        $evm = $this->getContainer()->get('doctrine')->getManager()->getEventManager();
-        $evm->addEventListener('loadClassMetadata', $mappingListener);
-    }
-
-    /**
      * @return QueueProvider
      */
     protected function getQueueProvider()

@@ -1,8 +1,7 @@
 <?php
 
-namespace DevGarden\simpleq\WorkerBundle\Service;
+namespace DevGarden\simpleq\SchedulerBundle\Service;
 
-use DevGarden\simpleq\SchedulerBundle\Entity\WorkingQueue;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
 use Doctrine\DBAL\Connection;
