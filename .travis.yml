@@ -1,5 +1,5 @@
 language: php
 php:
-- 5.5
-- hhvm
-script: bin/phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/cloer.xml
+    - 5.5
+    - hhvm
+script: bin/phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/clover.xml
