@@ -5,9 +5,9 @@ namespace DevGarden\simpleq\WorkerBundle\Service;
 use DevGarden\simpleq\SchedulerBundle\Entity\WorkingQueue;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
 use DevGarden\simpleq\WorkerBundle\Extension\WorkerStatus;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
+use PDO;
 
 class WorkerProvider
 {
@@ -21,34 +21,18 @@ class WorkerProvider
     protected $config;
 
     /**
-     * @var ManagerRegistry
-     */
-    protected $doctrine;
-
-    /**
-     * @var ObjectRepository
-     */
-    protected $repository;
-
-    /**
-     * @var PDOConnection
+     * @var Connection
      */
     protected $connection;
 
     /**
      * @param ConfigProvider $config
-     * @param ManagerRegistry $doctrine
+     * @param Connection $connection
      */
-    public function __construct(ConfigProvider $config, ManagerRegistry $doctrine)
+    public function __construct(ConfigProvider $config, Connection $connection)
     {
         $this->config = $config;
-        $this->doctrine = $doctrine;
-        $this->repository = $this->doctrine->getRepository(sprintf(
-            '%s:%s',
-            self::SCHEDULER_REPOSITORY,
-            self::SCHEDULER_WORKING_QUEUE
-        ));
-        $this->connection = $this->doctrine->getConnection();
+        $this->connection = $connection;
         $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
@@ -67,16 +51,22 @@ class WorkerProvider
     public function getActiveWorkerCount($name = null)
     {
         if (is_null($name)) {
-            $preparedStatement = $this->connection->prepare(sprintf('SELECT count(id) FROM %s_', self::SCHEDULER_WORKING_QUEUE_TABLE));
+            $preparedStatement = $this->connection->prepare(
+                sprintf(
+                    'SELECT count(id) FROM %s',
+                    self::SCHEDULER_WORKING_QUEUE_TABLE
+                )
+            );
             $preparedStatement->execute();
         } else {
             $statement = <<<'SQL'
-SELECT count(id) FROM %s_ WHERE worker = :worker
+SELECT count(id) FROM %s WHERE worker = :worker
 SQL;
             $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
             $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
             $preparedStatement->execute();
         }
+
         return $preparedStatement->fetchColumn();
     }
 
@@ -86,16 +76,42 @@ SQL;
      */
     public function getActiveWorkers($name = null)
     {
-        return is_null($name) ? $this->repository->findAll() : $this->repository->findBy(['worker' => $name]);
+        if (is_null($name)) {
+            $preparedStatement = $this->connection->prepare(
+                sprintf(
+                    'SELECT * FROM %s',
+                    self::SCHEDULER_WORKING_QUEUE_TABLE
+                )
+            );
+            $preparedStatement->execute();
+        } else {
+            $statement = <<<'SQL'
+SELECT * FROM %s WHERE worker = :worker
+SQL;
+            $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
+            $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
+            $preparedStatement->execute();
+        }
+
+        return $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * @param int $pid
-     * @return WorkingQueue|bool
+     * @return array
      */
     public function getWorkingQueueEntryByPid($pid)
     {
-        return $this->repository->findOneBy(['pid' => $pid]);
+        $preparedStatement = $this->connection->prepare(
+            sprintf(
+                'SELECT * FROM %s WHERE pid = :pid',
+                self::SCHEDULER_WORKING_QUEUE_TABLE
+            )
+        );
+        $preparedStatement->bindValue('pid', $pid, PDOConnection::PARAM_STR);
+        $preparedStatement->execute();
+
+        return $preparedStatement->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -104,10 +120,10 @@ SQL;
     public function clearQueue($name = null)
     {
         if (is_null($name)) {
-            $this->connection->exec(sprintf('TRUNCATE %s_', self::SCHEDULER_WORKING_QUEUE_TABLE));
+            $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
         } else {
             $statement = <<<'SQL'
-DELETE FROM %s_ WHERE worker = :worker
+DELETE FROM %s WHERE worker = :worker
 SQL;
             $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
             $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
@@ -121,10 +137,10 @@ SQL;
      */
     public function pushWorkerToWorkingQueue($workerService)
     {
-        $tempPid   = md5(microtime() . $workerService);
-        $time      = new \DateTime();
+        $tempPid = md5(microtime() . $workerService);
+        $time = new \DateTime();
         $statement = <<<'SQL'
-INSERT INTO %s_ (`pid`,`status`,`worker`,`created`,`updated`)
+INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`)
 VALUES (:pid,:status,:worker,:created,:updated)
 SQL;
 
@@ -146,10 +162,10 @@ SQL;
     public function updateWorkerPid($tempPid, $pid)
     {
         $statement = <<<'SQL'
-UPDATE %s_ SET pid = :npid WHERE pid = :pid
+UPDATE %s SET pid = :npid WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
-        $preparedStatement->bindValue('npid', $pid, PDOConnection::PARAM_INT);
+        $preparedStatement->bindValue('npid', $pid, PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('pid', $tempPid, PDOConnection::PARAM_STR);
         $preparedStatement->execute();
     }
@@ -160,7 +176,7 @@ SQL;
     public function removeWorkingQueueEntry($pid)
     {
         $statement = <<<'SQL'
-DELETE FROM %s_ WHERE pid = :pid
+DELETE FROM %s WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
         $preparedStatement->bindValue('pid', $pid, PDOConnection::PARAM_INT);
@@ -174,7 +190,7 @@ SQL;
     public function pushWorkerStatus($pid, $status)
     {
         $statement = <<<'SQL'
-UPDATE %s_ SET status = :status WHERE pid = :pid
+UPDATE %s SET status = :status WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
         $preparedStatement->bindValue('status', $status, PDOConnection::PARAM_INT);

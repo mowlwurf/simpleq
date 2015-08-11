@@ -39,28 +39,4 @@ class SchedulerHistoryClearCommand extends ContainerAwareCommand
     {
         return $this->getContainer()->get('simpleq.scheduler.history.provider');
     }
-
-    /**
-     * @param array $activeWorkers
-     * @return array
-     */
-    protected function mapWorkerQueueObjectsToArray($activeWorkers)
-    {
-        $workers = array();
-        foreach ($activeWorkers as $activeWorker) {
-            $worker['id'] = $activeWorker->getId();
-            $worker['status'] = $activeWorker->getStatus();
-            $worker['pid'] = $activeWorker->getPid();
-            $worker['worker'] = $activeWorker->getWorker();
-            $createDate = $activeWorker->getCreated();
-            $updateDate = $activeWorker->getUpdated();
-            $archivedDate = $activeWorker->getArchived();
-            $worker['created'] = $createDate->format('Y-m-d H:i:s');
-            $worker['updated'] = $updateDate->format('Y-m-d H:i:s');
-            $worker['archived'] = $archivedDate->format('Y-m-d H:i:s');
-            $workers[] = $worker;
-        }
-
-        return $workers;
-    }
 }

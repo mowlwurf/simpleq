@@ -31,7 +31,7 @@ class SchedulerStatusCommand extends ContainerAwareCommand
         $output->writeln('Setting headers ...');
         $table->setHeaders(array('ID', 'Status', 'PID', 'Worker', 'Created', 'Updated'));
         $output->writeln('Setting rows ...');
-        $table->setRows($this->mapWorkerQueueObjectsToArray($activeWorkers));
+        $table->setRows($activeWorkers);
         $output->writeln('Print output ...');
         $table->render($output);
     }
@@ -42,27 +42,5 @@ class SchedulerStatusCommand extends ContainerAwareCommand
     protected function getWorkerProvider()
     {
         return $this->getContainer()->get('simpleq.worker.provider');
-    }
-
-    /**
-     * @param array $activeWorkers
-     * @return array
-     */
-    protected function mapWorkerQueueObjectsToArray($activeWorkers)
-    {
-        $workers = array();
-        foreach ($activeWorkers as $activeWorker) {
-            $worker['id'] = $activeWorker->getId();
-            $worker['status'] = $activeWorker->getStatus();
-            $worker['pid'] = $activeWorker->getPid();
-            $worker['worker'] = $activeWorker->getWorker();
-            $createDate = $activeWorker->getCreated();
-            $updateDate = $activeWorker->getUpdated();
-            $worker['created'] = $createDate->format('Y-m-d H:i:s');
-            $worker['updated'] = $updateDate->format('Y-m-d H:i:s');
-            $workers[] = $worker;
-        }
-
-        return $workers;
     }
 }

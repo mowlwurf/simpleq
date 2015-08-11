@@ -4,8 +4,7 @@ namespace DevGarden\simpleq\QueueBundle\Service;
 
 use DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess;
 use DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
 use PDO;
 
@@ -24,34 +23,23 @@ class QueueProvider
     protected $entityProcess;
 
     /**
-     * @var ManagerRegistry
-     */
-    protected $doctrine;
-
-    /**
-     * @var PDOConnection
+     * @var Connection
      */
     protected $connection;
 
     /**
-     * @var array
-     */
-    protected $repositoryCache;
-
-    /**
      * @param ConfigProvider $config
      * @param CreateDoctrineEntityProcess $entityProcess
-     * @param ManagerRegistry $doctrine
+     * @param Connection $connection
      */
     public function __construct(
         ConfigProvider $config,
         CreateDoctrineEntityProcess $entityProcess,
-        ManagerRegistry $doctrine
+        Connection $connection
     ) {
         $this->configProvider = $config;
         $this->entityProcess = $entityProcess;
-        $this->doctrine = $doctrine;
-        $this->connection = $this->doctrine->getConnection();
+        $this->connection = $connection;
         $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
@@ -127,7 +115,10 @@ class %s
 
 txt;
         $indexes = ', indexes={@ORM\Index(name="newEntryRequest", columns={"status"}), @ORM\Index(name="getEntryByTask", columns={"task"})}';
-        file_put_contents(__DIR__ . '/../Entity/' . ucfirst($name) . '.php', sprintf($txt, $name, $indexes, ucfirst($name), ''));
+        file_put_contents(
+            __DIR__ . '/../Entity/' . ucfirst($name) . '.php',
+            sprintf($txt, $name, $indexes, ucfirst($name), '')
+        );
         if ($this->hasQueueHistory($name)) {
             $archivedExt = <<<'txt'
 /**
@@ -138,7 +129,10 @@ txt;
  */
 protected $archived;
 txt;
-            file_put_contents(__DIR__ . '/../Entity/' . ucfirst($name) . 'History.php', sprintf($txt, $name.'_history', '', ucfirst($name).'History', $archivedExt));
+            file_put_contents(
+                __DIR__ . '/../Entity/' . ucfirst($name) . 'History.php',
+                sprintf($txt, $name . '_history', '', ucfirst($name) . 'History', $archivedExt)
+            );
         }
         $this->entityProcess->execute('DevGarden/simpleq/QueueBundle/Entity');
     }
@@ -147,7 +141,8 @@ txt;
      * @param string $queue
      * @return bool
      */
-    public function hasQueueHistory($queue){
+    public function hasQueueHistory($queue)
+    {
         return $this->configProvider->getQueueAttributeByQueueId('history', $queue);
     }
 
@@ -155,7 +150,8 @@ txt;
      * @param string $queue
      * @return bool
      */
-    public function hasTaskChain($queue){
+    public function hasTaskChain($queue)
+    {
         return $this->configProvider->getQueueAttributeByQueueId('type', $queue) == 'chain';
     }
 
@@ -163,7 +159,8 @@ txt;
      * @param string $queue
      * @return array
      */
-    public function getTaskChain($queue){
+    public function getTaskChain($queue)
+    {
         return $this->configProvider->getQueueAttributeByQueueId('task_chain', $queue);
     }
 
@@ -171,19 +168,31 @@ txt;
      * @param string $queue
      * @return bool
      */
-    public function deleteOnFailure($queue){
+    public function deleteOnFailure($queue)
+    {
         return $this->configProvider->getQueueAttributeByQueueId('delete_on_failure', $queue);
     }
 
     /**
      * @param string $queue
-     * @param int $id
+     * @param string $property
+     * @param mixed $val
      * @return bool|object
      */
-    public function getQueueEntryById($queue, $id)
+    public function getQueueEntryByProperty($queue, $property, $val)
     {
-        $repository = $this->loadRepository($queue);
-        return $repository->findOneBy(['id' => $id]);
+        $preparedStatement = $this->connection->prepare(
+            sprintf(
+                'SELECT * FROM %s WHERE %s = :%s',
+                $queue,
+                $property,
+                $property
+            )
+        );
+        $preparedStatement->bindValue($property, $val, PDOConnection::PARAM_STR);
+        $preparedStatement->execute();
+
+        return $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -193,15 +202,22 @@ txt;
      */
     public function getQueueEntries($queue, $task = null)
     {
-        $repository = $this->loadRepository($queue);
         if (is_null($task)) {
-            return $repository->findAll();
+            $preparedStatement = $this->connection->prepare(
+                sprintf(
+                    'SELECT * FROM %s',
+                    $queue
+                )
+            );
+            $preparedStatement->execute();
+
+            return $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
         }
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($queue, $task);
         }
 
-        return $repository->findBy(['task' => $task]);
+        return $this->getQueueEntryByProperty($queue, 'task', $task);
     }
 
     /**
@@ -213,21 +229,23 @@ txt;
     {
         if (is_null($task)) {
             $statement = <<<'SQL'
-SELECT id, task, data FROM %s_ WHERE status = 'open' LIMIT 1
+SELECT id, task, data FROM %s WHERE status = 'open' LIMIT 1
 SQL;
-            $preparedStatement = $this->connection->prepare(sprintf($statement,$queue));
+            $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
             $preparedStatement->execute();
+
             return $preparedStatement->fetch(PDO::FETCH_ASSOC);
         }
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($queue, $task, 1);
         }
         $statement = <<<'SQL'
-SELECT id, task, data FROM %s_ WHERE status = 'open' AND task = :task LIMIT 1
+SELECT id, task, data FROM %s WHERE status = 'open' AND task = :task LIMIT 1
 SQL;
-        $preparedStatement = $this->connection->prepare(sprintf($statement,$queue));
+        $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
         $preparedStatement->bindValue('task', $task, PDOConnection::PARAM_STR);
         $preparedStatement->execute();
+
         return $preparedStatement->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -250,14 +268,15 @@ SQL;
         }
         $preparedStatement = $this->connection->prepare(
             sprintf(
-                'SELECT * FROM %s_ WHERE %s %s',
+                'SELECT * FROM %s WHERE %s %s',
                 $queue,
                 $taskPattern,
-                $limit != 0 ? 'LIMIT '.$limit : ''
+                $limit != 0 ? 'LIMIT ' . $limit : ''
             )
         );
         $preparedStatement->execute();
-        return $limit == 1 ? $preparedStatement->fetch(PDO::FETCH_ASSOC): $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $limit == 1 ? $preparedStatement->fetch(PDO::FETCH_ASSOC) : $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -283,9 +302,9 @@ SQL;
     public function removeQueueEntry($queue, $id)
     {
         $statement = <<<'SQL'
-DELETE FROM %s_ WHERE id = :id
+DELETE FROM %s WHERE id = :id
 SQL;
-        $preparedStatement = $this->connection->prepare(sprintf($statement,$queue));
+        $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
         $preparedStatement->bindValue('id', $id, PDOConnection::PARAM_INT);
         $preparedStatement->execute();
     }
@@ -299,7 +318,7 @@ SQL;
     {
         $updates = null;
         $statement = <<<'SQL'
-UPDATE %s_ SET %s WHERE id = :id
+UPDATE %s SET %s WHERE id = :id
 SQL;
 
         foreach ($args as $arg => $val) {
@@ -312,24 +331,6 @@ SQL;
         ));
         $preparedStatement->bindValue('id', $id, PDOConnection::PARAM_INT);
         $preparedStatement->execute();
-    }
-
-    /**
-     * @param string $queue
-     * @param bool $prototype
-     * @return ObjectRepository
-     */
-    protected function loadRepository($queue, $prototype = false)
-    {
-        if (!isset($this->repositoryCache[$queue]) || $prototype) {
-            $this->repositoryCache[$queue] = $this->doctrine->getRepository(sprintf(
-                '%s:%s',
-                self::QUEUE_REPOSITORY,
-                ucfirst($queue)
-            ));
-        }
-
-        return $this->repositoryCache[$queue];
     }
 
     /**

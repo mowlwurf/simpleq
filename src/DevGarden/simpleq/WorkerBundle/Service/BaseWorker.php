@@ -87,7 +87,8 @@ class BaseWorker extends WorkerInterface
                     $this->jobProvider->removeJob($queue, $jobId);
                 }
             } catch (\Exception $e) {
-                // maybe do sth. here
+                // only print warning for debugging issues, but dont fail processing cause of failed job update
+                print 'WARNING: job could not be updated ' . $e->getMessage();
             }
             throw new \Exception('Worker failed ' . $e->getMessage());
         }
@@ -95,10 +96,15 @@ class BaseWorker extends WorkerInterface
             $taskChain = $this->jobProvider->getTaskChain($queue);
             $member = array_search($this->workerProvider->getWorkerTask($worker), $taskChain);
         }
-        if ($this->jobProvider->hasTaskChain($queue) && isset($taskChain[$member+1])) {
-            $this->jobProvider->updateJobAttribute($queue, $jobId, 'status', JobStatus::JOB_STATUS_OPEN);
-            $this->jobProvider->updateJobAttribute($queue, $jobId, 'task', $taskChain[$member+1]);
-            $this->jobProvider->updateJobAttribute($queue, $jobId, 'data', $data);
+        if ($this->jobProvider->hasTaskChain($queue) && isset($taskChain[$member + 1])) {
+            try {
+                $this->jobProvider->updateJobAttribute($queue, $jobId, 'status', JobStatus::JOB_STATUS_OPEN);
+                $this->jobProvider->updateJobAttribute($queue, $jobId, 'task', $taskChain[$member + 1]);
+                $this->jobProvider->updateJobAttribute($queue, $jobId, 'data', $data);
+            } catch (\Exception $e) {
+                // only print warning for debugging issues, but dont fail processing cause of failed job update
+                print 'WARNING: job could not be updated ' . $e->getMessage();
+            }
         } else {
             try {
                 $this->jobProvider->updateJobAttribute(
@@ -112,9 +118,11 @@ class BaseWorker extends WorkerInterface
                 }
                 $this->jobProvider->removeJob($queue, $jobId);
             } catch (\Exception $e) {
-                // maybe do sth. here
+                // only print warning for debugging issues, but dont fail processing cause of failed job update
+                print 'WARNING: job could not be updated ' . $e->getMessage();
             }
         }
+
         return $this->getWorkerStatus();
     }
 

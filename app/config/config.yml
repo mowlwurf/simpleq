@@ -52,15 +52,16 @@ assetic:
 # Doctrine Configuration
 doctrine:
     dbal:
-        driver:   pdo_mysql
-        host:     "%database_host%"
-        port:     "%database_port%"
-        dbname:   "%simpleq_database_name%"
-        user:     "%database_user%"
-        password: "%database_password%"
-        charset:  UTF8
-        logging:  false
+        driver:    pdo_mysql
+        host:      "%database_host%"
+        port:      "%database_port%"
+        dbname:    "%simpleq_database_name%"
+        user:      "%database_user%"
+        password:  "%database_password%"
+        charset:   UTF8
+        logging:   false
         profiling: false
+        memory:    true
         # if using pdo_sqlite as your database driver:
         #   1. add the path in parameters.yml
         #     e.g. database_path: "%kernel.root_dir%/data/data.db3"
@@ -109,7 +110,8 @@ simpleq:
         #            retry: 100
         chain:
             type: chain
-            delete_on_failure: false
+            history: true
+            delete_on_failure: true
             worker:
                 dummy_one:
                     class: simpleq.worker.dummy.download

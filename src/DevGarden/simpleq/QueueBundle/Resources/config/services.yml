@@ -7,15 +7,11 @@ services:
         arguments:
             - @simpleq.config.provider
             - @simpleq.queue.create.process
-            - @doctrine
-    simpleq.mapping.listener:
-        class: DevGarden\simpleq\QueueBundle\EventListener\MappingListener
-        tags:
-            - { name: doctrine.event_listener, event: loadClassMetadata }
+            - @doctrine.dbal.default_connection
     simpleq.queue.create.process:
         class: DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess
     simpleq.queue.history.provider:
         class: DevGarden\simpleq\QueueBundle\Service\JobQueueHistoryProvider
         arguments:
-            - @doctrine
+            - @doctrine.dbal.default_connection
             - @simpleq.queue.provider

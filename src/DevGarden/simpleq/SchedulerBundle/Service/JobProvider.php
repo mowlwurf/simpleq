@@ -52,7 +52,8 @@ class JobProvider
      */
     public function archiveJob($queue, $jobId)
     {
-        $this->history->archiveQueueEntry($queue, $jobId);
+        $job = $this->provider->getQueueEntryByProperty($queue, 'id', $jobId);
+        $this->history->archiveQueueEntry($job[0], $queue);
     }
 
     /**

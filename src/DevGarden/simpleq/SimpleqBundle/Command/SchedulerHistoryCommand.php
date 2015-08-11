@@ -33,7 +33,7 @@ class SchedulerHistoryCommand extends ContainerAwareCommand
         $output->writeln('Setting headers ...');
         $table->setHeaders(array('ID', 'Status', 'PID', 'Worker', 'Created', 'Updated', 'Archived'));
         $output->writeln('Setting rows ...');
-        $table->setRows($this->mapWorkerQueueObjectsToArray($activeWorkers));
+        $table->setRows($activeWorkers);
         $output->writeln('Print output ...');
         $table->render($output);
     }
@@ -44,29 +44,5 @@ class SchedulerHistoryCommand extends ContainerAwareCommand
     protected function getSchedulerHistoryProvider()
     {
         return $this->getContainer()->get('simpleq.scheduler.history.provider');
-    }
-
-    /**
-     * @param array $activeWorkers
-     * @return array
-     */
-    protected function mapWorkerQueueObjectsToArray($activeWorkers)
-    {
-        $workers = array();
-        foreach ($activeWorkers as $activeWorker) {
-            $worker['id'] = $activeWorker->getId();
-            $worker['status'] = $activeWorker->getStatus();
-            $worker['pid'] = $activeWorker->getPid();
-            $worker['worker'] = $activeWorker->getWorker();
-            $createDate = $activeWorker->getCreated();
-            $updateDate = $activeWorker->getUpdated();
-            $archivedDate = $activeWorker->getArchived();
-            $worker['created'] = $createDate->format('Y-m-d H:i:s');
-            $worker['updated'] = $updateDate->format('Y-m-d H:i:s');
-            $worker['archived'] = $archivedDate->format('Y-m-d H:i:s');
-            $workers[] = $worker;
-        }
-
-        return $workers;
     }
 }

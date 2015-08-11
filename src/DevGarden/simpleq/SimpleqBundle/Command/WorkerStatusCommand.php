@@ -25,10 +25,11 @@ class WorkerStatusCommand extends ContainerAwareCommand
         $workers = $provider->getRegisteredWorkers();
         if (count($workers) > 0) {
             foreach ($workers as $id => $worker) {
-                $output->writeln('Registered worker ' . $id);
-                $output->writeln('Service: ' . $worker['class']);
-                $output->writeln('Limit: ' . $worker['limit']);
-                $output->writeln('Running: ' . count($provider->getActiveWorkers($worker['class'])));
+                $output->writeln('[');
+                $output->writeln('    Service: ' . $worker['class']);
+                $output->writeln('    Limit: ' . $worker['limit']);
+                $output->writeln('    Running: ' . $provider->getActiveWorkerCount($worker['class']));
+                $output->writeln('],');
             }
         } else {
             $output->writeln('No workers registered.');

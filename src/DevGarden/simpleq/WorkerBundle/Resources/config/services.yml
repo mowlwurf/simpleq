@@ -6,7 +6,7 @@ services:
         class: DevGarden\simpleq\WorkerBundle\Service\WorkerProvider
         arguments:
             - @simpleq.config.provider
-            - @doctrine
+            - @doctrine.dbal.default_connection
     simpleq.worker.run.process:
         class: DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess
     simpleq.base.worker.interface:

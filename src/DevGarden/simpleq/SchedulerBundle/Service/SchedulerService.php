@@ -161,6 +161,7 @@ class SchedulerService
     protected function isWorkerLimitReached(array $worker)
     {
         $limit = isset($worker['limit']) && $worker['limit'] > 0 ? $worker['limit'] : 10;
+
         return $this->workers->getActiveWorkerCount($worker['class']) >= $limit;
     }
 

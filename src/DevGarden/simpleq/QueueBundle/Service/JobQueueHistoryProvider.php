@@ -2,49 +2,48 @@
 
 namespace DevGarden\simpleq\QueueBundle\Service;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\PDOConnection;
+use PDO;
 
 class JobQueueHistoryProvider
 {
-    const QUEUE_REPOSITORY = 'QueueBundle';
+    /**
+     * @var Connection
+     */
+    protected $connection;
 
     /**
-     * @var ManagerRegistry
+     * @param Connection $connection
      */
-    protected $doctrine;
-
-    /**
-     * @var QueueProvider
-     */
-    private $queueProvider;
-
-    /**
-     * @param ManagerRegistry $doctrine
-     * @param QueueProvider $queueProvider
-     */
-    public function __construct(ManagerRegistry $doctrine, QueueProvider $queueProvider)
+    public function __construct(Connection $connection)
     {
-        $this->doctrine = $doctrine;
-        $this->queueProvider = $queueProvider;
+        $this->connection = $connection;
+        $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
     /**
-     * @param string $queue
-     * @param int $id
+     * @param array $entity
+     * @param int $queue
      */
-    public function archiveQueueEntry($queue, $id)
+    public function archiveQueueEntry(array $entity, $queue)
     {
-        $class  = 'DevGarden\simpleq\QueueBundle\Entity\\'.ucfirst($queue).'History';
-        $entity = $this->queueProvider->getQueueEntryById(ucfirst($queue), $id);
-        $logEntity = new $class();
-        $logEntity->setStatus($entity->getStatus());
-        $logEntity->setTask($entity->getTask());
-        $logEntity->setData($entity->getData());
-        $logEntity->setCreated($entity->getCreated());
-        $logEntity->setUpdated($entity->getUpdated());
-        $logEntity->setArchived(new \DateTime());
-        $this->doctrine->getManager()->persist($logEntity);
-        $this->doctrine->getManager()->flush();
+        $created = new \DateTime($entity['created']);
+        $updated = new \DateTime($entity['updated']);
+        $time = new \DateTime();
+        $statement = <<<'SQL'
+INSERT INTO %s_history (`status`,`task`,`data`,`created`,`updated`,`archived`)
+VALUES (:status,:task,:jdata,:created,:updated,:archived)
+SQL;
+
+        $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
+        $preparedStatement->bindValue('status', $entity['status'], PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('task', $entity['task'], PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('jdata', $entity['data'], PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('created', $created->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('updated', $updated->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('archived', $time->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->execute();
     }
 
     /**
@@ -53,10 +52,13 @@ class JobQueueHistoryProvider
      */
     public function getQueueHistory($queue)
     {
-        $entity = $queue.'History';
-        $repository = $this->doctrine->getRepository(sprintf('%s:%s', self::QUEUE_REPOSITORY, ucfirst($entity)));
+        $statement = <<<'SQL'
+SELECT * FROM %s_history
+SQL;
+        $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
+        $preparedStatement->execute();
 
-        return $repository->findAll();
+        return $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -64,6 +66,6 @@ class JobQueueHistoryProvider
      */
     public function clearQueueHistory($queue)
     {
-        $this->doctrine->getConnection()->exec('TRUNCATE %s', $queue.'_history_');
+        $this->connection->exec(sprintf('TRUNCATE %s', $queue . '_history'));
     }
 }

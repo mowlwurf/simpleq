@@ -32,7 +32,7 @@ class QueueCheckCommand extends ContainerAwareCommand
                     $output->writeln('Setting headers ...');
                     $table->setHeaders(array('ID', 'Status', 'Task', 'Data', 'Created', 'Updated'));
                     $output->writeln('Setting rows ...');
-                    $table->setRows($this->mapQueueObjectsToArray($entries));
+                    $table->setRows($entries);
                     $output->writeln('Print output ...');
                     $table->render($output);
                 }
@@ -41,29 +41,6 @@ class QueueCheckCommand extends ContainerAwareCommand
         } catch (\Exception $e) {
             $output->writeln('Could not read database: ' . $e->getMessage());
         }
-    }
-
-    /**
-     * @param $entities
-     * @return array
-     */
-    public function MapQueueObjectsToArray($entities)
-    {
-        $arr = [];
-        foreach ($entities as $entity) {
-            $created = $entity->getCreated();
-            $updated = $entity->getUpdated();
-            $arr[] = [
-                'id' => $entity->getId(),
-                'status' => $entity->getStatus(),
-                'task' => $entity->getTask(),
-                'data' => $entity->getData(),
-                'created' => $created->format('Y-m-d h:i:s'),
-                'updated' => $updated->format('Y-m-d h:i:s')
-            ];
-        }
-
-        return $arr;
     }
 
     /**

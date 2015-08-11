@@ -2,47 +2,51 @@
 
 namespace DevGarden\simpleq\SchedulerBundle\Service;
 
-use DevGarden\simpleq\SchedulerBundle\Entity\WorkingQueueHistory;
-use DevGarden\simpleq\WorkerBundle\Service\WorkerProvider;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Driver\PDOConnection;
+use PDO;
 
 class WorkingQueueHistoryProvider
 {
-    /**
-     * @var ManagerRegistry
-     */
-    protected $doctrine;
+    const SCHEDULER_WORKING_QUEUE_HISTORY_TABLE = 'working_queue_history';
 
     /**
-     * @var WorkerProvider
+     * @var Connection
      */
-    private $workerProvider;
+    protected $connection;
 
     /**
-     * @param ManagerRegistry $doctrine
-     * @param WorkerProvider $workerProvider
+     * @param Connection $connection
      */
-    public function __construct(ManagerRegistry $doctrine, WorkerProvider $workerProvider)
+    public function __construct(Connection $connection)
     {
-        $this->doctrine = $doctrine;
-        $this->workerProvider = $workerProvider;
+        $this->connection = $connection;
+        $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
     /**
-     * @param int $pid
+     * @param array $entity
      */
-    public function archiveWorkingQueueEntry($pid)
+    public function archiveWorkingQueueEntry(array $entity)
     {
-        $entity = $this->workerProvider->getWorkingQueueEntryByPid($pid);
-        $logEntity = new WorkingQueueHistory();
-        $logEntity->setPid($entity->getPid());
-        $logEntity->setStatus($entity->getStatus());
-        $logEntity->setWorker($entity->getWorker());
-        $logEntity->setCreated($entity->getCreated());
-        $logEntity->setUpdated($entity->getUpdated());
-        $logEntity->setArchived(new \DateTime());
-        $this->doctrine->getManager()->persist($logEntity);
-        $this->doctrine->getManager()->flush();
+        $created = new \DateTime($entity['created']);
+        $updated = new \DateTime($entity['updated']);
+        $archived = new \DateTime();
+        $statement = <<<'SQL'
+INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`,`archived`)
+VALUES (:pid,:status,:worker,:created,:updated,:archived)
+SQL;
+        $preparedStatement = $this->connection->prepare(sprintf(
+            $statement,
+            self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE
+        ));
+        $preparedStatement->bindValue('pid', $entity['pid'], PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('status', $entity['status'], PDOConnection::PARAM_INT);
+        $preparedStatement->bindValue('worker', $entity['worker'], PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('created', $created->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('updated', $updated->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('archived', $archived->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->execute();
     }
 
     /**
@@ -51,22 +55,39 @@ class WorkingQueueHistoryProvider
      */
     public function getWorkerHistory($name = null)
     {
-        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueueHistory');
+        $statement = <<<'SQL'
+SELECT * FROM %s %s
+SQL;
+        $preparedStatement = $this->connection->prepare(sprintf(
+            $statement,
+            self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE,
+            is_null($name) ? '' : 'WHERE worker = :worker'
+        ));
+        if (is_null($name)) {
+            $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
+        }
+        $preparedStatement->execute();
 
-        return is_null($name) ? $repository->findAll() : $repository->findBy(['worker' => $name]);
+        return $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * param name could be set to clear only one defined worker type from history
      *
      * @param string $name
+     * @return bool|int
      */
     public function clearWorkerHistory($name = null)
     {
-        $repository = $this->doctrine->getRepository('SchedulerBundle:WorkingQueueHistory');
-        $entries = !is_null($name) ? $repository->findBy(['worker' => $name]) : $repository->findAll();
-        foreach ($entries as $entry) {
-            $this->doctrine->getManager()->remove($entry);
+        if (is_null($name)) {
+            return $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE));
         }
+        $preparedStatement = $this->connection->prepare(sprintf(
+            'DELETE FROM %s WHERE worker = :worker',
+            self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE
+        ));
+        $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
+
+        return $preparedStatement->execute();
     }
 }

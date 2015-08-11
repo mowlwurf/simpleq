@@ -37,7 +37,7 @@ class WorkerRunCommand extends ContainerAwareCommand
         $pid = ($input->getArgument('pid')) ? $input->getArgument('pid') : $ownPid;
         $workerProvider->updateWorkerPid($pid, $ownPid);
         $workerClass = $this->getContainer()->get($input->getArgument('service'));
-        do{
+        do {
             try {
                 $workerClass->run(
                     $input->getArgument('jobId'),
@@ -51,7 +51,7 @@ class WorkerRunCommand extends ContainerAwareCommand
                 $output->writeln($e->getMessage());
             }
         } while ($retry > 0);
-        $this->getHistoryProvider()->archiveWorkingQueueEntry($ownPid);
+        $this->getHistoryProvider()->archiveWorkingQueueEntry($workerProvider->getWorkingQueueEntryByPid($ownPid));
         $workerProvider->removeWorkingQueueEntry($ownPid);
     }
 

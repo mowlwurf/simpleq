@@ -83,10 +83,12 @@ class ConfigProvider
      * @param string $id
      * @return bool|mixed|string
      */
-    public function getQueueAttributeByQueueId($attr, $id){
+    public function getQueueAttributeByQueueId($attr, $id)
+    {
         foreach ($this->queues as $key => $queue) {
             if ($key == $id) {
                 $return = $attr == 'delete_on_failure' ? true : 0;
+
                 return isset($queue[$attr]) ? $queue[$attr] : $return;
             }
         }
