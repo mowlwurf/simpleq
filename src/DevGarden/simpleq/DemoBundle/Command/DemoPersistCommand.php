@@ -3,7 +3,6 @@
 namespace DevGarden\simpleq\DemoBundle\Command;
 
 use DevGarden\simpleq\QueueBundle\Entity\Chain;
-use DevGarden\simpleq\QueueBundle\Entity\Dummy;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -47,9 +46,6 @@ class DemoPersistCommand extends ContainerAwareCommand
     }
 
     /**
-     * url to call http://creepycandids.tumblr.com/
-     * use regexp blog-title-wrapper content.*src="(.*)"\sa to get image url
-     * http://creepycandids.tumblr.com/page/n (10 images per page)
      * prepare downloadJobContainer array
      * @param int $n amount jobs ordered
      * @return array
@@ -58,10 +54,9 @@ class DemoPersistCommand extends ContainerAwareCommand
     {
         $jobData = [];
         if ($n == 1) {
-            $url = 'http://creepycandids.tumblr.com/';
-            //$url = 'http://creepycandids.tumblr.com/page/3';
+            $url = 'http://your-gallery-url.com/';
         } else {
-            $url = sprintf('http://creepycandids.tumblr.com/page/%d', $n);
+            $url = sprintf('http://your-gallery-url.com/page/%d', $n);
         }
         $sh = file_get_contents($url);
         if (preg_match_all('/.*src="(.*)"\sdata-width-lq/i', $sh, $result)) {
