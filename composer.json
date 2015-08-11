@@ -18,6 +18,27 @@
             "role": "Master"
         }
     ],
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "sebastianbergmann/phpcov",
+                "version": "1.1.0",
+                "dist": {
+                    "url": "https://github.com/sebastianbergmann/phpcov/archive/1.1.0.zip",
+                    "type": "zip"
+                },
+                "source": {
+                    "url": "https://github.com/sebastianbergmann/phpcov.git",
+                    "type": "git",
+                    "reference": "1.1.0"
+                },
+                "bin": [
+                    "phpcov.php"
+                ]
+            }
+        }
+    ],
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
@@ -36,7 +57,9 @@
         "phpunit/phpunit": "4.7.7",
         "phpunit/dbunit": "<=1.4",
         "etsy/phpunit-extensions": "0.7.0",
-        "sensio/generator-bundle": "~2.3"
+        "sensio/generator-bundle": "~2.3",
+        "satooshi/php-coveralls": "dev-master",
+        "sebastianbergmann/phpcov": "1.1.0"
     },
     "scripts": {
         "post-root-package-install": [
