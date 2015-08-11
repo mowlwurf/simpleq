@@ -1,5 +1,8 @@
 simpleq
 =======
+
+[![Coverage Status](https://coveralls.io/repos/mowlwurf/simpleq/badge.svg?branch=master&service=bitbucket)](https://coveralls.io/bitbucket/mowlwurf/simpleq?branch=master)
+
 ***
 
 A Symfony bundle to create & handle queues for any needs. Configuration via config.yml.
