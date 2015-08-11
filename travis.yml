@@ -1,3 +1,5 @@
 language: php
-# uncomment this line if your project needs to run something other than `rake`:
-# script: bundle exec rspec spec
+php:
+- 5.5
+- hhvm
+script: bin/phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/cloer.xml
