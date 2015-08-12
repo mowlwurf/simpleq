@@ -58,7 +58,7 @@
         "phpunit/dbunit": "<=1.4",
         "etsy/phpunit-extensions": "0.7.0",
         "sensio/generator-bundle": "~2.3",
-        "satooshi/php-coveralls": "dev-master",
+        "satooshi/php-coveralls": "~0.6@stable",
         "sebastianbergmann/phpcov": "1.1.0"
     },
     "scripts": {
