@@ -4,7 +4,6 @@ namespace DevGarden\simpleq\WorkerBundle\Service;
 
 use DevGarden\simpleq\QueueBundle\Service\JobProvider;
 use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
-use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
 
 abstract class WorkerInterface
 {
@@ -33,10 +32,6 @@ abstract class WorkerInterface
      */
     protected $jobProvider;
 
-    /**
-     * @var WorkingQueueHistoryProvider
-     */
-    protected $historyProvider;
 
     /**
      * @param string $data
@@ -58,13 +53,5 @@ abstract class WorkerInterface
     final public function setJobProvider($jobProvider)
     {
         $this->jobProvider = $jobProvider;
-    }
-
-    /**
-     * @param WorkingQueueHistoryProvider $historyProvider
-     */
-    final public function setHistoryProvider($historyProvider)
-    {
-        $this->historyProvider = $historyProvider;
     }
 }
