@@ -1,4 +1,4 @@
-simpleq
+SimpleQ
 =======
 
 [![Build Status](https://travis-ci.org/mowlwurf/simpleq.png?branch=master)](https://travis-ci.org/mowlwurf/simpleq)
@@ -60,6 +60,6 @@ Your project should be able to run with the following dependencies:
 | queue option delete_on_failure to enable custom handling for failed jobs | (v0.6-alpha) | :ballot_box_with_check: | |
 | enable chainbehaviour | (v0.7-beta) | :link: | doc extension follows |
 | performance optimization workerinterface/baseworker | (v0.8-beta) | :trophy: | worker interface performance optimized by factor 6-7 |
-| final tests & bugfixes, extend doc | (v0.9-beta) | :construction: | |
-| full featured stable release | (v1.0) | :grey_question: | |
+| project badges, code coverage, extended doc | (v0.9-beta) | :ballot_box_with_check: | including travis and coveralls configs |
+| full featured stable release | (v1.0) | :construction: | |
 | webinterface to show queue,worker & scheduler status | (v1.1) | :grey_question: | maybe extra package |
