@@ -79,7 +79,7 @@ class QueueProviderTest extends DBTestCase
     public function tearDown()
     {
         $connection = $this->getDoctrine();
-        $connection->exec('TRUNCATE valid');
+        $connection->exec('DELETE FROM valid');
         $this->testDataArr = null;
     }
 
