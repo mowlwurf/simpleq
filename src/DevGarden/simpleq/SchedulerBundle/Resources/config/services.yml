@@ -3,7 +3,7 @@ services:
 #        class: DevGarden\simpleq\SchedulerBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.worker.provider:
-        class: DevGarden\simpleq\WorkerBundle\Service\WorkerProvider
+        class: DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider
         arguments:
             - @simpleq.config.provider
             - @doctrine.dbal.default_connection
