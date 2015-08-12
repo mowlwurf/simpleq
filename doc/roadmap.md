@@ -16,5 +16,6 @@
 | enable chainbehaviour | (v0.7-beta) | :link: | doc extension follows |
 | performance optimization workerinterface/baseworker | (v0.8-beta) | :trophy: | worker interface performance optimized by factor 6-7 |
 | project badges, code coverage, extended doc | (v0.9-beta) | :ballot_box_with_check: | including travis and coveralls configs |
+| added job builder service | (v0.9-beta) | :ballot_box_with_check: | |
 | full featured stable release | (v1.0) | :construction: | |
 | webinterface to show queue,worker & scheduler status | (v1.1) | :grey_question: | maybe extra package |

@@ -15,3 +15,12 @@ services:
         arguments:
             - @doctrine.dbal.default_connection
             - @simpleq.queue.provider
+    simpleq.job.builder:
+        class: DevGarden\simpleq\QueueBundle\Service\JobBuilder
+        arguments:
+            - @doctrine.dbal.default_connection
+    simpleq.job.provider:
+        class: DevGarden\simpleq\QueueBundle\Service\JobProvider
+        arguments:
+            - @simpleq.queue.provider
+            - @simpleq.queue.history.provider

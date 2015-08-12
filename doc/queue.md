@@ -88,7 +88,17 @@ e.g. with your own custom persist command. For demonstration you should have a l
 app/console simpleq:demo:persist n
 ```
 
-A job persist could simply look like this
+For Job creation you can either use the SimpleQ JobBuilder
+
+```php
+$builder = new JobBuilder($doctrineConnection);
+$builder->create($queue); // queue represents queue id, for the given config example, it would be 'dummy' or 'chain'
+$builder->setTask('doSth'); // set job task (optional)
+$builder->setData('someData'); // set job data (optional)
+$builder->persist();
+```
+
+or, of course you can simply persist a job by a code snippet like the following
 ```php
 $job = new Dummy();
 $job->setTask('download');

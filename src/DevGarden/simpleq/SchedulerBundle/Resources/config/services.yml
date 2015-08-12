@@ -11,11 +11,6 @@ services:
         class: DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider
         arguments:
             - @doctrine.dbal.default_connection
-    simpleq.job.provider:
-        class: DevGarden\simpleq\SchedulerBundle\Service\JobProvider
-        arguments:
-            - @simpleq.queue.provider
-            - @simpleq.queue.history.provider
     simpleq.scheduler.service:
         class: DevGarden\simpleq\SchedulerBundle\Service\SchedulerService
         arguments:

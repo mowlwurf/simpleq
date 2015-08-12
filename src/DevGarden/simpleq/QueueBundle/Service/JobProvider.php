@@ -1,9 +1,6 @@
 <?php
 
-namespace DevGarden\simpleq\SchedulerBundle\Service;
-
-use DevGarden\simpleq\QueueBundle\Service\JobQueueHistoryProvider;
-use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
+namespace DevGarden\simpleq\QueueBundle\Service;
 
 /**
  * @codeCoverageIgnore

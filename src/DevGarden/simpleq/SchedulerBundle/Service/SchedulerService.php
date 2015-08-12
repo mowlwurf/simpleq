@@ -3,6 +3,7 @@
 namespace DevGarden\simpleq\SchedulerBundle\Service;
 
 
+use DevGarden\simpleq\QueueBundle\Service\JobProvider;
 use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 use DevGarden\simpleq\SchedulerBundle\Extension\JobStatus;
 use DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess;
