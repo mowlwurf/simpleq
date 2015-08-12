@@ -19,4 +19,4 @@ after_script:
     - php travis/checkstyle.php
     - php travis/pmd.php
     - php travis/junit.php
-    - php vendor/bin/coveralls -v
+    - vendor/bin/coveralls -v
