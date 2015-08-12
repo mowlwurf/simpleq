@@ -9,7 +9,7 @@ before_script:
     - mv ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ~/xdebug.ini
     - curl http://cs.sensiolabs.org/get/php-cs-fixer.phar -o php-cs-fixer.phar
     - curl -s http://getcomposer.org/installer | php
-    - php composer.phar install --dev --no-interaction --prefer-source
+    - php composer.phar install --no-interaction --prefer-source
 script:
     - mkdir -p build/logs
     #- php -n php-cs-fixer.phar fix -v --dry-run --level=all src
@@ -17,7 +17,6 @@ script:
     #- php vendor/bin/phpcs --report=checkstyle --report-file=build/logs/checkstyle.xml --standard=build/config/phpcs.xml --ignore=*.html.php,*.config.php,*.twig.php src
     #- php vendor/bin/phpmd src xml build/config/phpmd.xml --reportfile build/logs/pmd.xml
     #- cp ~/xdebug.ini ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
-    - php vendor/bin/phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/clover.xml
     #- rm ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini
 after_script:
     #- curl -s https://gist.github.com/satooshi/4750401/raw > travis/ColorCLI.php
@@ -27,4 +26,5 @@ after_script:
     #- php travis/checkstyle.php
     #- php travis/pmd.php
     #- php travis/junit.php
+    - php vendor/bin/phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/clover.xml
     - php vendor/bin/coveralls -v --exclude-no-stmt
