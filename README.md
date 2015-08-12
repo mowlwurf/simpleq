@@ -1,7 +1,14 @@
 simpleq
 =======
 
+[![Build Status](https://travis-ci.org/mowlwurf/simpleq.png?branch=master)](https://travis-ci.org/mowlwurf/simpleq)
 [![Coverage Status](https://coveralls.io/repos/mowlwurf/simpleq/badge.svg?branch=master&service=bitbucket)](https://coveralls.io/bitbucket/mowlwurf/simpleq?branch=master)
+[![Dependency Status](https://www.versioneye.com/php/devgarden:simpleq/badge.svg)](https://www.versioneye.com/php/devgarden:simpleq)
+
+[![Latest Stable Version](https://poser.pugx.org/devgarden/simpleq/v/stable)](https://packagist.org/packages/devgarden/simpleq) 
+[![Total Downloads](https://poser.pugx.org/devgarden/simpleq/downloads)](https://packagist.org/packages/devgarden/simpleq) 
+[![Latest Unstable Version](https://poser.pugx.org/devgarden/simpleq/v/unstable)](https://packagist.org/packages/devgarden/simpleq) 
+[![License](https://poser.pugx.org/devgarden/simpleq/license)](https://packagist.org/packages/devgarden/simpleq)
 
 ***
 
