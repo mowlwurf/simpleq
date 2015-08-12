@@ -1,7 +1,8 @@
 language: php
 php:
     - 5.5
-    #- hhvm
+    - 5.4
+    - hhvm
 cache:
     directories:
         - $HOME/.composer/cache
@@ -19,4 +20,4 @@ after_script:
     - php travis/checkstyle.php
     - php travis/pmd.php
     - php travis/junit.php
-    - vendor/bin/coveralls -v
+    - vendor/bin/coveralls -v --no-interaction --exclude-no-stmt -c .coveralls.yml
