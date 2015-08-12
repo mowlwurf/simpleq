@@ -7,7 +7,6 @@ simpleq
 
 [![Latest Stable Version](https://poser.pugx.org/devgarden/simpleq/v/stable)](https://packagist.org/packages/devgarden/simpleq) 
 [![Total Downloads](https://poser.pugx.org/devgarden/simpleq/downloads)](https://packagist.org/packages/devgarden/simpleq) 
-[![Latest Unstable Version](https://poser.pugx.org/devgarden/simpleq/v/unstable)](https://packagist.org/packages/devgarden/simpleq) 
 [![License](https://poser.pugx.org/devgarden/simpleq/license)](https://packagist.org/packages/devgarden/simpleq)
 
 ***
