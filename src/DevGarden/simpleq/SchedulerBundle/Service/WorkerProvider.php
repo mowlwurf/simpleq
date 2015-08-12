@@ -97,7 +97,7 @@ SQL;
 
     /**
      * @param int $pid
-     * @return array
+     * @return bool|array
      */
     public function getWorkingQueueEntryByPid($pid)
     {
@@ -119,7 +119,12 @@ SQL;
     public function clearQueue($name = null)
     {
         if (is_null($name)) {
-            $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
+            $params = $this->connection->getParams();
+            if (isset($params['driver']) && $params['driver'] == 'pdo_sqlite') {
+                $this->connection->exec(sprintf('DELETE FROM %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
+            } else {
+                $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
+            }
         } else {
             $statement = <<<'SQL'
 DELETE FROM %s WHERE worker = :worker

@@ -1,9 +1,9 @@
-/*.db3
+*.db3
+/build/*
 /images/*
 /src/DevGarden/simpleq/SchedulerBundle/Entity/*
 /src/DevGarden/simpleq/QueueBundle/Entity/*
 /.DS_Store
-/app/*.db3
 /.idea/
 /app/bootstrap.php.cache
 /app/cache/*

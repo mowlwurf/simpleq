@@ -28,7 +28,7 @@
         <env name="SYMFONY_ENV" value="test"/>
     </php>
     <logging>
-        <log type="coverage-php" target="build/cov/coverage.cov"/>
+        <log type="coverage-php" target="build/logs/coverage.cov"/>
     </logging>
     <filter>
         <whitelist>
@@ -37,6 +37,12 @@
                 <directory>../src/*/*/DemoBundle</directory>
                 <directory>../src/*/*/*Bundle/Tests</directory>
                 <directory>../src/*/*/*Bundle/Resources</directory>
+                <directory>../src/*/*/*Bundle/DependencyInjection</directory>
+                <directory>../src/*/*/*Bundle/Process</directory>
+                <directory>../src/*/*/*Bundle/Command</directory>
+                <directory>../src/*/*/*Bundle/Entity</directory>
+                <directory>../src/*/*/*Bundle/Extension</directory>
+                <directory>../src/*/*/WorkerBundle/Service</directory>
             </exclude>
         </whitelist>
     </filter>

@@ -5,6 +5,9 @@ namespace DevGarden\simpleq\SchedulerBundle\Service;
 use DevGarden\simpleq\QueueBundle\Service\JobQueueHistoryProvider;
 use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
 
+/**
+ * @codeCoverageIgnore
+ */
 class JobProvider
 {
     /**

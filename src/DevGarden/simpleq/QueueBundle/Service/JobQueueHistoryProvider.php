@@ -6,6 +6,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
 use PDO;
 
+/**
+ * @codeCoverageIgnore
+ */
 class JobQueueHistoryProvider
 {
     /**

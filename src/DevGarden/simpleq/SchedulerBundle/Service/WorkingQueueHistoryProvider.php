@@ -6,6 +6,9 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
 use PDO;
 
+/**
+ * @codeCoverageIgnore
+ */
 class WorkingQueueHistoryProvider
 {
     const SCHEDULER_WORKING_QUEUE_HISTORY_TABLE = 'working_queue_history';

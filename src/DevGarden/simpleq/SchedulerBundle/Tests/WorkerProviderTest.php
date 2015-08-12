@@ -120,8 +120,7 @@ class WorkerProviderTest extends DBTestCase
         $this->assertEquals(false, $this->workerProvider->getWorkingQueueEntryByPid(1));
     }
 
-    //TODO check for sql driver to enable truncates for mysql and use delete for sqlite
-    public function atestClearQueueWithName()
+    public function testClearQueueWithName()
     {
         $this->workerProvider->clearQueue('DummyClass');
         array_shift($this->testDataArr);
@@ -129,13 +128,13 @@ class WorkerProviderTest extends DBTestCase
         $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers());
     }
 
-    public function atestClearQueueWithoutName()
+    public function testClearQueueWithoutName()
     {
         $this->workerProvider->clearQueue();
         $this->assertEquals([], $this->workerProvider->getActiveWorkers());
     }
 
-    public function atestClearQueueWithNameNotExist()
+    public function testClearQueueWithNameNotExist()
     {
         $this->workerProvider->clearQueue('foo');
         $this->assertEquals($this->testDataArr, $this->workerProvider->getActiveWorkers());
@@ -207,6 +206,16 @@ SQL;
     public function testGetWorkerRetryNotExist()
     {
         $this->assertFalse($this->workerProvider->getWorkerRetry('foo'));
+    }
+
+    public function testGetWorkerTask()
+    {
+        $this->assertEquals(null, $this->workerProvider->getWorkerTask('DummyClass'));
+    }
+
+    public function testGetWorkerTaskNotExist()
+    {
+        $this->assertFalse($this->workerProvider->getWorkerTask('foo'));
     }
 
     /**

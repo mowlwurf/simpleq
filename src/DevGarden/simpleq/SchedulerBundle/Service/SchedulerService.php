@@ -9,6 +9,9 @@ use DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess;
 use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class SchedulerService
 {
     /**

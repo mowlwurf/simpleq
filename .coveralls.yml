@@ -1,1 +1,4 @@
 src_dir: src
+#$this->env['COVERALLS_RUN_LOCALLY'] = true;
+#$this->env['COVERALLS_REPO_TOKEN'] = 'fudmfxz7JWJj7UzoYTyhWtTmmtO371EK9';
+#$this->env['CI_NAME'] = 'travis-ci';
