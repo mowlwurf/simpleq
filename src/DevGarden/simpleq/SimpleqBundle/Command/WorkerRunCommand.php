@@ -3,6 +3,7 @@
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 
+use DevGarden\simpleq\QueueBundle\Service\JobProvider;
 use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
 use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -31,6 +32,7 @@ class WorkerRunCommand extends ContainerAwareCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $workerProvider = $this->getWorkerProvider();
+        $jobProvider    = $this->getJobProvider();
         $retry = $workerProvider->getWorkerRetry($input->getArgument('service'));
         $retry = $retry == 0 ? 1 : $retry;
         $ownPid = getmypid();
@@ -39,6 +41,8 @@ class WorkerRunCommand extends ContainerAwareCommand
         $workerClass = $this->getContainer()->get($input->getArgument('service'));
         do {
             try {
+                $workerClass->setWorkerProvider($workerProvider);
+                $workerClass->setJobProvider($jobProvider);
                 $workerClass->run(
                     $input->getArgument('jobId'),
                     $ownPid,
@@ -61,6 +65,14 @@ class WorkerRunCommand extends ContainerAwareCommand
     protected function getWorkerProvider()
     {
         return $this->getContainer()->get('simpleq.worker.provider');
+    }
+
+    /**
+     * @return JobProvider
+     */
+    protected function getJobProvider()
+    {
+        return $this->getContainer()->get('simpleq.job.provider');
     }
 
     /**

@@ -12,14 +12,6 @@ class DummyWorker extends BaseWorker
 }
 ```
 
-Set simpleq.base.worker as parent service in your services.yml
-
-```yml
-    simpleq.worker.dummy.download:
-        class: DevGarden\simpleq\DemoBundle\Worker\DummyWorker
-        parent: simpleq.base.worker
-```
-
 ***
 
 You can use four functions to execute your code now. 

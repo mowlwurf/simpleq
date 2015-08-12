@@ -7,10 +7,5 @@ services:
     simpleq.worker.interface:
         class: DevGarden\simpleq\WorkerBundle\Service\WorkerInterface
         abstract: true
-        calls:
-            - [setWorkerProvider, [ "@simpleq.worker.provider" ]]
-            - [setJobProvider, [ "@simpleq.job.provider" ]]
-            - [setHistoryProvider, [ "@simpleq.scheduler.history.provider" ]]
     simpleq.base.worker:
         class: DevGarden\simpleq\WorkerBundle\Service\BaseWorker
-        parent: simpleq.worker.interface
