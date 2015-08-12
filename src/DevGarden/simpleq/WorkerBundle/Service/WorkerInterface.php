@@ -2,8 +2,8 @@
 
 namespace DevGarden\simpleq\WorkerBundle\Service;
 
-
-use DevGarden\simpleq\SchedulerBundle\Service\JobProvider;
+use DevGarden\simpleq\QueueBundle\Service\JobProvider;
+use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
 use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
 
 abstract class WorkerInterface

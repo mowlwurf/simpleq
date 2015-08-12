@@ -4,7 +4,7 @@ services:
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.worker.run.process:
         class: DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess
-    simpleq.base.worker.interface:
+    simpleq.worker.interface:
         class: DevGarden\simpleq\WorkerBundle\Service\WorkerInterface
         abstract: true
         calls:
@@ -13,4 +13,4 @@ services:
             - [setHistoryProvider, [ "@simpleq.scheduler.history.provider" ]]
     simpleq.base.worker:
         class: DevGarden\simpleq\WorkerBundle\Service\BaseWorker
-        parent: simpleq.base.worker.interface
+        parent: simpleq.worker.interface

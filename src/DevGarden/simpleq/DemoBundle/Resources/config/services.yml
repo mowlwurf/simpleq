@@ -4,7 +4,7 @@ services:
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.worker.dummy.download:
         class: DevGarden\simpleq\DemoBundle\Worker\DummyWorker
-        parent: simpleq.base.worker.interface
+        parent: simpleq.base.worker
     simpleq.worker.dummy.transform:
         class: DevGarden\simpleq\DemoBundle\Worker\DummyWorkerTransform
-        parent: simpleq.base.worker.interface
+        parent: simpleq.base.worker

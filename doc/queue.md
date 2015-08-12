@@ -6,7 +6,7 @@
 
 ### Create a new queue config
 
-Add your new queue to your simpleq config block in your projects config.yml.
+Add your new queue to your SimpleQ config block in your projects config.yml.
 
 ```yml 
 simpleq:
@@ -81,8 +81,10 @@ After adding your queue config block, you just need to execute the following com
 app/console simpleq:queue:create dummy
 ```
 
-That's it! You can fill the queue with jobs now.
-e.g. with your own custom persist command. For demonstration you should have a look to the following demo command.
+That's it! 
+
+You can fill the queue with jobs now. e.g. with your own custom persist command. 
+For demonstration you should have a look to the following demo command.
 
 ```sh
 app/console simpleq:demo:persist n
