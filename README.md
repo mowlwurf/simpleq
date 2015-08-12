@@ -12,7 +12,7 @@ simpleq
 
 ***
 
-A Symfony bundle to create & handle queues for any needs. Configuration via config.yml.
+Generic queue system based on Symfony2. Light weight, easy and fast to configure and initiate.
 
 ***
 
