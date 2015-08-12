@@ -1,5 +1,7 @@
 language: php
 php:
     - 5.5
-    - hhvm
-script: bin/phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/clover.xml
+    #- hhvm
+script:
+    - php bin/phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/clover.xml
+    - php bin/coveralls -v --exclude-no-stmt
