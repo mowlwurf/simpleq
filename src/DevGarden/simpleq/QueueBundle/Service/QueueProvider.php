@@ -138,6 +138,7 @@ txt;
     }
 
     /**
+     * @codeCoverageIgnore
      * @param string $queue
      * @return bool
      */
@@ -147,6 +148,7 @@ txt;
     }
 
     /**
+     * @codeCoverageIgnore
      * @param string $queue
      * @return bool
      */
@@ -156,6 +158,7 @@ txt;
     }
 
     /**
+     * @codeCoverageIgnore
      * @param string $queue
      * @return array
      */
@@ -165,6 +168,7 @@ txt;
     }
 
     /**
+     * @codeCoverageIgnore
      * @param string $queue
      * @return bool
      */
@@ -251,21 +255,17 @@ SQL;
 
     /**
      * @param string $queue
-     * @param string $tasks
+     * @param array $tasks
      * @param int $limit
      * @return array
      */
     public function getQueueEntriesXOr($queue, $tasks, $limit = 0)
     {
         $taskPattern = false;
-        if (!is_array($tasks)) {
-            $taskPattern = 'task = \'' . $tasks . '\'';
-        } else {
-            foreach ($tasks as $task) {
-                $taskPattern .= 'task = \'' . $task . '\' OR ';
-            }
-            $taskPattern = substr($taskPattern, 0, -3);
+        foreach ($tasks as $task) {
+            $taskPattern .= 'task = \'' . $task . '\' OR ';
         }
+        $taskPattern = substr($taskPattern, 0, -3);
         $preparedStatement = $this->connection->prepare(
             sprintf(
                 'SELECT * FROM %s WHERE %s %s',
@@ -292,7 +292,12 @@ SQL;
      */
     public function clearQueue($queue)
     {
-        $this->connection->exec(sprintf('TRUNCATE %s_', $queue));
+        $params = $this->connection->getParams();
+        if (isset($params['driver']) && $params['driver'] == 'pdo_sqlite') {
+            $this->connection->exec(sprintf('DELETE FROM %s', $queue));
+        } else {
+            $this->connection->exec(sprintf('TRUNCATE %s', $queue)); // @codeCoverageIgnore
+        }
     }
 
     /**
@@ -334,6 +339,7 @@ SQL;
     }
 
     /**
+     * @codeCoverageIgnore
      * @return string
      */
     public function getQueueRepository()

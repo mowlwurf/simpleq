@@ -257,6 +257,11 @@ class QueueProviderTest extends DBTestCase
         $this->queueProvider->updateQueueEntry('valid', 1, ['foo' => JobStatus::JOB_STATUS_FINISHED]);
     }
 
+    public function testClearQueue(){
+        $this->queueProvider->clearQueue('valid');
+        $this->assertEquals([], $this->queueProvider->getQueueEntries('valid'));
+    }
+
     public function testCleanUp()
     {
         $this->assertTrue(unlink(__DIR__ . '/../Entity/Valid.php'));

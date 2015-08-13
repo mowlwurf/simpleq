@@ -31,7 +31,8 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 'worker' => [
                     'dummy2' => [
                         'class' => 'Dummy2Class',
-                        'limit' => 10
+                        'limit' => 10,
+                        'max_load' => 100
                     ]
                 ]
             ],
@@ -87,7 +88,8 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 'worker' => [
                     'dummy2' => [
                         'class' => 'Dummy2Class',
-                        'limit' => 10
+                        'limit' => 10,
+                        'max_load' => 100
                     ]
                 ]
             ],
@@ -163,6 +165,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
             [
                 'class' => 'Dummy2Class',
                 'limit' => 10,
+                'max_load' => 100,
                 'queue' => 'valid2',
                 'name' => 'dummy2'
             ],
