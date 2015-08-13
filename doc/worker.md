@@ -36,7 +36,7 @@ contains code which should be executed after the job execution, like cleanup job
 
 ## Example
 
-The given example would inject a custom service to the worker. After this, the prepare function will validate data, while worker status is on 'pending'.
+The given example would inject a custom service to the worker. After this, the prepare function will e.g. validate data, while worker status is on 'pending'.
 
 ```php
 class DummyWorker extends BaseWorker
@@ -45,19 +45,19 @@ class DummyWorker extends BaseWorker
     {
         $this->service = $service;
     }
-    public function prepare($data)
+    public function prepare()
     {
-        return $this->service->validate($data);
+        return $this->service->validate($this->data);
     }
-    public function execute($data)
+    public function execute()
     {
-        return $this->processData($data);
+        return $this->processData($this->data);
     }
-    public function endJob($data)
+    public function endJob()
     {
         return $this->cleanUp();
     }
 }
 ```
 
-If workers are processing in chain, result of last executed function (prepare|execute|endJob) will be updated to job data field, when task and status are updated too, for next worker in chain.
+If workers are processing in chain, $this->data will be updated to job data field, after endJob function, when task and status are updated too, for next worker in chain.

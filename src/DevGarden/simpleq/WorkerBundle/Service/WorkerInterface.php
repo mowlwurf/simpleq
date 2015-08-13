@@ -23,6 +23,11 @@ abstract class WorkerInterface
     protected $taskId;
 
     /**
+     * @var string
+     */
+    protected $data;
+
+    /**
      * @var WorkerProvider
      */
     protected $workerProvider;
@@ -34,10 +39,9 @@ abstract class WorkerInterface
 
 
     /**
-     * @param string $data
      * @return int processId
      */
-    public abstract function execute($data);
+    public abstract function execute();
 
     /**
      * @param WorkerProvider $workerProvider

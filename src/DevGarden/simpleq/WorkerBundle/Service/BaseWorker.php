@@ -50,6 +50,7 @@ class BaseWorker extends WorkerInterface
      */
     final public function run($jobId, $pid, $worker, $data = null)
     {
+        $this->data = $data;
         $queue = $this->workerProvider->getWorkerQueue($worker);
         $this->setProcessId($pid);
         try {
@@ -57,13 +58,13 @@ class BaseWorker extends WorkerInterface
                 WorkerStatus::WORKER_STATUS_PENDING_CODE,
                 WorkerStatus::WORKER_STATUS_PENDING_MESSAGE
             );
-            $data = $this->prepare($data);
+            $this->prepare();
             $this->pushWorkerStatus(
                 WorkerStatus::WORKER_STATUS_RUNNING_CODE,
                 WorkerStatus::WORKER_STATUS_RUNNING_MESSAGE
             );
-            $data = $this->execute($data);
-            $data = $this->endJob($data);
+            $this->execute();
+            $this->endJob();
             $this->pushWorkerStatus(
                 WorkerStatus::WORKER_STATUS_SUCCESS_CODE,
                 WorkerStatus::WORKER_STATUS_SUCCESS_MESSAGE
@@ -100,7 +101,7 @@ class BaseWorker extends WorkerInterface
             try {
                 $this->jobProvider->updateJobAttribute($queue, $jobId, 'status', JobStatus::JOB_STATUS_OPEN);
                 $this->jobProvider->updateJobAttribute($queue, $jobId, 'task', $taskChain[$member + 1]);
-                $this->jobProvider->updateJobAttribute($queue, $jobId, 'data', $data);
+                $this->jobProvider->updateJobAttribute($queue, $jobId, 'data', $this->data);
             } catch (\Exception $e) {
                 // only print warning for debugging issues, but dont fail processing cause of failed job update
                 print 'WARNING: job could not be updated ' . $e->getMessage();
@@ -147,33 +148,24 @@ class BaseWorker extends WorkerInterface
     /**
      * prepare to execute stuff must be done before the worker execute its job
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
-     * @param $data
-     * @return mixed|void
      */
-    public function prepare($data)
+    public function prepare()
     {
-        return $data;
     }
 
     /**
      * execute the job, should set WorkerStatus to FAILED on exception
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
-     * @param $data
-     * @return mixed|void
      */
-    public function execute($data)
+    public function execute()
     {
-        return $data;
     }
 
     /**
      * do stuff like clean up jobs
      * OVERWRITE THIS FUNCTION WITH YOUR CHILD WORKER CLASS TO EXECUTE YOUR CUSTOM CODE
-     * @param $data
-     * @return mixed|void
      */
-    public function endJob($data)
+    public function endJob()
     {
-        return $data;
     }
 }

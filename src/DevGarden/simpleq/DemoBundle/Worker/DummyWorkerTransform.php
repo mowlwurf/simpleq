@@ -6,9 +6,9 @@ use DevGarden\simpleq\WorkerBundle\Service\BaseWorker;
 
 class DummyWorkerTransform extends BaseWorker
 {
-    public function execute($data)
+    public function execute()
     {
-        $data = json_decode($data);
+        $data = json_decode($this->data);
         $percent = 0.5;
 
         list($width, $height) = getimagesize($data->file);
@@ -23,6 +23,6 @@ class DummyWorkerTransform extends BaseWorker
         $thumbFile = str_replace('/images/', '/images/thumbs/', $data->file);
         imagejpeg($thumb, $thumbFile);
 
-        return $thumbFile;
+        $this->data = $thumbFile;
     }
 }
