@@ -36,6 +36,7 @@ class WorkerProvider
     }
 
     /**
+     * @codeCoverageIgnore
      * @return array
      */
     public function getRegisteredWorkers()
@@ -123,7 +124,7 @@ SQL;
             if (isset($params['driver']) && $params['driver'] == 'pdo_sqlite') {
                 $this->connection->exec(sprintf('DELETE FROM %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
             } else {
-                $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
+                $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_TABLE)); // @codeCoverageIgnore
             }
         } else {
             $statement = <<<'SQL'
@@ -227,5 +228,14 @@ SQL;
     public function getWorkerTask($id)
     {
         return $this->config->getWorkerAttributeByServiceId('task', $id);
+    }
+
+    /**
+     * @param string $id
+     * @return bool|int
+     */
+    public function getWorkerMaxLoad($id)
+    {
+        return $this->config->getWorkerAttributeByServiceId('max_load', $id);
     }
 }

@@ -40,6 +40,8 @@ class Configuration implements ConfigurationInterface
         $workerChildChilds->children()->scalarNode('task');
         // worker child retry
         $workerChildChilds->children()->integerNode('retry');
+        // worker child max_load
+        $workerChildChilds->children()->integerNode('max_load');
 
         return $treeBuilder;
     }

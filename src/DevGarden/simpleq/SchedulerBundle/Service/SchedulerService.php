@@ -80,6 +80,11 @@ class SchedulerService
     {
         foreach ($workers as $key => $worker) {
             $task = isset($worker['task']) ? $worker['task'] : null;
+            $load = sys_getloadavg();
+            if ($this->workers->getWorkerMaxLoad($worker['class']) <= $load[0]) {
+                $output->writeln(sprintf('Max. server load reached for service %s', $worker['class']));
+                continue;
+            }
             try {
                 if ($this->isWorkerLimitReached($worker)) {
                     $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
