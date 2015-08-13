@@ -21,6 +21,7 @@ simpleq:
                     task: dummyTask                 // task id for which worker is registered (optional default: null)
                     limit: 10                       // limit of active workers at once, of given type (optional default: 10)
                     retry: 100                      // number of retries on failure (optional default: 0)
+                    max_load: 100                   // limits worker spawn to server load
         chain:
             type: chain
             history: true                           // entity will be archived after last chain task has been processed
