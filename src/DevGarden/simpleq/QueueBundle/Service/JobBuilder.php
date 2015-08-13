@@ -33,7 +33,7 @@ class JobBuilder
     /**
      * create new job item
      *
-     * @param $queue
+     * @param string $queue
      */
     public function create($queue){
         $time        = new \DateTime();
@@ -67,6 +67,7 @@ class JobBuilder
      * persists job to queue
      *
      * @throws \Doctrine\DBAL\DBALException
+     * @return int
      */
     public function persist(){
         $task = isset($this->job['task']) ? $this->job['task'] : '';
@@ -83,5 +84,14 @@ SQL;
         $preparedStatement->bindValue('created', $this->job['created']->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('updated', $this->job['updated']->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
         $preparedStatement->execute();
+        return $this->connection->lastInsertId();
+    }
+
+    /**
+     * resets JobBuilder
+     */
+    public function flush(){
+        $this->job = $this->queue = null;
+        $this->connection->close();
     }
 }

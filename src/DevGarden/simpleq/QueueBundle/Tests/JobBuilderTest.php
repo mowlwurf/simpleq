@@ -27,6 +27,7 @@ class JobBuilderTest extends DBTestCase
         $builder->setData('testData');
         $builder->setTask('testTask');
         $builder->persist();
+        $builder->flush();
 
         $provider = new QueueProvider(
             new ConfigProvider([
@@ -62,6 +63,16 @@ class JobBuilderTest extends DBTestCase
         $this->assertNotEquals('0000-00-00 00:00:00', $entries[0]['created']);
         $this->assertRegExp('/[\d+]{4}-[\d+]{2}-[\d+]{2}\s[\d+]{2}:[\d+]{2}:[\d+]{2}/', $entries[0]['updated']);
         $this->assertNotEquals('0000-00-00 00:00:00', $entries[0]['updated']);
+
+        $reflection              = new \ReflectionClass($builder);
+        $reflectionPropertyJob   = $reflection->getProperty('job');
+        $reflectionPropertyQueue = $reflection->getProperty('queue');
+
+        $reflectionPropertyJob->setAccessible(true);
+        $reflectionPropertyQueue->setAccessible(true);
+
+        $this->assertNull($reflectionPropertyJob->getValue($builder));
+        $this->assertNull($reflectionPropertyQueue->getValue($builder));
     }
 
     public function tearDown(){
