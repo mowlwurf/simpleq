@@ -19,7 +19,6 @@ class AppKernel extends Kernel
             new DevGarden\simpleq\SchedulerBundle\SchedulerBundle(),
             new DevGarden\simpleq\QueueBundle\QueueBundle(),
             new DevGarden\simpleq\WorkerBundle\WorkerBundle(),
-            new DevGarden\simpleq\DemoBundle\DemoBundle(),
             new DevGarden\simpleq\SimpleqBundle\SimpleqBundle(),
         );
 
