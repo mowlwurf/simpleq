@@ -3,6 +3,7 @@
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 
+use CommandPatterns;
 use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +13,7 @@ class SchedulerStatusCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::SCHEDULER_STATUS);
+        $this->setName(CommandPatterns::SCHEDULER_STATUS);
         $this->addArgument('name');
     }
 
