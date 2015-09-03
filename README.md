@@ -5,8 +5,8 @@ SimpleQ
 [![Coverage Status](https://coveralls.io/repos/mowlwurf/simpleq/badge.svg?branch=master&service=github)](https://coveralls.io/github/mowlwurf/simpleq?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/55cb799adfed0a001f0000f5/badge.svg?style=flat)](https://www.versioneye.com/user/projects/55cb799adfed0a001f0000f5)
 
+[![Code Climate](https://codeclimate.com/repos/55e58b086956805aff007180/badges/0d7c2cdac7bd3498d630/gpa.svg)](https://codeclimate.com/repos/55e58b086956805aff007180/feed)
 [![Latest Stable Version](https://poser.pugx.org/devgarden/simpleq/v/stable)](https://packagist.org/packages/devgarden/simpleq) 
-[![Total Downloads](https://poser.pugx.org/devgarden/simpleq/downloads)](https://packagist.org/packages/devgarden/simpleq) 
 [![License](https://poser.pugx.org/devgarden/simpleq/license)](https://packagist.org/packages/devgarden/simpleq)
 
 ***
