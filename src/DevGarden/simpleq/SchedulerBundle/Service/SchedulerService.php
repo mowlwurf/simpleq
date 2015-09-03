@@ -92,8 +92,7 @@ class SchedulerService
                     continue;
                 }
             } catch (\Exception $e) {
-                $output->writeln('Could not connect to WorkingQueue. Dont forget to run simpleq:scheduler:init first');
-                exit;
+                throw new \Exception('Could not connect to WorkingQueue. Dont forget to run simpleq:scheduler:init first');
             }
             $job = $this->getJob($queue, $task, $worker['class']);
             if (!$job) {
