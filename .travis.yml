@@ -11,7 +11,7 @@ before_script:
     - php composer.phar install --no-interaction --prefer-source
 script:
     - mkdir -p build/logs
-    - phpunit -c app/phpunit.xml.dist --coverage-clover build/logs/clover.xml
+    - phpunit -c phpunit.xml.dist --coverage-clover build/logs/clover.xml
 after_success:
     - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm" ]; then php vendor/bin/coveralls -v --no-interaction --exclude-no-stmt -c .coveralls.yml; fi;'
     - curl -s https://gist.github.com/satooshi/4750401/raw > travis/ColorCLI.php
