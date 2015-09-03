@@ -2,4 +2,4 @@
 languages:
   PHP: true
 exclude_paths:
-  - "./src/DevGarden/simpleq/SimpleqBundle/Command/SchedulerHistoryCommand.php"
+  - "src/DevGarden/simpleq/SimpleqBundle/Command/SchedulerHistoryCommand.php"
