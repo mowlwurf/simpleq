@@ -2,7 +2,7 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
-class SchedulerHistoryCommand extends BaseCommand
+class WorkingQueueHistoryCommand extends BaseCommand
 {
     public function configure()
     {
