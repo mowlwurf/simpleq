@@ -13,7 +13,7 @@ class QueueClearCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:queue:clear');
+        $this->setName(\CommandPatterns::QUEUE_CLEAR);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 

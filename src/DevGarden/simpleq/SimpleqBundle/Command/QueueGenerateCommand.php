@@ -16,7 +16,7 @@ class QueueGenerateCommand extends ContainerAwareCommand
 
     public function configure()
     {
-        $this->setName('simpleq:queue:create')
+        $this->setName(\CommandPatterns::QUEUE_GENERATE)
             ->addArgument('name', InputArgument::REQUIRED);
     }
 

@@ -11,7 +11,7 @@ class WorkerStatusCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:worker:status');
+        $this->setName(\CommandPatterns::WORKER_STATUS);
     }
 
     /**

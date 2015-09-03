@@ -16,7 +16,7 @@ class WorkerRunCommand extends ContainerAwareCommand
 
     public function configure()
     {
-        $this->setName('simpleq:worker:run');
+        $this->setName(\CommandPatterns::WORKER_RUN);
         $this->addArgument('service', InputArgument::REQUIRED, 'service id of the worker you want to run');
         $this->addArgument('jobId', InputArgument::REQUIRED);
         $this->addArgument('data', InputArgument::REQUIRED);

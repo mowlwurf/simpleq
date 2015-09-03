@@ -13,7 +13,7 @@ class SchedulerInitCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:scheduler:init');
+        $this->setName(\CommandPatterns::SCHEDULER_INIT);
     }
 
     /**

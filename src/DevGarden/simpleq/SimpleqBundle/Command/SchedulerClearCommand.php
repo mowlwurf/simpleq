@@ -14,7 +14,7 @@ class SchedulerClearCommand extends ContainerAwareCommand
 
     public function configure()
     {
-        $this->setName('simpleq:scheduler:clear');
+        $this->setName(\CommandPatterns::SCHEDULER_CLEAR);
         $this->addArgument('name', InputArgument::OPTIONAL);
     }
 

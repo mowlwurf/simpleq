@@ -9,7 +9,7 @@ class SchedulerStopCommand extends BaseDaemonCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:scheduler:stop');
+        $this->setName(\CommandPatterns::SCHEDULER_STOP);
     }
 
     /**

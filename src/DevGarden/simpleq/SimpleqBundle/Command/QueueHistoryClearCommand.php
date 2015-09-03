@@ -13,7 +13,7 @@ class QueueHistoryClearCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:queue:clear:history');
+        $this->setName(\CommandPatterns::QUEUE_HISTORY_CLEAR);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 

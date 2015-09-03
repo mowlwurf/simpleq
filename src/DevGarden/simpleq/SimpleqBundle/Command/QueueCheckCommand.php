@@ -11,7 +11,7 @@ class QueueCheckCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName('simpleq:queue:check');
+        $this->setName(\CommandPatterns::QUEUE_CHECK);
     }
 
     /**

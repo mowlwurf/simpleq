@@ -12,7 +12,7 @@ class SchedulerStatusCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:scheduler:status');
+        $this->setName(\CommandPatterns::SCHEDULER_STATUS);
         $this->addArgument('name');
     }
 

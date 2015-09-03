@@ -10,7 +10,7 @@ class SchedulerStartCommand extends BaseDaemonCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:scheduler:start');
+        $this->setName(\CommandPatterns::SCHEDULER_START);
     }
 
     /**

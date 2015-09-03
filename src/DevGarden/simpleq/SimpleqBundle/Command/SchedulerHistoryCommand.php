@@ -13,7 +13,7 @@ class SchedulerHistoryCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:scheduler:history');
+        $this->setName(\CommandPatterns::SCHEDULER_HISTORY);
         $this->addArgument('name', InputArgument::OPTIONAL);
     }
 

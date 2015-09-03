@@ -13,7 +13,7 @@ class QueueHistoryCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName('simpleq:queue:history');
+        $this->setName(\CommandPatterns::QUEUE_HISTORY);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 
