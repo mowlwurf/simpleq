@@ -2,14 +2,7 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
-
-use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class SchedulerHistoryCommand extends ContainerAwareCommand
+class SchedulerHistoryCommand extends BaseCommand
 {
     public function configure()
     {

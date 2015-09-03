@@ -2,12 +2,7 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
-use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class WorkerStatusCommand extends ContainerAwareCommand
+class WorkerStatusCommand extends BaseCommand
 {
     public function configure()
     {

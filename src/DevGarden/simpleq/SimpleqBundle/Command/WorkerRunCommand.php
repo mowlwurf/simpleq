@@ -2,16 +2,7 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
-
-use DevGarden\simpleq\QueueBundle\Service\JobProvider;
-use DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
-use DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class WorkerRunCommand extends ContainerAwareCommand
+class WorkerRunCommand extends BaseCommand
 {
 
     public function configure()

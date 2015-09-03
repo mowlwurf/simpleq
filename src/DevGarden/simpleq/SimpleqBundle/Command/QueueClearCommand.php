@@ -2,14 +2,7 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
-
-use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class QueueClearCommand extends ContainerAwareCommand
+class QueueClearCommand extends BaseCommand
 {
     public function configure()
     {

@@ -2,16 +2,7 @@
 
 namespace DevGarden\simpleq\SimpleqBundle\Command;
 
-use DevGarden\simpleq\QueueBundle\EventListener\MappingListener;
-use DevGarden\simpleq\QueueBundle\Service\QueueProvider;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Validator\Exception\InvalidArgumentException;
-
-class QueueGenerateCommand extends ContainerAwareCommand
+class QueueGenerateCommand extends BaseCommand
 {
 
     public function configure()
@@ -24,7 +15,7 @@ class QueueGenerateCommand extends ContainerAwareCommand
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int
-     * @throws \Exception
+     * @throws InvalidArgumentException
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
