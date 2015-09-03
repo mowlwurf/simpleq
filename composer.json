@@ -7,7 +7,7 @@
     "homepage": "https://github.com/mowlwurf/simpleq",
     "autoload": {
         "psr-4": {
-            "DevGarden\\simpleq\\": "src/",
+            "DevGarden\\simpleq\\": "src/"
         }
     },
     "authors": [
