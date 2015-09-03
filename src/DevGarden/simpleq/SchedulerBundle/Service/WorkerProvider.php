@@ -50,20 +50,20 @@ class WorkerProvider
      */
     public function getActiveWorkerCount($name = null)
     {
-        if (is_null($name)) {
+        if (!is_null($name)) {
+            $statement = <<<'SQL'
+SELECT count(id) FROM %s WHERE worker = :worker
+SQL;
+            $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
+            $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
+            $preparedStatement->execute();
+        } else {
             $preparedStatement = $this->connection->prepare(
                 sprintf(
                     'SELECT count(id) FROM %s',
                     self::SCHEDULER_WORKING_QUEUE_TABLE
                 )
             );
-            $preparedStatement->execute();
-        } else {
-            $statement = <<<'SQL'
-SELECT count(id) FROM %s WHERE worker = :worker
-SQL;
-            $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
-            $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
             $preparedStatement->execute();
         }
 
