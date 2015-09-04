@@ -20,15 +20,15 @@ class WorkingQueueHistoryCommand extends BaseCommand
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $name = ($input->getArgument('name')) ? $input->getArgument('name') : null;
-        $provider = $this->getSchedulerHistoryProvider();
-        $activeWorkers = $provider->getWorkerHistory($name);
+        $provider = $this->getWorkingQueueHistoryProvider();
+        $history = $provider->getWorkerHistory($name);
         $output->writeln(sprintf('Scheduler working queue history contains %s executed workers',
-            count($activeWorkers)));
+            count($history)));
         $table = $this->getHelper('table');
         $output->writeln('Setting headers ...');
         $table->setHeaders(array('ID', 'Status', 'PID', 'Worker', 'Created', 'Updated', 'Archived'));
         $output->writeln('Setting rows ...');
-        $table->setRows($activeWorkers);
+        $table->setRows($history);
         $output->writeln('Print output ...');
         $table->render($output);
     }
@@ -36,7 +36,7 @@ class WorkingQueueHistoryCommand extends BaseCommand
     /**
      * @return WorkingQueueHistoryProvider
      */
-    protected function getSchedulerHistoryProvider()
+    protected function getWorkingQueueHistoryProvider()
     {
         return $this->getContainer()->get('simpleq.scheduler.history.provider');
     }
