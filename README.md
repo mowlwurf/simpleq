@@ -11,7 +11,7 @@ SimpleQ
 
 ***
 
-SimpleQ is a generic queue system based on Symfony2 & Doctrine. Lightweight, fast and easy to configure.
+SimpleQ is a generic queue system based on Symfony2 & Doctrine. Lightweight, fast, easy to configure and free.
 
 ***
 
