@@ -4,6 +4,8 @@ namespace DevGarden\simpleq\SimpleqBundle\Command;
 
 class WorkingQueueHistoryCommand extends BaseCommand
 {
+    CONST CODE_CLIMAX_DUPLICATE_CONTENT_DUMMY = 'levenshtein sucks';
+
     public function configure()
     {
         $this->setName(\CommandPatterns::SCHEDULER_HISTORY);
