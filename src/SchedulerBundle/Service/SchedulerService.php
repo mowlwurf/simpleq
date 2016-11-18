@@ -3,9 +3,8 @@
 namespace simpleq\SchedulerBundle\Service;
 
 use simpleq\QueueBundle\Service\JobProvider;
+use simpleq\QueueBundle\Service\QueueProvider;
 use simpleq\SchedulerBundle\Extension\JobStatus;
-use simpleq\SimpleqBundle\Service\ConfigProvider\QueueProvider;
-use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
 use simpleq\WorkerBundle\Process\WorkerRunProcess;
 use Symfony\Component\Console\Output\OutputInterface;
 

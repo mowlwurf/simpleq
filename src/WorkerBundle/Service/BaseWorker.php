@@ -3,7 +3,6 @@
 namespace simpleq\WorkerBundle\Service;
 
 use simpleq\SchedulerBundle\Extension\JobStatus;
-use simpleq\SchedulerBundle\Service\WorkerProvider\WorkerInterface;
 use simpleq\WorkerBundle\Extension\WorkerStatus;
 
 class BaseWorker extends WorkerInterface

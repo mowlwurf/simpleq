@@ -3,7 +3,7 @@
 namespace simpleq\WorkerBundle\Service;
 
 use simpleq\QueueBundle\Service\JobProvider;
-use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
+use simpleq\SchedulerBundle\Service\WorkerProvider;
 
 abstract class WorkerInterface
 {

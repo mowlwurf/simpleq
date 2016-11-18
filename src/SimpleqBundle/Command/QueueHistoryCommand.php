@@ -3,11 +3,12 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\QueueBundle\Service\JobQueueHistoryProvider;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class QueueHistoryCommand extends BaseCommand
+class QueueHistoryCommand extends ContainerAwareCommand
 {
     public function configure()
     {

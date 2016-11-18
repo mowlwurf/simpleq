@@ -2,7 +2,7 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
-use simpleq\SchedulerBundle\Service\WorkerProvider\SchedulerService;
+use simpleq\SchedulerBundle\Service\SchedulerService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 

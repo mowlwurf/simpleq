@@ -2,13 +2,14 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
-use simpleq\SimpleqBundle\Service\ConfigProvider\QueueProvider;
+use simpleq\QueueBundle\Service\QueueProvider;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class QueueGenerateCommand extends BaseCommand
+class QueueGenerateCommand extends ContainerAwareCommand
 {
 
     public function configure()

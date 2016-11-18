@@ -2,11 +2,12 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
-use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
+use simpleq\SchedulerBundle\Service\WorkerProvider;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class WorkerStatusCommand extends BaseCommand
+class WorkerStatusCommand extends ContainerAwareCommand
 {
     public function configure()
     {

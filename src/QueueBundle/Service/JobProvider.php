@@ -2,8 +2,6 @@
 
 namespace simpleq\QueueBundle\Service;
 
-use simpleq\SimpleqBundle\Service\ConfigProvider\QueueProvider;
-
 /**
  * @codeCoverageIgnore
  */

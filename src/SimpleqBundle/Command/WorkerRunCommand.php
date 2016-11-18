@@ -3,13 +3,14 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\QueueBundle\Service\JobProvider;
+use simpleq\SchedulerBundle\Service\WorkerProvider;
 use simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
-use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class WorkerRunCommand extends BaseCommand
+class WorkerRunCommand extends ContainerAwareCommand
 {
 
     public function configure()
