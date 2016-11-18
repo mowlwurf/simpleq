@@ -3,6 +3,7 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +13,7 @@ class SchedulerHistoryClearCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName(\Command::SCHEDULER_HISTORY_CLEAR);
+        $this->setName(Command::SCHEDULER_HISTORY_CLEAR);
         $this->addArgument('name', InputArgument::OPTIONAL);
         $this->setDescription('seriously?');
     }

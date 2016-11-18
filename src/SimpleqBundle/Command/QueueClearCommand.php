@@ -3,6 +3,7 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\QueueBundle\Service\QueueProvider;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +13,7 @@ class QueueClearCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName(\Command::QUEUE_CLEAR);
+        $this->setName(Command::QUEUE_CLEAR);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 

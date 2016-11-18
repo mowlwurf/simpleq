@@ -3,6 +3,7 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\SchedulerBundle\Service\WorkerProvider;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,7 +14,7 @@ class SchedulerClearCommand extends ContainerAwareCommand
 
     public function configure()
     {
-        $this->setName(\Command::SCHEDULER_CLEAR);
+        $this->setName(Command::SCHEDULER_CLEAR);
         $this->addArgument('name', InputArgument::OPTIONAL);
     }
 

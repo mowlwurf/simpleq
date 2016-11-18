@@ -3,6 +3,7 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\QueueBundle\Process\CreateDoctrineEntityProcess;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +13,7 @@ class SchedulerInitCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName(\Command::SCHEDULER_INIT);
+        $this->setName(Command::SCHEDULER_INIT);
     }
 
     /**

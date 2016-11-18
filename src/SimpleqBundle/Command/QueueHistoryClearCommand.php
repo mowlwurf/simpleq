@@ -3,6 +3,7 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\QueueBundle\Service\JobQueueHistoryProvider;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -12,7 +13,7 @@ class QueueHistoryClearCommand extends ContainerAwareCommand
 {
     public function configure()
     {
-        $this->setName(\Command::QUEUE_HISTORY_CLEAR);
+        $this->setName(Command::QUEUE_HISTORY_CLEAR);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 

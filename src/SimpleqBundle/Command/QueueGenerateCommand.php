@@ -3,6 +3,7 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\QueueBundle\Service\QueueProvider;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
@@ -14,7 +15,7 @@ class QueueGenerateCommand extends ContainerAwareCommand
 
     public function configure()
     {
-        $this->setName(\Command::QUEUE_GENERATE)
+        $this->setName(Command::QUEUE_GENERATE)
             ->addArgument('name', InputArgument::REQUIRED);
     }
 

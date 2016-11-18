@@ -1,5 +1,6 @@
 <?php
 
+namespace simpleq\SimpleqBundle\Extension;
 
 class Command
 {

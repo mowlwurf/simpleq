@@ -2,6 +2,7 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -9,7 +10,7 @@ class SchedulerStopCommand extends BaseDaemonCommand
 {
     public function configure()
     {
-        $this->setName(\Command::SCHEDULER_STOP);
+        $this->setName(Command::SCHEDULER_STOP);
     }
 
     /**

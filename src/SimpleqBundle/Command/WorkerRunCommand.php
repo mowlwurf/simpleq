@@ -5,6 +5,7 @@ namespace simpleq\SimpleqBundle\Command;
 use simpleq\QueueBundle\Service\JobProvider;
 use simpleq\SchedulerBundle\Service\WorkerProvider;
 use simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,7 +16,7 @@ class WorkerRunCommand extends ContainerAwareCommand
 
     public function configure()
     {
-        $this->setName(\Command::WORKER_RUN);
+        $this->setName(Command::WORKER_RUN);
         $this->addArgument('service', InputArgument::REQUIRED, 'service id of the worker you want to run');
         $this->addArgument('jobId', InputArgument::REQUIRED);
         $this->addArgument('data', InputArgument::REQUIRED);

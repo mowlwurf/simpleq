@@ -3,6 +3,7 @@
 namespace simpleq\SimpleqBundle\Command;
 
 use simpleq\QueueBundle\Service\QueueProvider;
+use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,7 +12,7 @@ class QueueCheckCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
-        $this->setName(\Command::QUEUE_CHECK);
+        $this->setName(Command::QUEUE_CHECK);
     }
 
     /**
