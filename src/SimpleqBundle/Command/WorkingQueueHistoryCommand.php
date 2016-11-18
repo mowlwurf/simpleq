@@ -27,8 +27,12 @@ class WorkingQueueHistoryCommand extends ContainerAwareCommand
         $name          = ($input->getArgument('name')) ? $input->getArgument('name') : null;
         $provider      = $this->getSchedulerHistoryProvider();
         $activeWorkers = $provider->getWorkerHistory($name);
-        $output->writeln(sprintf('Scheduler working queue history contains %s executed workers',
-            count($activeWorkers)));
+        $output->writeln(
+            sprintf(
+                'Scheduler working queue history contains %s executed workers',
+                count($activeWorkers)
+            )
+        );
         $table = $this->getHelper('table');
         $output->writeln('Setting headers ...');
         $table->setHeaders(array('ID', 'Status', 'PID', 'Worker', 'Created', 'Updated', 'Archived'));

@@ -27,8 +27,12 @@ class QueueHistoryCommand extends ContainerAwareCommand
         $name       = $input->getArgument('name');
         $provider   = $this->getQueueHistoryProvider();
         $activeJobs = $provider->getQueueHistory($name);
-        $output->writeln(sprintf('Job queue history contains %s executed jobs',
-            count($activeJobs)));
+        $output->writeln(
+            sprintf(
+                'Job queue history contains %s executed jobs',
+                count($activeJobs)
+            )
+        );
         $table = $this->getHelper('table');
         $output->writeln('Setting headers ...');
         $table->setHeaders(array('ID', 'Status', 'PID', 'Worker', 'Created', 'Updated', 'Archived'));

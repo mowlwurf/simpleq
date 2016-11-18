@@ -25,17 +25,19 @@ class BaseProcess extends Process
             if ($verbose) {
                 return $this->run();
             } else {
-                return $this->run(function ($type, $buffer) {
-                    $noError = true;
-                    if (Process::ERR === $type) {
-                        print $buffer;
-                        $noError = false;
-                    } else {
-                        print $buffer;
-                    }
+                return $this->run(
+                    function ($type, $buffer) {
+                        $noError = true;
+                        if (Process::ERR === $type) {
+                            print $buffer;
+                            $noError = false;
+                        } else {
+                            print $buffer;
+                        }
 
-                    return $noError;
-                });
+                        return $noError;
+                    }
+                );
             }
         } catch (\Exception $e) {
             print $e->getMessage();

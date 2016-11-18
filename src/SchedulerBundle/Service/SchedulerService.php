@@ -61,7 +61,7 @@ class SchedulerService
             $workers = $queue['worker'];
             if (!is_array($workers) || empty($workers)) {
                 unset($this->queues[$qKey]);
-                $output->writeln('No workers registered for queue ' . $qKey);
+                $output->writeln('No workers registered for queue '.$qKey);
                 continue;
             }
             $this->spawnWorkers($workers, $qKey, $output);
@@ -90,7 +90,9 @@ class SchedulerService
                     continue;
                 }
             } catch (\Exception $e) {
-                throw new \Exception('Could not connect to WorkingQueue. Dont forget to run simpleq:scheduler:init first');
+                throw new \Exception(
+                    'Could not connect to WorkingQueue. Dont forget to run simpleq:scheduler:init first'
+                );
             }
             $job = $this->getJob($queue, $task, $worker['class']);
             if (!$job) {
@@ -126,11 +128,13 @@ class SchedulerService
         try {
             return $this->workers->pushWorkerToWorkingQueue($service);
         } catch (\Exception $e) {
-            throw new \Exception (sprintf(
-                'Worker %s cannot be pushed to WorkingQueue: %s',
-                $service,
-                $e->getMessage()
-            ));
+            throw new \Exception (
+                sprintf(
+                    'Worker %s cannot be pushed to WorkingQueue: %s',
+                    $service,
+                    $e->getMessage()
+                )
+            );
         }
     }
 
@@ -157,7 +161,7 @@ class SchedulerService
 
             return $job;
         } catch (\Exception $e) {
-            throw new \Exception ('Could not provide job for worker ' . $service);
+            throw new \Exception ('Could not provide job for worker '.$service);
         }
     }
 

@@ -42,7 +42,7 @@ class JobBuilder
         $this->job   = [
             'created' => $time,
             'updated' => $time,
-            'status'  => 'open'
+            'status'  => 'open',
         ];
         $this->queue = $queue;
     }
@@ -86,10 +86,16 @@ SQL;
         $preparedStatement->bindValue('status', $this->job['status'], PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('task', $task, PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('jdata', $data, PDOConnection::PARAM_STR);
-        $preparedStatement->bindValue('created', $this->job['created']->format('Y-m-d h:i:s'),
-            PDOConnection::PARAM_STR);
-        $preparedStatement->bindValue('updated', $this->job['updated']->format('Y-m-d h:i:s'),
-            PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue(
+            'created',
+            $this->job['created']->format('Y-m-d h:i:s'),
+            PDOConnection::PARAM_STR
+        );
+        $preparedStatement->bindValue(
+            'updated',
+            $this->job['updated']->format('Y-m-d h:i:s'),
+            PDOConnection::PARAM_STR
+        );
         $preparedStatement->execute();
 
         return $this->connection->lastInsertId();

@@ -69,6 +69,6 @@ SQL;
      */
     public function clearQueueHistory($queue)
     {
-        $this->connection->exec(sprintf('TRUNCATE %s', $queue . '_history'));
+        $this->connection->exec(sprintf('TRUNCATE %s', $queue.'_history'));
     }
 }

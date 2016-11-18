@@ -123,8 +123,12 @@ SQL;
             if (isset($params['driver']) && $params['driver'] == 'pdo_sqlite') {
                 $this->connection->exec(sprintf('DELETE FROM %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
             } else {
-                $this->connection->exec(sprintf('TRUNCATE %s',
-                    self::SCHEDULER_WORKING_QUEUE_TABLE)); // @codeCoverageIgnore
+                $this->connection->exec(
+                    sprintf(
+                        'TRUNCATE %s',
+                        self::SCHEDULER_WORKING_QUEUE_TABLE
+                    )
+                ); // @codeCoverageIgnore
             }
         } else {
             $statement         = <<<'SQL'
@@ -142,7 +146,7 @@ SQL;
      */
     public function pushWorkerToWorkingQueue($workerService)
     {
-        $tempPid   = md5(microtime() . $workerService);
+        $tempPid   = md5(microtime().$workerService);
         $time      = new \DateTime();
         $statement = <<<'SQL'
 INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`)

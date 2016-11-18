@@ -40,7 +40,7 @@ class QueueCheckCommand extends ContainerAwareCommand
                 $output->writeln(sprintf('Queue %s contains %s tasks', $key, count($entries)));
             }
         } catch (\Exception $e) {
-            $output->writeln('Could not read database: ' . $e->getMessage());
+            $output->writeln('Could not read database: '.$e->getMessage());
         }
     }
 

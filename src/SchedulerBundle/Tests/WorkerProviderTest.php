@@ -38,27 +38,29 @@ class WorkerProviderTest extends DBTestCase
         $this->kernel->boot();
 
         $this->workerProvider = new WorkerProvider(
-            new ConfigProvider([
-                'valid'     => [
-                    'type'   => 'default',
-                    'worker' => [
-                        'dummy' => [
-                            'class' => 'DummyClass',
-                            'limit' => 10,
-                            'retry' => 10
-                        ]
-                    ]
-                ],
-                'valid_two' => [
-                    'type'   => 'default',
-                    'worker' => [
-                        'dummy_two' => [
-                            'class' => 'Dummy2Class',
-                            'limit' => 10
-                        ]
-                    ]
+            new ConfigProvider(
+                [
+                    'valid'     => [
+                        'type'   => 'default',
+                        'worker' => [
+                            'dummy' => [
+                                'class' => 'DummyClass',
+                                'limit' => 10,
+                                'retry' => 10,
+                            ],
+                        ],
+                    ],
+                    'valid_two' => [
+                        'type'   => 'default',
+                        'worker' => [
+                            'dummy_two' => [
+                                'class' => 'Dummy2Class',
+                                'limit' => 10,
+                            ],
+                        ],
+                    ],
                 ]
-            ]),
+            ),
             $this->getDoctrine()
         );
 
@@ -88,42 +90,44 @@ class WorkerProviderTest extends DBTestCase
         $time       = new \DateTime();
         $timeFormat = $time->format('Y-m-d h:i:s');
 
-        return $this->createArrayDataSet([
-            'working_queue' => [
-                [
-                    'id'      => '1',
-                    'status'  => '100',
-                    'pid'     => '21',
-                    'worker'  => 'DummyClass',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id'      => '2',
-                    'status'  => '500',
-                    'pid'     => '22',
-                    'worker'  => 'DummyClass',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id'      => '3',
-                    'status'  => '200',
-                    'pid'     => '23',
-                    'worker'  => 'Dummy2Class',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id'      => '4',
-                    'status'  => '300',
-                    'pid'     => '24',
-                    'worker'  => 'Dummy2Class',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
+        return $this->createArrayDataSet(
+            [
+                'working_queue' => [
+                    [
+                        'id'      => '1',
+                        'status'  => '100',
+                        'pid'     => '21',
+                        'worker'  => 'DummyClass',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
+                    [
+                        'id'      => '2',
+                        'status'  => '500',
+                        'pid'     => '22',
+                        'worker'  => 'DummyClass',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
+                    [
+                        'id'      => '3',
+                        'status'  => '200',
+                        'pid'     => '23',
+                        'worker'  => 'Dummy2Class',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
+                    [
+                        'id'      => '4',
+                        'status'  => '300',
+                        'pid'     => '24',
+                        'worker'  => 'Dummy2Class',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
                 ],
             ]
-        ]);
+        );
     }
 
     /**

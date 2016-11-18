@@ -29,7 +29,9 @@ class QueueGenerateCommand extends ContainerAwareCommand
     {
         $name = $input->getArgument('name');
         if (true === preg_match('/[\W\d]./', $name)) {
-            throw new \InvalidArgumentException('Input argument value contains invalid chars. Only [a-zA-Z_] are accepted');
+            throw new \InvalidArgumentException(
+                'Input argument value contains invalid chars. Only [a-zA-Z_] are accepted'
+            );
         }
         try {
             $output->writeln(sprintf('Creating queue %s ...', $name));

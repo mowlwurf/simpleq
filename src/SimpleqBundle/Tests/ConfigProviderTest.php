@@ -13,47 +13,49 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->config = new ConfigProvider([
-            'valid'  => [
-                'type'    => 'default',
-                'history' => true,
-                'worker'  => [
-                    'dummy' => [
-                        'class' => 'DummyClass',
-                        'limit' => 10,
-                        'retry' => 10
-                    ]
-                ]
-            ],
-            'valid2' => [
-                'type'              => 'default',
-                'delete_on_failure' => false,
-                'worker'            => [
-                    'dummy2' => [
-                        'class'    => 'Dummy2Class',
-                        'limit'    => 10,
-                        'max_load' => 100
-                    ]
-                ]
-            ],
-            'valid3' => [
-                'type'              => 'chain',
-                'delete_on_failure' => false,
-                'worker'            => [
-                    'dummy'  => [
-                        'class' => 'DummyClass',
-                        'limit' => 10,
-                        'retry' => 10,
-                        'task'  => 'task_one'
+        $this->config = new ConfigProvider(
+            [
+                'valid'  => [
+                    'type'    => 'default',
+                    'history' => true,
+                    'worker'  => [
+                        'dummy' => [
+                            'class' => 'DummyClass',
+                            'limit' => 10,
+                            'retry' => 10,
+                        ],
                     ],
-                    'dummy2' => [
-                        'class' => 'Dummy2Class',
-                        'limit' => 10,
-                        'task'  => 'task_two'
-                    ]
-                ]
+                ],
+                'valid2' => [
+                    'type'              => 'default',
+                    'delete_on_failure' => false,
+                    'worker'            => [
+                        'dummy2' => [
+                            'class'    => 'Dummy2Class',
+                            'limit'    => 10,
+                            'max_load' => 100,
+                        ],
+                    ],
+                ],
+                'valid3' => [
+                    'type'              => 'chain',
+                    'delete_on_failure' => false,
+                    'worker'            => [
+                        'dummy'  => [
+                            'class' => 'DummyClass',
+                            'limit' => 10,
+                            'retry' => 10,
+                            'task'  => 'task_one',
+                        ],
+                        'dummy2' => [
+                            'class' => 'Dummy2Class',
+                            'limit' => 10,
+                            'task'  => 'task_two',
+                        ],
+                    ],
+                ],
             ]
-        ]);
+        );
     }
 
     public function testGetQueueValid()
@@ -78,9 +80,9 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                     'dummy' => [
                         'class' => 'DummyClass',
                         'limit' => 10,
-                        'retry' => 10
-                    ]
-                ]
+                        'retry' => 10,
+                    ],
+                ],
             ],
             'valid2' => [
                 'type'              => 'default',
@@ -89,9 +91,9 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                     'dummy2' => [
                         'class'    => 'Dummy2Class',
                         'limit'    => 10,
-                        'max_load' => 100
-                    ]
-                ]
+                        'max_load' => 100,
+                    ],
+                ],
             ],
             'valid3' => [
                 'type'              => 'chain',
@@ -101,16 +103,16 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                         'class' => 'DummyClass',
                         'limit' => 10,
                         'retry' => 10,
-                        'task'  => 'task_one'
+                        'task'  => 'task_one',
                     ],
                     'dummy2' => [
                         'class' => 'Dummy2Class',
                         'limit' => 10,
-                        'task'  => 'task_two'
-                    ]
+                        'task'  => 'task_two',
+                    ],
                 ],
-                'task_chain'        => ['task_one', 'task_two']
-            ]
+                'task_chain'        => ['task_one', 'task_two'],
+            ],
         ];
         $this->assertEquals($expected, $this->config->getQueueList());
     }
@@ -142,7 +144,7 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
             'limit' => 10,
             'retry' => 10,
             'queue' => 'valid',
-            'name'  => 'dummy'
+            'name'  => 'dummy',
         ];
         $this->assertEquals($expected, $this->config->getWorker('valid', 'dummy'));
     }
@@ -160,14 +162,14 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 'limit' => 10,
                 'retry' => 10,
                 'queue' => 'valid',
-                'name'  => 'dummy'
+                'name'  => 'dummy',
             ],
             [
                 'class'    => 'Dummy2Class',
                 'limit'    => 10,
                 'max_load' => 100,
                 'queue'    => 'valid2',
-                'name'     => 'dummy2'
+                'name'     => 'dummy2',
             ],
             [
                 'class' => 'DummyClass',
@@ -175,15 +177,15 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
                 'retry' => 10,
                 'task'  => 'task_one',
                 'queue' => 'valid3',
-                'name'  => 'dummy'
+                'name'  => 'dummy',
             ],
             [
                 'class' => 'Dummy2Class',
                 'limit' => 10,
                 'task'  => 'task_two',
                 'queue' => 'valid3',
-                'name'  => 'dummy2'
-            ]
+                'name'  => 'dummy2',
+            ],
         ];
         $this->assertEquals($expected, $this->config->getWorkerList());
     }
@@ -235,8 +237,10 @@ class ConfigProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetQueueTaskChainAttributeByQueueIdValidTrue()
     {
-        $this->assertEquals(['task_one', 'task_two'],
-            $this->config->getQueueAttributeByQueueId('task_chain', 'valid3'));
+        $this->assertEquals(
+            ['task_one', 'task_two'],
+            $this->config->getQueueAttributeByQueueId('task_chain', 'valid3')
+        );
     }
 
     public function testGetQueueTaskChainAttributeByQueueIdValidFalse()

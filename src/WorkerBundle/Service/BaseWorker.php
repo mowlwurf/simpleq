@@ -89,9 +89,9 @@ class BaseWorker extends WorkerInterface
                 }
             } catch (\Exception $e) {
                 // only print warning for debugging issues, but dont fail processing cause of failed job update
-                print 'WARNING: job could not be updated ' . $e->getMessage();
+                print 'WARNING: job could not be updated '.$e->getMessage();
             }
-            throw new \Exception('Worker failed ' . $e->getMessage());
+            throw new \Exception('Worker failed '.$e->getMessage());
         }
         if ($this->jobProvider->hasTaskChain($queue)) {
             $taskChain = $this->jobProvider->getTaskChain($queue);
@@ -104,7 +104,7 @@ class BaseWorker extends WorkerInterface
                 $this->jobProvider->updateJobAttribute($queue, $jobId, 'data', $this->data);
             } catch (\Exception $e) {
                 // only print warning for debugging issues, but dont fail processing cause of failed job update
-                print 'WARNING: job could not be updated ' . $e->getMessage();
+                print 'WARNING: job could not be updated '.$e->getMessage();
             }
         } else {
             try {
@@ -120,7 +120,7 @@ class BaseWorker extends WorkerInterface
                 $this->jobProvider->removeJob($queue, $jobId);
             } catch (\Exception $e) {
                 // only print warning for debugging issues, but dont fail processing cause of failed job update
-                print 'WARNING: job could not be updated ' . $e->getMessage();
+                print 'WARNING: job could not be updated '.$e->getMessage();
             }
         }
 

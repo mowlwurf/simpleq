@@ -40,33 +40,35 @@ class QueueProviderTest extends DBTestCase
         $this->kernel->boot();
 
         $this->queueProvider = new QueueProvider(
-            new ConfigProvider([
-                'valid'    => [
-                    'type'   => 'default',
-                    'worker' => [
-                        'dummy' => [
-                            'class' => 'DummyClass',
-                            'limit' => 10
-                        ]
-                    ]
-                ],
-                'validTwo' => [
-                    'type'    => 'default',
-                    'history' => true,
-                    'worker'  => [
-                        'dummy_two' => [
-                            'class' => 'Dummy2Class',
-                            'limit' => 10
-                        ]
-                    ]
+            new ConfigProvider(
+                [
+                    'valid'    => [
+                        'type'   => 'default',
+                        'worker' => [
+                            'dummy' => [
+                                'class' => 'DummyClass',
+                                'limit' => 10,
+                            ],
+                        ],
+                    ],
+                    'validTwo' => [
+                        'type'    => 'default',
+                        'history' => true,
+                        'worker'  => [
+                            'dummy_two' => [
+                                'class' => 'Dummy2Class',
+                                'limit' => 10,
+                            ],
+                        ],
+                    ],
                 ]
-            ]),
+            ),
             $this->getEntityProcess(),
             $this->getDoctrine()
         );
 
         // persist testdata
-        if (file_exists(__DIR__ . '/../Entity/Valid.php')) {
+        if (file_exists(__DIR__.'/../Entity/Valid.php')) {
             $testData = $this->getDataSet();
             $data     = $testData->getTable('valid_');
             $c        = $data->getRowCount();
@@ -101,42 +103,44 @@ class QueueProviderTest extends DBTestCase
         $time       = new \DateTime();
         $timeFormat = $time->format('Y-m-d h:i:s');
 
-        return $this->createArrayDataSet([
-            'valid_' => [
-                [
-                    'id'      => '1',
-                    'task'    => '',
-                    'status'  => 'open',
-                    'data'    => '{"test":"testval"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
+        return $this->createArrayDataSet(
+            [
+                'valid_' => [
+                    [
+                        'id'      => '1',
+                        'task'    => '',
+                        'status'  => 'open',
+                        'data'    => '{"test":"testval"}',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
+                    [
+                        'id'      => '2',
+                        'task'    => 'test',
+                        'status'  => 'open',
+                        'data'    => '{"test":"testval2"}',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
+                    [
+                        'id'      => '3',
+                        'task'    => 'test',
+                        'status'  => 'open',
+                        'data'    => '{"test":"testval2"}',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
+                    [
+                        'id'      => '4',
+                        'task'    => 'test2',
+                        'status'  => 'failed',
+                        'data'    => '{"test":"testval2"}',
+                        'created' => $timeFormat,
+                        'updated' => $timeFormat,
+                    ],
                 ],
-                [
-                    'id'      => '2',
-                    'task'    => 'test',
-                    'status'  => 'open',
-                    'data'    => '{"test":"testval2"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id'      => '3',
-                    'task'    => 'test',
-                    'status'  => 'open',
-                    'data'    => '{"test":"testval2"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id'      => '4',
-                    'task'    => 'test2',
-                    'status'  => 'failed',
-                    'data'    => '{"test":"testval2"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ]
             ]
-        ]);
+        );
     }
 
     /**
@@ -170,7 +174,7 @@ class QueueProviderTest extends DBTestCase
         $this->expectOutputRegex('/generating\sDevGarden\\\\simpleq\\\\QueueBundle\\\\Entity\\\\Valid/');
         $this->assertFalse($this->hasOutput());
         $this->queueProvider->generateQueue('valid');
-        $this->assertTrue(file_exists(__DIR__ . '/../Entity/Valid.php'));
+        $this->assertTrue(file_exists(__DIR__.'/../Entity/Valid.php'));
 
         //TODO update database schema, only working on default environment
         // workaround: table already exists
@@ -195,8 +199,8 @@ class QueueProviderTest extends DBTestCase
         $this->expectOutputRegex('/generating\sDevGarden\\\\simpleq\\\\QueueBundle\\\\Entity\\\\ValidTwo/');
         $this->assertFalse($this->hasOutput());
         $this->queueProvider->generateQueue('validTwo');
-        $this->assertTrue(file_exists(__DIR__ . '/../Entity/ValidTwo.php'));
-        $this->assertTrue(file_exists(__DIR__ . '/../Entity/ValidTwoHistory.php'));
+        $this->assertTrue(file_exists(__DIR__.'/../Entity/ValidTwo.php'));
+        $this->assertTrue(file_exists(__DIR__.'/../Entity/ValidTwoHistory.php'));
     }
 
     /**
@@ -205,7 +209,7 @@ class QueueProviderTest extends DBTestCase
     public function testGenerateQueueInvalid()
     {
         $this->queueProvider->generateQueue('invalid');
-        $this->assertFalse(file_exists(__DIR__ . '/../Entity/Invalid.php'));
+        $this->assertFalse(file_exists(__DIR__.'/../Entity/Invalid.php'));
     }
 
     public function testGetQueueEntriesWithoutTask()
@@ -328,8 +332,8 @@ class QueueProviderTest extends DBTestCase
 
     public function testCleanUp()
     {
-        $this->assertTrue(unlink(__DIR__ . '/../Entity/Valid.php'));
-        $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwo.php'));
-        $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwoHistory.php'));
+        $this->assertTrue(unlink(__DIR__.'/../Entity/Valid.php'));
+        $this->assertTrue(unlink(__DIR__.'/../Entity/ValidTwo.php'));
+        $this->assertTrue(unlink(__DIR__.'/../Entity/ValidTwoHistory.php'));
     }
 }

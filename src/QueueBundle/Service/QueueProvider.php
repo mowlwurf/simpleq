@@ -116,7 +116,7 @@ class %s
 txt;
         $indexes = ', indexes={@ORM\Index(name="newEntryRequest", columns={"status"}), @ORM\Index(name="getEntryByTask", columns={"task"})}';
         file_put_contents(
-            __DIR__ . '/../Entity/' . ucfirst($name) . '.php',
+            __DIR__.'/../Entity/'.ucfirst($name).'.php',
             sprintf($txt, $name, $indexes, ucfirst($name), '')
         );
         if ($this->hasQueueHistory($name)) {
@@ -130,8 +130,8 @@ txt;
 protected $archived;
 txt;
             file_put_contents(
-                __DIR__ . '/../Entity/' . ucfirst($name) . 'History.php',
-                sprintf($txt, $name . '_history', '', ucfirst($name) . 'History', $archivedExt)
+                __DIR__.'/../Entity/'.ucfirst($name).'History.php',
+                sprintf($txt, $name.'_history', '', ucfirst($name).'History', $archivedExt)
             );
         }
         $this->entityProcess->execute('DevGarden/simpleq/QueueBundle/Entity');
@@ -263,7 +263,7 @@ SQL;
     {
         $taskPattern = false;
         foreach ($tasks as $task) {
-            $taskPattern .= 'task = \'' . $task . '\' OR ';
+            $taskPattern .= 'task = \''.$task.'\' OR ';
         }
         $taskPattern       = substr($taskPattern, 0, -3);
         $preparedStatement = $this->connection->prepare(
@@ -271,12 +271,14 @@ SQL;
                 'SELECT * FROM %s WHERE %s %s',
                 $queue,
                 $taskPattern,
-                $limit != 0 ? 'LIMIT ' . $limit : ''
+                $limit != 0 ? 'LIMIT '.$limit : ''
             )
         );
         $preparedStatement->execute();
 
-        return $limit == 1 ? $preparedStatement->fetch(PDO::FETCH_ASSOC) : $preparedStatement->fetchAll(PDO::FETCH_ASSOC);
+        return $limit == 1 ? $preparedStatement->fetch(PDO::FETCH_ASSOC) : $preparedStatement->fetchAll(
+            PDO::FETCH_ASSOC
+        );
     }
 
     /**
@@ -329,11 +331,13 @@ SQL;
         foreach ($args as $arg => $val) {
             $updates[] = sprintf("%s = '%s'", $arg, $val);
         }
-        $preparedStatement = $this->connection->prepare(sprintf(
-            $statement,
-            $queue,
-            implode(',', $updates)
-        ));
+        $preparedStatement = $this->connection->prepare(
+            sprintf(
+                $statement,
+                $queue,
+                implode(',', $updates)
+            )
+        );
         $preparedStatement->bindValue('id', $id, PDOConnection::PARAM_INT);
         $preparedStatement->execute();
     }

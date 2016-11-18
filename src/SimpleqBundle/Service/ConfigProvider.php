@@ -4,7 +4,7 @@ namespace simpleq\SimpleqBundle\Service;
 
 class ConfigProvider
 {
-    const DEFAULT_CONFIG_PATH_PATTERN = '/../../simpleq/';
+    const DEFAULT_CONFIG_PATH_PATTERN = '%s/../../../../../';
 
     /**
      * @var array

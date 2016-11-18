@@ -31,27 +31,29 @@ class JobBuilderTest extends DBTestCase
         $builder->flush();
 
         $provider = new QueueProvider(
-            new ConfigProvider([
-                'valid'    => [
-                    'type'   => 'default',
-                    'worker' => [
-                        'dummy' => [
-                            'class' => 'DummyClass',
-                            'limit' => 10
-                        ]
-                    ]
-                ],
-                'validTwo' => [
-                    'type'    => 'default',
-                    'history' => true,
-                    'worker'  => [
-                        'dummy_two' => [
-                            'class' => 'Dummy2Class',
-                            'limit' => 10
-                        ]
-                    ]
+            new ConfigProvider(
+                [
+                    'valid'    => [
+                        'type'   => 'default',
+                        'worker' => [
+                            'dummy' => [
+                                'class' => 'DummyClass',
+                                'limit' => 10,
+                            ],
+                        ],
+                    ],
+                    'validTwo' => [
+                        'type'    => 'default',
+                        'history' => true,
+                        'worker'  => [
+                            'dummy_two' => [
+                                'class' => 'Dummy2Class',
+                                'limit' => 10,
+                            ],
+                        ],
+                    ],
                 ]
-            ]),
+            ),
             $this->getEntityProcess(),
             $this->kernel->getContainer()->get('doctrine')->getConnection()
         );

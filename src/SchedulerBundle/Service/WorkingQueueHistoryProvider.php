@@ -39,10 +39,12 @@ class WorkingQueueHistoryProvider
 INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`,`archived`)
 VALUES (:pid,:status,:worker,:created,:updated,:archived)
 SQL;
-        $preparedStatement = $this->connection->prepare(sprintf(
-            $statement,
-            self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE
-        ));
+        $preparedStatement = $this->connection->prepare(
+            sprintf(
+                $statement,
+                self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE
+            )
+        );
         $preparedStatement->bindValue('pid', $entity['pid'], PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('status', $entity['status'], PDOConnection::PARAM_INT);
         $preparedStatement->bindValue('worker', $entity['worker'], PDOConnection::PARAM_STR);
@@ -61,11 +63,13 @@ SQL;
         $statement         = <<<'SQL'
 SELECT * FROM %s %s
 SQL;
-        $preparedStatement = $this->connection->prepare(sprintf(
-            $statement,
-            self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE,
-            is_null($name) ? '' : 'WHERE worker = :worker'
-        ));
+        $preparedStatement = $this->connection->prepare(
+            sprintf(
+                $statement,
+                self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE,
+                is_null($name) ? '' : 'WHERE worker = :worker'
+            )
+        );
         if (is_null($name)) {
             $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
         }
@@ -85,10 +89,12 @@ SQL;
         if (is_null($name)) {
             return $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE));
         }
-        $preparedStatement = $this->connection->prepare(sprintf(
-            'DELETE FROM %s WHERE worker = :worker',
-            self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE
-        ));
+        $preparedStatement = $this->connection->prepare(
+            sprintf(
+                'DELETE FROM %s WHERE worker = :worker',
+                self::SCHEDULER_WORKING_QUEUE_HISTORY_TABLE
+            )
+        );
         $preparedStatement->bindValue('worker', $name, PDOConnection::PARAM_STR);
 
         return $preparedStatement->execute();
