@@ -1,0 +1,52 @@
+<?php
+namespace DevGarden\simpleq\QueueBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Mapping\Annotation as Gedmo;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="validTwo", indexes={@ORM\Index(name="newEntryRequest", columns={"status"}), @ORM\Index(name="getEntryByTask", columns={"task"})})
+ */
+class ValidTwo
+{
+   /**
+     * @ORM\Column(type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    protected $id;
+
+    /**
+     * @ORM\Column(type="string", length=32, nullable=true)
+     */
+    protected $task;
+
+    /**
+     * @ORM\Column(type="string", length=16)
+     */
+    protected $status;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected $data;
+
+    /**
+     * @var \DateTime $created
+     *
+     * @Gedmo\Timestampable(on="create")
+     * @ORM\Column(type="datetime")
+     */
+    protected $created;
+
+    /**
+     * @var \DateTime $updated
+     *
+     * @Gedmo\Timestampable(on="update")
+     * @ORM\Column(type="datetime")
+     */
+    protected $updated;
+
+    
+}

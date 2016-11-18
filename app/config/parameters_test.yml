@@ -1,3 +1,0 @@
-parameters:
-    simpleq_database_name: simpleq_test
-    simpleq_database_path: '%kernel.root_dir%/simpleq_test.db3'
