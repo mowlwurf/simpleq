@@ -2,22 +2,26 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class WorkerStatusCommand extends BaseCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::WORKER_STATUS);
+        $this->setName(\Command::WORKER_STATUS);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $provider = $this->getWorkerProvider();
-        $workers = $provider->getRegisteredWorkers();
+        $workers  = $provider->getRegisteredWorkers();
         if (count($workers) > 0) {
             foreach ($workers as $id => $worker) {
                 $output->writeln('[');

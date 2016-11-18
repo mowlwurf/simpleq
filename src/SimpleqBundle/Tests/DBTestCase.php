@@ -39,7 +39,7 @@ abstract class DBTestCase extends PHPUnit_Extensions_Database_TestCase
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, 1);
 
-            self::$connection = $this->createDefaultDBConnection($pdo);
+            self::$connection         = $this->createDefaultDBConnection($pdo);
             self::$doctrineConnection = DriverManager::getConnection(array('pdo' => $pdo));
         }
     }

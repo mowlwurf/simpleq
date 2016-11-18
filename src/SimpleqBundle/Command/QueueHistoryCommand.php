@@ -2,23 +2,28 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\QueueBundle\Service\JobQueueHistoryProvider;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class QueueHistoryCommand extends BaseCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::QUEUE_HISTORY);
+        $this->setName(\Command::QUEUE_HISTORY);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
-        $provider = $this->getQueueHistoryProvider();
+        $name       = $input->getArgument('name');
+        $provider   = $this->getQueueHistoryProvider();
         $activeJobs = $provider->getQueueHistory($name);
         $output->writeln(sprintf('Job queue history contains %s executed jobs',
             count($activeJobs)));

@@ -8,6 +8,7 @@ namespace simpleq\QueueBundle\Service\QueueProvider;
 namespace simpleq\SchedulerBundle\Extension\JobStatus;
 namespace simpleq\SimpleqBundle\Service\ConfigProvider;
 namespace simpleq\SimpleqBundle\Tests\DBTestCase;
+
 use Doctrine\DBAL\Connection;
 
 
@@ -40,8 +41,8 @@ class QueueProviderTest extends DBTestCase
 
         $this->queueProvider = new QueueProvider(
             new ConfigProvider([
-                'valid' => [
-                    'type' => 'default',
+                'valid'    => [
+                    'type'   => 'default',
                     'worker' => [
                         'dummy' => [
                             'class' => 'DummyClass',
@@ -50,9 +51,9 @@ class QueueProviderTest extends DBTestCase
                     ]
                 ],
                 'validTwo' => [
-                    'type' => 'default',
+                    'type'    => 'default',
                     'history' => true,
-                    'worker' => [
+                    'worker'  => [
                         'dummy_two' => [
                             'class' => 'Dummy2Class',
                             'limit' => 10
@@ -67,13 +68,94 @@ class QueueProviderTest extends DBTestCase
         // persist testdata
         if (file_exists(__DIR__ . '/../Entity/Valid.php')) {
             $testData = $this->getDataSet();
-            $data = $testData->getTable('valid_');
-            $c = $data->getRowCount();
+            $data     = $testData->getTable('valid_');
+            $c        = $data->getRowCount();
             for ($i = 0; $i < $c; $i++) {
                 $row = $data->getRow($i);
                 $this->persistTestEntry($row);
             }
         }
+    }
+
+    /**
+     * @return CreateDoctrineEntityProcess
+     */
+    protected function getEntityProcess()
+    {
+        return $this->kernel->getContainer()->get('simpleq.queue.create.process');
+    }
+
+    /**
+     * @return Connection
+     */
+    protected function getDoctrine()
+    {
+        return $this->kernel->getContainer()->get('doctrine')->getConnection();
+    }
+
+    /**
+     * @return \PHPUnit_Extensions_Database_DataSet_IDataSet
+     */
+    public function getDataSet()
+    {
+        $time       = new \DateTime();
+        $timeFormat = $time->format('Y-m-d h:i:s');
+
+        return $this->createArrayDataSet([
+            'valid_' => [
+                [
+                    'id'      => '1',
+                    'task'    => '',
+                    'status'  => 'open',
+                    'data'    => '{"test":"testval"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id'      => '2',
+                    'task'    => 'test',
+                    'status'  => 'open',
+                    'data'    => '{"test":"testval2"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id'      => '3',
+                    'task'    => 'test',
+                    'status'  => 'open',
+                    'data'    => '{"test":"testval2"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id'      => '4',
+                    'task'    => 'test2',
+                    'status'  => 'failed',
+                    'data'    => '{"test":"testval2"}',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @param array $data
+     */
+    protected function persistTestEntry(array $data)
+    {
+        $entry = new Valid();
+        $entry->setTask($data['task']);
+        $entry->setStatus($data['status']);
+        $entry->setData($data['data']);
+        $entry->setCreated(new \DateTime($data['created']));
+        $entry->setUpdated(new \DateTime($data['updated']));
+
+        $this->testDataArr[] = $data;
+
+        $em = $this->kernel->getContainer()->get('doctrine')->getManager();
+        $em->persist($entry);
+        $em->flush();
     }
 
     public function tearDown()
@@ -115,25 +197,6 @@ class QueueProviderTest extends DBTestCase
         $this->queueProvider->generateQueue('validTwo');
         $this->assertTrue(file_exists(__DIR__ . '/../Entity/ValidTwo.php'));
         $this->assertTrue(file_exists(__DIR__ . '/../Entity/ValidTwoHistory.php'));
-    }
-
-    /**
-     * @param array $data
-     */
-    protected function persistTestEntry(array $data)
-    {
-        $entry = new Valid();
-        $entry->setTask($data['task']);
-        $entry->setStatus($data['status']);
-        $entry->setData($data['data']);
-        $entry->setCreated(new \DateTime($data['created']));
-        $entry->setUpdated(new \DateTime($data['updated']));
-
-        $this->testDataArr[] = $data;
-
-        $em = $this->kernel->getContainer()->get('doctrine')->getManager();
-        $em->persist($entry);
-        $em->flush();
     }
 
     /**
@@ -257,7 +320,8 @@ class QueueProviderTest extends DBTestCase
         $this->queueProvider->updateQueueEntry('valid', 1, ['foo' => JobStatus::JOB_STATUS_FINISHED]);
     }
 
-    public function testClearQueue(){
+    public function testClearQueue()
+    {
         $this->queueProvider->clearQueue('valid');
         $this->assertEquals([], $this->queueProvider->getQueueEntries('valid'));
     }
@@ -267,67 +331,5 @@ class QueueProviderTest extends DBTestCase
         $this->assertTrue(unlink(__DIR__ . '/../Entity/Valid.php'));
         $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwo.php'));
         $this->assertTrue(unlink(__DIR__ . '/../Entity/ValidTwoHistory.php'));
-    }
-
-    /**
-     * @return CreateDoctrineEntityProcess
-     */
-    protected function getEntityProcess()
-    {
-        return $this->kernel->getContainer()->get('simpleq.queue.create.process');
-    }
-
-    /**
-     * @return Connection
-     */
-    protected function getDoctrine()
-    {
-        return $this->kernel->getContainer()->get('doctrine')->getConnection();
-    }
-
-    /**
-     * @return \PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    public function getDataSet()
-    {
-        $time = new \DateTime();
-        $timeFormat = $time->format('Y-m-d h:i:s');
-
-        return $this->createArrayDataSet([
-            'valid_' => [
-                [
-                    'id' => '1',
-                    'task' => '',
-                    'status' => 'open',
-                    'data' => '{"test":"testval"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id' => '2',
-                    'task' => 'test',
-                    'status' => 'open',
-                    'data' => '{"test":"testval2"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id' => '3',
-                    'task' => 'test',
-                    'status' => 'open',
-                    'data' => '{"test":"testval2"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id' => '4',
-                    'task' => 'test2',
-                    'status' => 'failed',
-                    'data' => '{"test":"testval2"}',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ]
-            ]
-        ]);
     }
 }

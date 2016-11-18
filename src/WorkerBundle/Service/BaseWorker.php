@@ -2,13 +2,14 @@
 
 namespace simpleq\WorkerBundle\Service;
 
-namespace simpleq\SchedulerBundle\Extension\JobStatus;
-namespace simpleq\WorkerBundle\Extension\WorkerStatus;
+use simpleq\SchedulerBundle\Extension\JobStatus;
+use simpleq\SchedulerBundle\Service\WorkerProvider\WorkerInterface;
+use simpleq\WorkerBundle\Extension\WorkerStatus;
 
 class BaseWorker extends WorkerInterface
 {
     /**
-     * @param int $statusCode WorkerStatus Code [open,running,failed,success]
+     * @param int    $statusCode    WorkerStatus Code [open,running,failed,success]
      * @param string $statusMessage WorkerStatus Message
      */
     final public function setWorkerStatus($statusCode, $statusMessage)
@@ -41,8 +42,8 @@ class BaseWorker extends WorkerInterface
     }
 
     /**
-     * @param int $jobId
-     * @param int $pid
+     * @param int    $jobId
+     * @param int    $pid
      * @param string $worker
      * @param string $data
      * @return array
@@ -51,7 +52,7 @@ class BaseWorker extends WorkerInterface
     final public function run($jobId, $pid, $worker, $data = null)
     {
         $this->data = $data;
-        $queue = $this->workerProvider->getWorkerQueue($worker);
+        $queue      = $this->workerProvider->getWorkerQueue($worker);
         $this->setProcessId($pid);
         try {
             $this->pushWorkerStatus(
@@ -95,7 +96,7 @@ class BaseWorker extends WorkerInterface
         }
         if ($this->jobProvider->hasTaskChain($queue)) {
             $taskChain = $this->jobProvider->getTaskChain($queue);
-            $member = array_search($this->workerProvider->getWorkerTask($worker), $taskChain);
+            $member    = array_search($this->workerProvider->getWorkerTask($worker), $taskChain);
         }
         if ($this->jobProvider->hasTaskChain($queue) && isset($taskChain[$member + 1])) {
             try {
@@ -128,7 +129,7 @@ class BaseWorker extends WorkerInterface
     }
 
     /**
-     * @param int $code
+     * @param int    $code
      * @param string $message
      */
     final protected function pushWorkerStatus($code, $message)

@@ -2,12 +2,11 @@
 
 namespace simpleq\SchedulerBundle\Service;
 
-
-namespace simpleq\QueueBundle\Service\JobProvider;
-namespace simpleq\QueueBundle\Service\QueueProvider;
-namespace simpleq\SchedulerBundle\Extension\JobStatus;
-namespace simpleq\WorkerBundle\Process\WorkerRunProcess;
-namespace simpleq\SchedulerBundle\Service\WorkerProvider;
+use simpleq\QueueBundle\Service\JobProvider;
+use simpleq\SchedulerBundle\Extension\JobStatus;
+use simpleq\SimpleqBundle\Service\ConfigProvider\QueueProvider;
+use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
+use simpleq\WorkerBundle\Process\WorkerRunProcess;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -36,9 +35,9 @@ class SchedulerService
     private $process;
 
     /**
-     * @param QueueProvider $queues
-     * @param WorkerProvider $workers
-     * @param JobProvider $jobs
+     * @param QueueProvider    $queues
+     * @param WorkerProvider   $workers
+     * @param JobProvider      $jobs
      * @param WorkerRunProcess $process
      */
     public function __construct(
@@ -48,8 +47,8 @@ class SchedulerService
         WorkerRunProcess $process
     ) {
         $this->workers = $workers;
-        $this->jobs = $jobs;
-        $this->queues = $queues->getQueues();
+        $this->jobs    = $jobs;
+        $this->queues  = $queues->getQueues();
         $this->process = $process;
     }
 
@@ -71,16 +70,16 @@ class SchedulerService
     }
 
     /**
-     * @param array $workers
-     * @param string $queue
+     * @param array           $workers
+     * @param string          $queue
      * @param OutputInterface $output
      * @throws \Exception
      */
     protected function spawnWorkers(array $workers, $queue, OutputInterface $output)
     {
         foreach ($workers as $key => $worker) {
-            $task = isset($worker['task']) ? $worker['task'] : null;
-            $load = sys_getloadavg();
+            $task    = isset($worker['task']) ? $worker['task'] : null;
+            $load    = sys_getloadavg();
             $maxLoad = $this->workers->getWorkerMaxLoad($worker['class']);
             if ($maxLoad > 0 && $maxLoad <= $load[0]) {
                 $output->writeln(sprintf('Max. server load reached for service %s', $worker['class']));

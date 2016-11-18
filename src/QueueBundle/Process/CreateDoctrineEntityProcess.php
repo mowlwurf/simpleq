@@ -2,8 +2,7 @@
 
 namespace simpleq\QueueBundle\Process;
 
-
-namespace simpleq\SimpleqBundle\Process\BaseProcess;
+use simpleq\SimpleqBundle\Process\BaseProcess;
 
 class CreateDoctrineEntityProcess extends BaseProcess
 {
@@ -16,7 +15,7 @@ class CreateDoctrineEntityProcess extends BaseProcess
 
     /**
      * @param string $id
-     * @param bool $verbose
+     * @param bool   $verbose
      * @return bool
      */
     public function execute($id, $verbose = false)

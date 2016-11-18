@@ -2,26 +2,32 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\SimpleqBundle\Service\ConfigProvider\QueueProvider;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class QueueGenerateCommand extends BaseCommand
 {
 
     public function configure()
     {
-        $this->setName(\CommandPatterns::QUEUE_GENERATE)
+        $this->setName(\Command::QUEUE_GENERATE)
             ->addArgument('name', InputArgument::REQUIRED);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int
-     * @throws InvalidArgumentException
+     * @throws \InvalidArgumentException
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $name = $input->getArgument('name');
         if (true === preg_match('/[\W\d]./', $name)) {
-            throw new InvalidArgumentException('Input argument value contains invalid chars. Only [a-zA-Z_] are accepted');
+            throw new \InvalidArgumentException('Input argument value contains invalid chars. Only [a-zA-Z_] are accepted');
         }
         try {
             $output->writeln(sprintf('Creating queue %s ...', $name));
@@ -35,7 +41,7 @@ class QueueGenerateCommand extends BaseCommand
                 '--force' => true,
             );
 
-            $input = new ArrayInput($arguments);
+            $input      = new ArrayInput($arguments);
             $returnCode = $command->run($input, $output);
 
         } catch (\Exception $e) {

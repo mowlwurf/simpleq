@@ -2,11 +2,11 @@
 
 namespace simpleq\QueueBundle\Service;
 
-namespace simpleq\QueueBundle\Process\CreateDoctrineEntityProcess;
-namespace simpleq\SimpleqBundle\Service\ConfigProvider;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
 use PDO;
+use simpleq\QueueBundle\Process\CreateDoctrineEntityProcess;
+use simpleq\SimpleqBundle\Service\ConfigProvider;
 
 class QueueProvider
 {
@@ -28,9 +28,9 @@ class QueueProvider
     protected $connection;
 
     /**
-     * @param ConfigProvider $config
+     * @param ConfigProvider              $config
      * @param CreateDoctrineEntityProcess $entityProcess
-     * @param Connection $connection
+     * @param Connection                  $connection
      */
     public function __construct(
         ConfigProvider $config,
@@ -38,8 +38,8 @@ class QueueProvider
         Connection $connection
     ) {
         $this->configProvider = $config;
-        $this->entityProcess = $entityProcess;
-        $this->connection = $connection;
+        $this->entityProcess  = $entityProcess;
+        $this->connection     = $connection;
         $this->connection->getConfiguration()->setSQLLogger(null);
     }
 
@@ -59,7 +59,7 @@ class QueueProvider
                 )
             );
         }
-        $txt = <<<'txt'
+        $txt     = <<<'txt'
 <?php
 namespace simpleq\QueueBundle\Entity;
 
@@ -180,7 +180,7 @@ txt;
     /**
      * @param string $queue
      * @param string $property
-     * @param mixed $val
+     * @param mixed  $val
      * @return bool|object
      */
     public function getQueueEntryByProperty($queue, $property, $val)
@@ -200,7 +200,7 @@ txt;
     }
 
     /**
-     * @param $queue
+     * @param                    $queue
      * @param mixed|string|array $task
      * @return array
      */
@@ -225,14 +225,14 @@ txt;
     }
 
     /**
-     * @param string $queue
+     * @param string             $queue
      * @param mixed|string|array $task
      * @return array|object|bool
      */
     public function getNextOpenQueueEntry($queue, $task = null)
     {
         if (is_null($task)) {
-            $statement = <<<'SQL'
+            $statement         = <<<'SQL'
 SELECT id, task, data FROM %s WHERE status = 'open' LIMIT 1
 SQL;
             $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
@@ -243,7 +243,7 @@ SQL;
         if (is_array($task)) {
             return $this->getQueueEntriesXOr($queue, $task, 1);
         }
-        $statement = <<<'SQL'
+        $statement         = <<<'SQL'
 SELECT id, task, data FROM %s WHERE status = 'open' AND task = :task LIMIT 1
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
@@ -255,8 +255,8 @@ SQL;
 
     /**
      * @param string $queue
-     * @param array $tasks
-     * @param int $limit
+     * @param array  $tasks
+     * @param int    $limit
      * @return array
      */
     public function getQueueEntriesXOr($queue, $tasks, $limit = 0)
@@ -265,7 +265,7 @@ SQL;
         foreach ($tasks as $task) {
             $taskPattern .= 'task = \'' . $task . '\' OR ';
         }
-        $taskPattern = substr($taskPattern, 0, -3);
+        $taskPattern       = substr($taskPattern, 0, -3);
         $preparedStatement = $this->connection->prepare(
             sprintf(
                 'SELECT * FROM %s WHERE %s %s',
@@ -302,11 +302,11 @@ SQL;
 
     /**
      * @param string $queue
-     * @param int $id
+     * @param int    $id
      */
     public function removeQueueEntry($queue, $id)
     {
-        $statement = <<<'SQL'
+        $statement         = <<<'SQL'
 DELETE FROM %s WHERE id = :id
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));
@@ -316,12 +316,12 @@ SQL;
 
     /**
      * @param string $queue
-     * @param int $id
-     * @param array $args
+     * @param int    $id
+     * @param array  $args
      */
     public function updateQueueEntry($queue, $id, array $args)
     {
-        $updates = null;
+        $updates   = null;
         $statement = <<<'SQL'
 UPDATE %s SET %s WHERE id = :id
 SQL;

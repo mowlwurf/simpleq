@@ -9,11 +9,11 @@ class SchedulerStopCommand extends BaseDaemonCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::SCHEDULER_STOP);
+        $this->setName(\Command::SCHEDULER_STOP);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */

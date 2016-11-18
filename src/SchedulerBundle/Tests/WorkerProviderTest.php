@@ -7,6 +7,7 @@ namespace simpleq\SimpleqBundle\Service\ConfigProvider;
 namespace simpleq\SimpleqBundle\Tests\DBTestCase;
 namespace simpleq\WorkerBundle\Extension\WorkerStatus;
 namespace simpleq\SchedulerBundle\Service\WorkerProvider;
+
 use Doctrine\DBAL\Connection;
 
 class WorkerProviderTest extends DBTestCase
@@ -38,8 +39,8 @@ class WorkerProviderTest extends DBTestCase
 
         $this->workerProvider = new WorkerProvider(
             new ConfigProvider([
-                'valid' => [
-                    'type' => 'default',
+                'valid'     => [
+                    'type'   => 'default',
                     'worker' => [
                         'dummy' => [
                             'class' => 'DummyClass',
@@ -49,7 +50,7 @@ class WorkerProviderTest extends DBTestCase
                     ]
                 ],
                 'valid_two' => [
-                    'type' => 'default',
+                    'type'   => 'default',
                     'worker' => [
                         'dummy_two' => [
                             'class' => 'Dummy2Class',
@@ -63,12 +64,85 @@ class WorkerProviderTest extends DBTestCase
 
         // persist testdata
         $testData = $this->getDataSet();
-        $data = $testData->getTable('working_queue');
-        $c = $data->getRowCount();
+        $data     = $testData->getTable('working_queue');
+        $c        = $data->getRowCount();
         for ($i = 0; $i < $c; $i++) {
             $row = $data->getRow($i);
             $this->persistTestEntry($row);
         }
+    }
+
+    /**
+     * @return Connection
+     */
+    protected function getDoctrine()
+    {
+        return $this->kernel->getContainer()->get('doctrine')->getConnection();
+    }
+
+    /**
+     * @return \PHPUnit_Extensions_Database_DataSet_IDataSet
+     */
+    public function getDataSet()
+    {
+        $time       = new \DateTime();
+        $timeFormat = $time->format('Y-m-d h:i:s');
+
+        return $this->createArrayDataSet([
+            'working_queue' => [
+                [
+                    'id'      => '1',
+                    'status'  => '100',
+                    'pid'     => '21',
+                    'worker'  => 'DummyClass',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id'      => '2',
+                    'status'  => '500',
+                    'pid'     => '22',
+                    'worker'  => 'DummyClass',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id'      => '3',
+                    'status'  => '200',
+                    'pid'     => '23',
+                    'worker'  => 'Dummy2Class',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+                [
+                    'id'      => '4',
+                    'status'  => '300',
+                    'pid'     => '24',
+                    'worker'  => 'Dummy2Class',
+                    'created' => $timeFormat,
+                    'updated' => $timeFormat
+                ],
+            ]
+        ]);
+    }
+
+    /**
+     * @param array $data
+     */
+    protected function persistTestEntry(array $data)
+    {
+        $entry = new WorkingQueue();
+        $entry->setPid($data['pid']);
+        $entry->setStatus($data['status']);
+        $entry->setWorker($data['worker']);
+        $entry->setCreated(new \DateTime($data['created']));
+        $entry->setUpdated(new \DateTime($data['updated']));
+
+        $this->testDataArr[] = $data;
+
+        $em = $this->kernel->getContainer()->get('doctrine')->getManager();
+        $em->persist($entry);
+        $em->flush();
     }
 
     public function tearDown()
@@ -180,7 +254,7 @@ class WorkerProviderTest extends DBTestCase
     public function testPushWorkerStatus()
     {
         $this->workerProvider->pushWorkerStatus(21, WorkerStatus::WORKER_STATUS_SUCCESS_CODE);
-        $statement = <<<'SQL'
+        $statement        = <<<'SQL'
 SELECT status FROM working_queue WHERE pid = 21
 SQL;
         $prepareStatement = $this->getDoctrine()->prepare($statement);
@@ -216,78 +290,5 @@ SQL;
     public function testGetWorkerTaskNotExist()
     {
         $this->assertFalse($this->workerProvider->getWorkerTask('foo'));
-    }
-
-    /**
-     * @return Connection
-     */
-    protected function getDoctrine()
-    {
-        return $this->kernel->getContainer()->get('doctrine')->getConnection();
-    }
-
-    /**
-     * @param array $data
-     */
-    protected function persistTestEntry(array $data)
-    {
-        $entry = new WorkingQueue();
-        $entry->setPid($data['pid']);
-        $entry->setStatus($data['status']);
-        $entry->setWorker($data['worker']);
-        $entry->setCreated(new \DateTime($data['created']));
-        $entry->setUpdated(new \DateTime($data['updated']));
-
-        $this->testDataArr[] = $data;
-
-        $em = $this->kernel->getContainer()->get('doctrine')->getManager();
-        $em->persist($entry);
-        $em->flush();
-    }
-
-    /**
-     * @return \PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    public function getDataSet()
-    {
-        $time = new \DateTime();
-        $timeFormat = $time->format('Y-m-d h:i:s');
-
-        return $this->createArrayDataSet([
-            'working_queue' => [
-                [
-                    'id' => '1',
-                    'status' => '100',
-                    'pid' => '21',
-                    'worker' => 'DummyClass',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id' => '2',
-                    'status' => '500',
-                    'pid' => '22',
-                    'worker' => 'DummyClass',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id' => '3',
-                    'status' => '200',
-                    'pid' => '23',
-                    'worker' => 'Dummy2Class',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-                [
-                    'id' => '4',
-                    'status' => '300',
-                    'pid' => '24',
-                    'worker' => 'Dummy2Class',
-                    'created' => $timeFormat,
-                    'updated' => $timeFormat
-                ],
-            ]
-        ]);
     }
 }

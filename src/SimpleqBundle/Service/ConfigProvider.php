@@ -22,11 +22,11 @@ class ConfigProvider
     public function __construct(array $queues)
     {
         foreach ($queues as $key => $queue) {
-            $isChain = $queue['type'] == 'chain' ? true : false;
+            $isChain        = $queue['type'] == 'chain' ? true : false;
             $queueTaskChain = [];
             foreach ($queue['worker'] as $workerKey => $worker) {
                 $worker['queue'] = $key;
-                $worker['name'] = $workerKey;
+                $worker['name']  = $workerKey;
                 array_push($this->workers, $worker);
                 if ($isChain) {
                     array_push($queueTaskChain, $worker['task']);

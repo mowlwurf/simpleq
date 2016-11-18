@@ -2,15 +2,20 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\SimpleqBundle\Process\BaseProcess\CreateDoctrineEntityProcess;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class SchedulerInitCommand extends BaseCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::SCHEDULER_INIT);
+        $this->setName(\Command::SCHEDULER_INIT);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
@@ -27,7 +32,7 @@ class SchedulerInitCommand extends BaseCommand
             '--force' => true,
         );
 
-        $input = new ArrayInput($arguments);
+        $input      = new ArrayInput($arguments);
         $returnCode = $command->run($input, $output);
         $output->writeln('Scheduler initiated. You can spawn workers now!');
     }

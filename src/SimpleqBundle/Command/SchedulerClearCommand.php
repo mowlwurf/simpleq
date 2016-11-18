@@ -2,17 +2,22 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class SchedulerClearCommand extends BaseCommand
 {
 
     public function configure()
     {
-        $this->setName(\CommandPatterns::SCHEDULER_CLEAR);
+        $this->setName(\Command::SCHEDULER_CLEAR);
         $this->addArgument('name', InputArgument::OPTIONAL);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */

@@ -2,7 +2,7 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
-namespace simpleq\SchedulerBundle\Service\SchedulerService;
+use simpleq\SchedulerBundle\Service\WorkerProvider\SchedulerService;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -10,11 +10,11 @@ class SchedulerStartCommand extends BaseDaemonCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::SCHEDULER_START);
+        $this->setName(\Command::SCHEDULER_START);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void

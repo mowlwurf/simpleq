@@ -2,16 +2,15 @@
 
 namespace simpleq\SchedulerBundle\Service;
 
-namespace simpleq\SimpleqBundle\Service\ConfigProvider;
-namespace simpleq\WorkerBundle\Extension\WorkerStatus;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
 use PDO;
+use simpleq\SimpleqBundle\Service\ConfigProvider;
 
 class WorkerProvider
 {
-    const SCHEDULER_REPOSITORY = 'SchedulerBundle';
-    const SCHEDULER_WORKING_QUEUE = 'WorkingQueue';
+    const SCHEDULER_REPOSITORY          = 'SchedulerBundle';
+    const SCHEDULER_WORKING_QUEUE       = 'WorkingQueue';
     const SCHEDULER_WORKING_QUEUE_TABLE = 'working_queue';
 
     /**
@@ -26,11 +25,11 @@ class WorkerProvider
 
     /**
      * @param ConfigProvider $config
-     * @param Connection $connection
+     * @param Connection     $connection
      */
     public function __construct(ConfigProvider $config, Connection $connection)
     {
-        $this->config = $config;
+        $this->config     = $config;
         $this->connection = $connection;
         $this->connection->getConfiguration()->setSQLLogger(null);
     }
@@ -51,7 +50,7 @@ class WorkerProvider
     public function getActiveWorkerCount($name = null)
     {
         if (!is_null($name)) {
-            $statement = <<<'SQL'
+            $statement         = <<<'SQL'
 SELECT count(id) FROM %s WHERE worker = :worker
 SQL;
             $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
@@ -85,7 +84,7 @@ SQL;
             );
             $preparedStatement->execute();
         } else {
-            $statement = <<<'SQL'
+            $statement         = <<<'SQL'
 SELECT * FROM %s WHERE worker = :worker
 SQL;
             $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
@@ -124,10 +123,11 @@ SQL;
             if (isset($params['driver']) && $params['driver'] == 'pdo_sqlite') {
                 $this->connection->exec(sprintf('DELETE FROM %s', self::SCHEDULER_WORKING_QUEUE_TABLE));
             } else {
-                $this->connection->exec(sprintf('TRUNCATE %s', self::SCHEDULER_WORKING_QUEUE_TABLE)); // @codeCoverageIgnore
+                $this->connection->exec(sprintf('TRUNCATE %s',
+                    self::SCHEDULER_WORKING_QUEUE_TABLE)); // @codeCoverageIgnore
             }
         } else {
-            $statement = <<<'SQL'
+            $statement         = <<<'SQL'
 DELETE FROM %s WHERE worker = :worker
 SQL;
             $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
@@ -142,8 +142,8 @@ SQL;
      */
     public function pushWorkerToWorkingQueue($workerService)
     {
-        $tempPid = md5(microtime() . $workerService);
-        $time = new \DateTime();
+        $tempPid   = md5(microtime() . $workerService);
+        $time      = new \DateTime();
         $statement = <<<'SQL'
 INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`)
 VALUES (:pid,:status,:worker,:created,:updated)
@@ -162,11 +162,11 @@ SQL;
 
     /**
      * @param string $tempPid
-     * @param int $pid
+     * @param int    $pid
      */
     public function updateWorkerPid($tempPid, $pid)
     {
-        $statement = <<<'SQL'
+        $statement         = <<<'SQL'
 UPDATE %s SET pid = :npid WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
@@ -180,7 +180,7 @@ SQL;
      */
     public function removeWorkingQueueEntry($pid)
     {
-        $statement = <<<'SQL'
+        $statement         = <<<'SQL'
 DELETE FROM %s WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
@@ -194,7 +194,7 @@ SQL;
      */
     public function pushWorkerStatus($pid, $status)
     {
-        $statement = <<<'SQL'
+        $statement         = <<<'SQL'
 UPDATE %s SET status = :status WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));

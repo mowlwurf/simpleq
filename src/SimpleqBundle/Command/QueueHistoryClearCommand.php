@@ -2,22 +2,27 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\QueueBundle\Service\JobQueueHistoryProvider;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class QueueHistoryClearCommand extends BaseCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::QUEUE_HISTORY_CLEAR);
+        $this->setName(\Command::QUEUE_HISTORY_CLEAR);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = $input->getArgument('name');
+        $name     = $input->getArgument('name');
         $provider = $this->getQueueHistoryProvider();
         $output->writeln('Starting to clear job queue history ...');
         $provider->clearQueueHistory($name);

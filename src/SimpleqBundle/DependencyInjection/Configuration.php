@@ -18,10 +18,10 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('simpleq');
+        $rootNode    = $treeBuilder->root('simpleq');
         // parent queue id
         $prototypeParent = $rootNode->children()->arrayNode('queue');
-        $prototype = $prototypeParent->prototype('array');
+        $prototype       = $prototypeParent->prototype('array');
         $prototype->cannotBeEmpty();
         // child type
         $prototype->children()->scalarNode('type');
@@ -30,7 +30,7 @@ class Configuration implements ConfigurationInterface
         // child delete_on_failure
         $prototype->children()->booleanNode('delete_on_failure');
         // child worker(s)
-        $workerChild = $prototype->children()->arrayNode('worker');
+        $workerChild       = $prototype->children()->arrayNode('worker');
         $workerChildChilds = $workerChild->prototype('array');
         // worker child class
         $workerChildChilds->children()->scalarNode('class');

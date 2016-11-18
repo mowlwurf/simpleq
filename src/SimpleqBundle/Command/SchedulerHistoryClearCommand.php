@@ -2,23 +2,28 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class SchedulerHistoryClearCommand extends BaseCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::SCHEDULER_HISTORY_CLEAR);
+        $this->setName(\Command::SCHEDULER_HISTORY_CLEAR);
         $this->addArgument('name', InputArgument::OPTIONAL);
         $this->setDescription('seriously?');
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $name = ($input->getArgument('name')) ? $input->getArgument('name') : null;
+        $name     = ($input->getArgument('name')) ? $input->getArgument('name') : null;
         $provider = $this->getSchedulerHistoryProvider();
         $output->writeln('Starting to clear scheduler history ...');
         $provider->clearWorkerHistory($name);

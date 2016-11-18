@@ -2,6 +2,8 @@
 
 namespace simpleq\QueueBundle\Service;
 
+use simpleq\SimpleqBundle\Service\ConfigProvider\QueueProvider;
+
 /**
  * @codeCoverageIgnore
  */
@@ -18,17 +20,17 @@ class JobProvider
     private $history;
 
     /**
-     * @param QueueProvider $provider
+     * @param QueueProvider           $provider
      * @param JobQueueHistoryProvider $history
      */
     public function __construct(QueueProvider $provider, JobQueueHistoryProvider $history)
     {
         $this->provider = $provider;
-        $this->history = $history;
+        $this->history  = $history;
     }
 
     /**
-     * @param string $queue
+     * @param string             $queue
      * @param mixed|string|array $task
      * @return array
      */
@@ -39,7 +41,7 @@ class JobProvider
 
     /***
      * @param string $queue
-     * @param int $jobId
+     * @param int    $jobId
      */
     public function removeJob($queue, $jobId)
     {
@@ -48,7 +50,7 @@ class JobProvider
 
     /**
      * @param string $queue
-     * @param int $jobId
+     * @param int    $jobId
      */
     public function archiveJob($queue, $jobId)
     {
@@ -94,7 +96,7 @@ class JobProvider
 
     /**
      * @param string $queue
-     * @param int $jobId
+     * @param int    $jobId
      * @param string $key
      * @param string $value
      */

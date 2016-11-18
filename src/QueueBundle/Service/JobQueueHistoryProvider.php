@@ -27,13 +27,13 @@ class JobQueueHistoryProvider
 
     /**
      * @param array $entity
-     * @param int $queue
+     * @param int   $queue
      */
     public function archiveQueueEntry(array $entity, $queue)
     {
-        $created = new \DateTime($entity['created']);
-        $updated = new \DateTime($entity['updated']);
-        $time = new \DateTime();
+        $created   = new \DateTime($entity['created']);
+        $updated   = new \DateTime($entity['updated']);
+        $time      = new \DateTime();
         $statement = <<<'SQL'
 INSERT INTO %s_history (`status`,`task`,`data`,`created`,`updated`,`archived`)
 VALUES (:status,:task,:jdata,:created,:updated,:archived)
@@ -55,7 +55,7 @@ SQL;
      */
     public function getQueueHistory($queue)
     {
-        $statement = <<<'SQL'
+        $statement         = <<<'SQL'
 SELECT * FROM %s_history
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, $queue));

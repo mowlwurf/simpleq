@@ -26,13 +26,13 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
     protected function assertSingleInstance($mode = 0666, $umask = 0000)
     {
         // Check if command is already running
-        $pid = posix_getpid();
+        $pid         = posix_getpid();
         $pidFilePath = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), self::PID_FILE_NAME);
-        $filesystem = new Filesystem();
+        $filesystem  = new Filesystem();
         if ($filesystem->exists($pidFilePath)) {
             $pidFileHandle = new \SplFileObject($pidFilePath, 'r');
-            $storedPID = trim($pidFileHandle->fgets());
-            $pidProcPath = sprintf('/proc/%s', $storedPID);
+            $storedPID     = trim($pidFileHandle->fgets());
+            $pidProcPath   = sprintf('/proc/%s', $storedPID);
             if ($filesystem->exists($pidProcPath)) {
                 throw new \RuntimeException(
                     sprintf('Command is already running as PID #%s (%s)', $storedPID, $pidFilePath)
@@ -74,10 +74,10 @@ abstract class BaseDaemonCommand extends ContainerAwareCommand
 
     public function stopDaemon()
     {
-        $pidFilePath = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), self::PID_FILE_NAME);
+        $pidFilePath   = sprintf('%s/%s.pid', $this->getPidFileDirectoryPath(), self::PID_FILE_NAME);
         $pidFileHandle = new \SplFileObject($pidFilePath, 'r');
-        $storedPID = trim($pidFileHandle->fgets());
-        $filesystem = new Filesystem();
+        $storedPID     = trim($pidFileHandle->fgets());
+        $filesystem    = new Filesystem();
         $filesystem->remove($pidFilePath);
         posix_kill($storedPID, SIGKILL);
     }

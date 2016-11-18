@@ -2,12 +2,19 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\QueueBundle\Service\JobProvider;
+use simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider;
+use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class WorkerRunCommand extends BaseCommand
 {
 
     public function configure()
     {
-        $this->setName(\CommandPatterns::WORKER_RUN);
+        $this->setName(\Command::WORKER_RUN);
         $this->addArgument('service', InputArgument::REQUIRED, 'service id of the worker you want to run');
         $this->addArgument('jobId', InputArgument::REQUIRED);
         $this->addArgument('data', InputArgument::REQUIRED);
@@ -15,7 +22,7 @@ class WorkerRunCommand extends BaseCommand
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int|null|void
@@ -24,10 +31,10 @@ class WorkerRunCommand extends BaseCommand
     {
         $workerProvider = $this->getWorkerProvider();
         $jobProvider    = $this->getJobProvider();
-        $retry = $workerProvider->getWorkerRetry($input->getArgument('service'));
-        $retry = $retry == 0 ? 1 : $retry;
-        $ownPid = getmypid();
-        $pid = ($input->getArgument('pid')) ? $input->getArgument('pid') : $ownPid;
+        $retry          = $workerProvider->getWorkerRetry($input->getArgument('service'));
+        $retry          = $retry == 0 ? 1 : $retry;
+        $ownPid         = getmypid();
+        $pid            = ($input->getArgument('pid')) ? $input->getArgument('pid') : $ownPid;
         $workerProvider->updateWorkerPid($pid, $ownPid);
         $workerClass = $this->getContainer()->get($input->getArgument('service'));
         do {

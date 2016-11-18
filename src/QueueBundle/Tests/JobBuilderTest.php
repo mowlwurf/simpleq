@@ -21,7 +21,8 @@ class JobBuilderTest extends DBTestCase
         $this->kernel->boot();
     }
 
-    public function testJobBuilder(){
+    public function testJobBuilder()
+    {
         $builder = new JobBuilder($this->kernel->getContainer()->get('doctrine')->getConnection());
         $builder->create('valid');
         $builder->setData('testData');
@@ -31,8 +32,8 @@ class JobBuilderTest extends DBTestCase
 
         $provider = new QueueProvider(
             new ConfigProvider([
-                'valid' => [
-                    'type' => 'default',
+                'valid'    => [
+                    'type'   => 'default',
                     'worker' => [
                         'dummy' => [
                             'class' => 'DummyClass',
@@ -41,9 +42,9 @@ class JobBuilderTest extends DBTestCase
                     ]
                 ],
                 'validTwo' => [
-                    'type' => 'default',
+                    'type'    => 'default',
                     'history' => true,
-                    'worker' => [
+                    'worker'  => [
                         'dummy_two' => [
                             'class' => 'Dummy2Class',
                             'limit' => 10
@@ -75,11 +76,6 @@ class JobBuilderTest extends DBTestCase
         $this->assertNull($reflectionPropertyQueue->getValue($builder));
     }
 
-    public function tearDown(){
-        $connection = $this->kernel->getContainer()->get('doctrine')->getConnection();
-        $connection->exec('DELETE FROM valid');
-    }
-
     /**
      * @return CreateDoctrineEntityProcess
      */
@@ -88,14 +84,22 @@ class JobBuilderTest extends DBTestCase
         return $this->kernel->getContainer()->get('simpleq.queue.create.process');
     }
 
+    public function tearDown()
+    {
+        $connection = $this->kernel->getContainer()->get('doctrine')->getConnection();
+        $connection->exec('DELETE FROM valid');
+    }
+
+    public function getDataSet()
+    {
+
+    }
+
     /**
      * @return QueueProvider
      */
-    protected function getQueueProvider(){
+    protected function getQueueProvider()
+    {
         return $this->kernel->getContainer()->get('simpleq.queue.provider');
-    }
-
-    public function getDataSet(){
-
     }
 }

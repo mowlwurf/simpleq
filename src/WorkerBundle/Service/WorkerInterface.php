@@ -2,8 +2,8 @@
 
 namespace simpleq\WorkerBundle\Service;
 
-namespace simpleq\QueueBundle\Service\JobProvider;
-namespace simpleq\SchedulerBundle\Service\WorkerProvider;
+use simpleq\QueueBundle\Service\JobProvider;
+use simpleq\WorkerBundle\Extension\WorkerStatus\WorkerProvider;
 
 abstract class WorkerInterface
 {

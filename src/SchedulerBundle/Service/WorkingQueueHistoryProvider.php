@@ -32,10 +32,10 @@ class WorkingQueueHistoryProvider
      */
     public function archiveWorkingQueueEntry(array $entity)
     {
-        $created = new \DateTime($entity['created']);
-        $updated = new \DateTime($entity['updated']);
-        $archived = new \DateTime();
-        $statement = <<<'SQL'
+        $created           = new \DateTime($entity['created']);
+        $updated           = new \DateTime($entity['updated']);
+        $archived          = new \DateTime();
+        $statement         = <<<'SQL'
 INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`,`archived`)
 VALUES (:pid,:status,:worker,:created,:updated,:archived)
 SQL;
@@ -58,7 +58,7 @@ SQL;
      */
     public function getWorkerHistory($name = null)
     {
-        $statement = <<<'SQL'
+        $statement         = <<<'SQL'
 SELECT * FROM %s %s
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf(

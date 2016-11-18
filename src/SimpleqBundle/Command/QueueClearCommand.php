@@ -2,16 +2,21 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\SimpleqBundle\Service\ConfigProvider\QueueProvider;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class QueueClearCommand extends BaseCommand
 {
     public function configure()
     {
-        $this->setName(\CommandPatterns::QUEUE_CLEAR);
+        $this->setName(\Command::QUEUE_CLEAR);
         $this->addArgument('name', InputArgument::REQUIRED);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */

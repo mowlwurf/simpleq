@@ -1,63 +1,73 @@
 {
-    "name": "devgarden/simpleq",
-    "license": "Apache License 2.0",
-    "type": "project",
-    "description": "Generic queue system based on Symfony. Light weight, easy and fast to configure and initiate.",
-    "keywords": ["queue" ,"symfony", "sf2", "queueing", "mq", "worker", "scheduler", "queue", "simpleq"],
-    "homepage": "https://github.com/mowlwurf/simpleq",
-    "autoload": {
-        "psr-4": {
-            "simpleq\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Daniel Naumann",
-            "email": "naumann.da@gmail.com",
-            "role": "Master"
-        }
-    ],
-    "repositories": [
-        {
-            "type": "package",
-            "package": {
-                "name": "sebastianbergmann/phpcov",
-                "version": "1.1.0",
-                "dist": {
-                    "url": "https://github.com/sebastianbergmann/phpcov/archive/1.1.0.zip",
-                    "type": "zip"
-                },
-                "source": {
-                    "url": "https://github.com/sebastianbergmann/phpcov.git",
-                    "type": "git",
-                    "reference": "1.1.0"
-                },
-                "bin": [
-                    "phpcov.php"
-                ]
-            }
-        }
-    ],
-    "require": {
-        "php": ">=5.3.9",
-        "symfony/symfony": "2.7.*",
-        "doctrine/orm": "~2.2",
-        "doctrine/dbal": "~2.2",
-        "doctrine/doctrine-bundle": "~1.4",
-        "symfony/monolog-bundle": "~2.4",
-        "sensio/distribution-bundle": "~4.0",
-        "sensio/framework-extra-bundle": "~3.0,>=3.0.2",
-        "incenteev/composer-parameter-handler": "~2.0",
-        "gedmo/doctrine-extensions": "~2.4"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "~4.7",
-        "etsy/phpunit-extensions": "0.7.0",
-        "sensio/generator-bundle": "~2.3",
-        "satooshi/php-coveralls": "~0.6@stable",
-        "sebastianbergmann/phpcov": "1.1.0"
-    },
-    "config": {
-        "bin-dir": "bin"
+  "name": "devgarden/simpleq",
+  "license": "Apache License 2.0",
+  "type": "project",
+  "description": "Generic queue system based on Symfony. Light weight, easy and fast to configure and initiate.",
+  "keywords": [
+    "queue",
+    "symfony",
+    "sf2",
+    "queueing",
+    "mq",
+    "worker",
+    "scheduler",
+    "queue",
+    "simpleq"
+  ],
+  "homepage": "https://github.com/mowlwurf/simpleq",
+  "autoload": {
+    "psr-4": {
+      "simpleq\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "Daniel Naumann",
+      "email": "naumann.da@gmail.com",
+      "role": "Master"
+    }
+  ],
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "sebastianbergmann/phpcov",
+        "version": "1.1.0",
+        "dist": {
+          "url": "https://github.com/sebastianbergmann/phpcov/archive/1.1.0.zip",
+          "type": "zip"
+        },
+        "source": {
+          "url": "https://github.com/sebastianbergmann/phpcov.git",
+          "type": "git",
+          "reference": "1.1.0"
+        },
+        "bin": [
+          "phpcov.php"
+        ]
+      }
+    }
+  ],
+  "require": {
+    "php": ">=5.3.9",
+    "symfony/symfony": "2.7.*",
+    "doctrine/orm": "~2.2",
+    "doctrine/dbal": "~2.2",
+    "doctrine/doctrine-bundle": "~1.4",
+    "symfony/monolog-bundle": "~2.4",
+    "sensio/distribution-bundle": "~4.0",
+    "sensio/framework-extra-bundle": "~3.0,>=3.0.2",
+    "incenteev/composer-parameter-handler": "~2.0",
+    "gedmo/doctrine-extensions": "~2.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.7",
+    "etsy/phpunit-extensions": "0.7.0",
+    "sensio/generator-bundle": "~2.3",
+    "satooshi/php-coveralls": "~0.6@stable",
+    "sebastianbergmann/phpcov": "1.1.0"
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
 }

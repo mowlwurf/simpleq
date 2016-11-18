@@ -25,7 +25,8 @@ class JobBuilder
     /**
      * @param Connection $connection
      */
-    public function __construct(Connection $connection){
+    public function __construct(Connection $connection)
+    {
 
         $this->connection = $connection;
     }
@@ -35,7 +36,8 @@ class JobBuilder
      *
      * @param string $queue
      */
-    public function create($queue){
+    public function create($queue)
+    {
         $time        = new \DateTime();
         $this->job   = [
             'created' => $time,
@@ -50,7 +52,8 @@ class JobBuilder
      *
      * @param string $task
      */
-    public function setTask($task){
+    public function setTask($task)
+    {
         $this->job['task'] = $task;
     }
 
@@ -59,7 +62,8 @@ class JobBuilder
      *
      * @param string $data
      */
-    public function setData($data){
+    public function setData($data)
+    {
         $this->job['data'] = $data;
     }
 
@@ -69,9 +73,10 @@ class JobBuilder
      * @throws \Doctrine\DBAL\DBALException
      * @return int
      */
-    public function persist(){
-        $task = isset($this->job['task']) ? $this->job['task'] : '';
-        $data = isset($this->job['data']) ? $this->job['data'] : '';
+    public function persist()
+    {
+        $task      = isset($this->job['task']) ? $this->job['task'] : '';
+        $data      = isset($this->job['data']) ? $this->job['data'] : '';
         $statement = <<<'SQL'
 INSERT INTO %s (`status`,`task`,`data`,`created`,`updated`)
 VALUES (:status,:task,:jdata,:created,:updated)
@@ -81,16 +86,20 @@ SQL;
         $preparedStatement->bindValue('status', $this->job['status'], PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('task', $task, PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('jdata', $data, PDOConnection::PARAM_STR);
-        $preparedStatement->bindValue('created', $this->job['created']->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
-        $preparedStatement->bindValue('updated', $this->job['updated']->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('created', $this->job['created']->format('Y-m-d h:i:s'),
+            PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('updated', $this->job['updated']->format('Y-m-d h:i:s'),
+            PDOConnection::PARAM_STR);
         $preparedStatement->execute();
+
         return $this->connection->lastInsertId();
     }
 
     /**
      * resets JobBuilder
      */
-    public function flush(){
+    public function flush()
+    {
         $this->job = $this->queue = null;
         $this->connection->close();
     }

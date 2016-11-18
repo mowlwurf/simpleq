@@ -2,15 +2,19 @@
 
 namespace simpleq\SimpleqBundle\Command;
 
+use simpleq\QueueBundle\Service\QueueProvider;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class QueueCheckCommand extends BaseCommand
 {
     protected function configure()
     {
-        $this->setName(\CommandPatterns::QUEUE_CHECK);
+        $this->setName(\Command::QUEUE_CHECK);
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      * @return int|null|void
      */
@@ -18,7 +22,7 @@ class QueueCheckCommand extends BaseCommand
     {
         $output->writeln('Checking queues ...');
         $queueProvider = $this->getQueueProvider();
-        $queues = $queueProvider->getQueues();
+        $queues        = $queueProvider->getQueues();
         try {
             foreach ($queues as $key => $queue) {
                 $entries = $queueProvider->getQueueEntries($key);
