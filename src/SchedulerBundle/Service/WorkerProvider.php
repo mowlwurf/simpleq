@@ -6,6 +6,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\PDOConnection;
 use PDO;
 use simpleq\SimpleqBundle\Service\ConfigProvider;
+use simpleq\WorkerBundle\Extension\WorkerStatus;
 
 class WorkerProvider
 {
