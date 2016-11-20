@@ -1,11 +1,11 @@
 services:
 #    worker.example:
-#        class: DevGarden\simpleq\WorkerBundle\Example
+#        class: simpleq\WorkerBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.worker.run.process:
-        class: DevGarden\simpleq\WorkerBundle\Process\WorkerRunProcess
+        class: simpleq\WorkerBundle\Process\WorkerRunProcess
     simpleq.worker.interface:
-        class: DevGarden\simpleq\WorkerBundle\Service\WorkerInterface
+        class: simpleq\WorkerBundle\Service\WorkerInterface
         abstract: true
     simpleq.base.worker:
-        class: DevGarden\simpleq\WorkerBundle\Service\BaseWorker
+        class: simpleq\WorkerBundle\Service\BaseWorker

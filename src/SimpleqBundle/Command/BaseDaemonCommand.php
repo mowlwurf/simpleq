@@ -9,7 +9,7 @@ use Symfony\Component\Filesystem\Filesystem;
 /**
  * Class BaseDaemonCommand
  *
- * @package DevGarden\simpleq\SimpleqBundle\Command
+ * @package simpleq\SimpleqBundle\Command
  */
 abstract class BaseDaemonCommand extends ContainerAwareCommand
 {

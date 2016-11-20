@@ -1,26 +1,26 @@
 services:
 #    queue.example:
-#        class: DevGarden\simpleq\QueueBundle\Example
+#        class: simpleq\QueueBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.queue.provider:
-        class: DevGarden\simpleq\QueueBundle\Service\QueueProvider
+        class: simpleq\QueueBundle\Service\QueueProvider
         arguments:
             - @simpleq.config.provider
             - @simpleq.queue.create.process
             - @doctrine.dbal.default_connection
     simpleq.queue.create.process:
-        class: DevGarden\simpleq\QueueBundle\Process\CreateDoctrineEntityProcess
+        class: simpleq\QueueBundle\Process\CreateDoctrineEntityProcess
     simpleq.queue.history.provider:
-        class: DevGarden\simpleq\QueueBundle\Service\JobQueueHistoryProvider
+        class: simpleq\QueueBundle\Service\JobQueueHistoryProvider
         arguments:
             - @doctrine.dbal.default_connection
             - @simpleq.queue.provider
     simpleq.job.builder:
-        class: DevGarden\simpleq\QueueBundle\Service\JobBuilder
+        class: simpleq\QueueBundle\Service\JobBuilder
         arguments:
             - @doctrine.dbal.default_connection
     simpleq.job.provider:
-        class: DevGarden\simpleq\QueueBundle\Service\JobProvider
+        class: simpleq\QueueBundle\Service\JobProvider
         arguments:
             - @simpleq.queue.provider
             - @simpleq.queue.history.provider

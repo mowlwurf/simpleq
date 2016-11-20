@@ -1,8 +1,8 @@
 services:
 #    simpleq.example:
-#        class: DevGarden\simpleq\SimpleqBundle\Example
+#        class: simpleq\SimpleqBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.config.provider:
-        class: DevGarden\simpleq\SimpleqBundle\Service\ConfigProvider
+        class: simpleq\SimpleqBundle\Service\ConfigProvider
         arguments:
             - %simpleq.queue%

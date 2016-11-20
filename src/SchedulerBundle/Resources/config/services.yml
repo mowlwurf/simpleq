@@ -1,18 +1,18 @@
 services:
 #    scheduler.example:
-#        class: DevGarden\simpleq\SchedulerBundle\Example
+#        class: simpleq\SchedulerBundle\Example
 #        arguments: [@service_id, "plain_value", %parameter%]
     simpleq.worker.provider:
-        class: DevGarden\simpleq\SchedulerBundle\Service\WorkerProvider
+        class: simpleq\SchedulerBundle\Service\WorkerProvider
         arguments:
             - @simpleq.config.provider
             - @doctrine.dbal.default_connection
     simpleq.scheduler.history.provider:
-        class: DevGarden\simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider
+        class: simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider
         arguments:
             - @doctrine.dbal.default_connection
     simpleq.scheduler.service:
-        class: DevGarden\simpleq\SchedulerBundle\Service\SchedulerService
+        class: simpleq\SchedulerBundle\Service\SchedulerService
         arguments:
             - @simpleq.queue.provider
             - @simpleq.worker.provider

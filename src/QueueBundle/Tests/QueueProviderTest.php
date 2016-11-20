@@ -171,7 +171,7 @@ class QueueProviderTest extends DBTestCase
 
     public function testGenerateQueueValid()
     {
-        $this->expectOutputRegex('/generating\sDevGarden\\\\simpleq\\\\QueueBundle\\\\Entity\\\\Valid/');
+        $this->expectOutputRegex('/generating\s\\\simpleq\\\\QueueBundle\\\\Entity\\\\Valid/');
         $this->assertFalse($this->hasOutput());
         $this->queueProvider->generateQueue('valid');
         $this->assertTrue(file_exists(__DIR__.'/../Entity/Valid.php'));
@@ -196,7 +196,7 @@ class QueueProviderTest extends DBTestCase
 
     public function testGenerateQueueHistory()
     {
-        $this->expectOutputRegex('/generating\sDevGarden\\\\simpleq\\\\QueueBundle\\\\Entity\\\\ValidTwo/');
+        $this->expectOutputRegex('/generating\s\\\simpleq\\\\QueueBundle\\\\Entity\\\\ValidTwo/');
         $this->assertFalse($this->hasOutput());
         $this->queueProvider->generateQueue('validTwo');
         $this->assertTrue(file_exists(__DIR__.'/../Entity/ValidTwo.php'));
