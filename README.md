@@ -1,7 +1,6 @@
 SimpleQ
 =======
 
-[![Build Status](https://travis-ci.org/mowlwurf/simpleq.png?branch=master)](https://travis-ci.org/mowlwurf/simpleq)
 [![Coverage Status](https://coveralls.io/repos/mowlwurf/simpleq/badge.svg?branch=master&service=github)](https://coveralls.io/github/mowlwurf/simpleq?branch=master)
 [![Dependency Status](https://www.versioneye.com/user/projects/55cb799adfed0a001f0000f5/badge.svg?style=flat)](https://www.versioneye.com/user/projects/55cb799adfed0a001f0000f5)
 
@@ -40,4 +39,4 @@ Your project should be able to run with the following dependencies:
 ###### Learn how to initialize, check & control scheduler in the [Scheduler chapter](doc/scheduler.md)
 ###### Learn how to build and run your worker in the [Worker chapter](doc/worker.md)
 ###### Learn how to cluster queues & workers [Cluster chapter](doc/cluster.md)
-###### Have a look at the [Roadmap](doc/roadmap.md) 
+###### Have a look at the [Roadmap](doc/roadmap.md)
