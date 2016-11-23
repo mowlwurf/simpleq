@@ -34,6 +34,11 @@ class WorkingQueue
     protected $worker;
 
     /**
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $error;
+
+    /**
      * @var \DateTime $created
      *
      * @Gedmo\Timestampable(on="create")
@@ -48,6 +53,22 @@ class WorkingQueue
      * @ORM\Column(type="datetime")
      */
     protected $updated;
+
+    /**
+     * @return mixed
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * @param mixed $error
+     */
+    public function setError($error)
+    {
+        $this->error = $error;
+    }
 
     /**
      * Get id

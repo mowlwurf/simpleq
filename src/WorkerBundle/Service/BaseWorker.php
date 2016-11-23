@@ -81,6 +81,12 @@ class BaseWorker extends WorkerInterface
                     'status',
                     JobStatus::JOB_STATUS_FAILED
                 );
+                $this->jobProvider->updateJobAttribute(
+                    $queue,
+                    $jobId,
+                    'error',
+                    $e->getMessage()
+                );
                 if ($this->jobProvider->hasToDeleteFailedJob($queue)) {
                     if ($this->jobProvider->hasToArchiveJob($queue)) {
                         $this->jobProvider->archiveJob($queue, $jobId);

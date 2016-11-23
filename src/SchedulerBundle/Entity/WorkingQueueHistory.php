@@ -34,6 +34,11 @@ class WorkingQueueHistory
     protected $worker;
 
     /**
+     * @ORM\Column(type="string", length=128)
+     */
+    protected $error;
+
+    /**
      * @var \DateTime $created
      *
      * @ORM\Column(type="datetime")
@@ -56,6 +61,21 @@ class WorkingQueueHistory
      */
     protected $archived;
 
+    /**
+     * @return mixed
+     */
+    public function getError()
+    {
+        return $this->error;
+    }
+
+    /**
+     * @param mixed $error
+     */
+    public function setError($error)
+    {
+        $this->error = $error;
+    }
 
     /**
      * Get id
