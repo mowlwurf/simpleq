@@ -36,8 +36,8 @@ class WorkingQueueHistoryProvider
         $updated           = new \DateTime($entity['updated']);
         $archived          = new \DateTime();
         $statement         = <<<'SQL'
-INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`,`archived`)
-VALUES (:pid,:status,:worker,:created,:updated,:archived)
+INSERT INTO %s (`pid`,`status`,`worker`,`error`,`created`,`updated`,`archived`)
+VALUES (:pid,:status,:worker,:error,:created,:updated,:archived)
 SQL;
         $preparedStatement = $this->connection->prepare(
             sprintf(
