@@ -2,7 +2,8 @@
 
 namespace simpleq\SchedulerBundle\Service;
 
-class WorkerSpawnValidator {
+class WorkerSpawnValidator
+{
 
     const MAX_USED_MEMORY_IN_PERCENT = 90;
 
@@ -49,19 +50,21 @@ class WorkerSpawnValidator {
      */
     protected function validateMemory(array $worker)
     {
-        $data = explode("\n", shell_exec("/proc/meminfo"));
+        $data    = explode("\n", shell_exec("/proc/meminfo"));
         $meminfo = array();
         foreach ($data as $line) {
             list($key, $val) = explode(":", $line);
             $meminfo[$key] = trim($val);
         }
 
-        $memoryUsedKB = memory_get_usage(true) / 1024;
+        $memoryUsedKB = memory_get_usage(true);
+        $memTotal     = intval($meminfo['MemTotal']);
+        $memFree      = intval($meminfo['MemFree']);
 
         if (
-            $memoryUsedKB >= $this->workerProvider->getWorkerMaxMemory($worker['class'])
-            || $memoryUsedKB >= ($meminfo['MemTotal'] / 100) * self::MAX_USED_MEMORY_IN_PERCENT
-            || $meminfo['MemFree'] <= ($meminfo['MemTotal'] / 100) * (100 - self::MAX_USED_MEMORY_IN_PERCENT)
+            $memoryUsedKB >= $this->convertShortTermNumber($this->workerProvider->getWorkerMaxMemory($worker['class']))
+            || $memoryUsedKB / 1024 >= ($memTotal / 100) * self::MAX_USED_MEMORY_IN_PERCENT
+            || $memFree <= ($memTotal / 100) * (100 - self::MAX_USED_MEMORY_IN_PERCENT)
         ) {
             $this->validationFailure = 'Memory usage is to high, stop spawning workers';
 
@@ -123,5 +126,29 @@ class WorkerSpawnValidator {
         $limit = $worker['limit'];
 
         return $this->workerProvider->getActiveWorkerCount($worker['class']) >= $limit;
+    }
+
+    /**
+     * @param string $shortTermValue
+     * @return int
+     */
+    protected function convertShortTermNumber($shortTermValue)
+    {
+        $shortTerms = [
+            'K'  => 1024,
+            'KB' => 1024,
+            'M'  => 1024 * 1024,
+            'MB' => 1024 * 1024,
+            'G'  => 1024 * 1024 * 1024,
+            'GB' => 1024 * 1024 * 1024,
+        ];
+
+        foreach ($shortTerms as $shortTermKey => $shortTermMultiplier) {
+            if (strpos($shortTermValue, $shortTermKey) !== false) {
+                return intval($shortTermValue) * $shortTermMultiplier;
+            }
+        }
+
+        return intval($shortTermValue);
     }
 }

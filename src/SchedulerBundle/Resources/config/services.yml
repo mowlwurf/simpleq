@@ -7,6 +7,10 @@ services:
         arguments:
             - @simpleq.config.provider
             - @doctrine.dbal.default_connection
+    simpleq.worker.spawn.validator:
+        class: simpleq\SchedulerBundle\Service\WorkerSpawnValidator
+        arguments:
+            - @simpleq.worker.provider
     simpleq.scheduler.history.provider:
         class: simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider
         arguments:
@@ -18,3 +22,4 @@ services:
             - @simpleq.worker.provider
             - @simpleq.job.provider
             - @simpleq.worker.run.process
+            - @simpleq.worker.spawn.validator
