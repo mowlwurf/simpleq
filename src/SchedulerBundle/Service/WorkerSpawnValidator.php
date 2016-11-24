@@ -50,7 +50,12 @@ class WorkerSpawnValidator
      */
     protected function validateMemory(array $worker)
     {
-        $data    = explode("\n", shell_exec("/proc/meminfo"));
+        try {
+            $data = explode("\n", shell_exec("/proc/meminfo"));
+        } catch (\Exception $e) {
+            return true;
+        }
+
         $memInfo = [];
         foreach ($data as $line) {
             list($key, $val) = explode(":", $line);
