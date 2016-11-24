@@ -16,39 +16,47 @@ class SchedulerService
     /**
      * @var WorkerProvider
      */
-    private $workers;
+    protected $workers;
 
     /**
      * @var JobProvider
      */
-    private $jobs;
+    protected $jobs;
 
     /**
      * @var array
      */
-    private $queues;
+    protected $queues;
 
     /**
      * @var WorkerRunProcess
      */
-    private $process;
+    protected $process;
 
     /**
-     * @param QueueProvider    $queues
-     * @param WorkerProvider   $workers
-     * @param JobProvider      $jobs
-     * @param WorkerRunProcess $process
+     * @var WorkerSpawnValidator
+     */
+    protected $validator;
+
+    /**
+     * @param QueueProvider        $queues
+     * @param WorkerProvider       $workers
+     * @param JobProvider          $jobs
+     * @param WorkerRunProcess     $process
+     * @param WorkerSpawnValidator $spawnValidator
      */
     public function __construct(
         QueueProvider $queues,
         WorkerProvider $workers,
         JobProvider $jobs,
-        WorkerRunProcess $process
+        WorkerRunProcess $process,
+        WorkerSpawnValidator $spawnValidator
     ) {
-        $this->workers = $workers;
-        $this->jobs    = $jobs;
-        $this->queues  = $queues->getQueues();
-        $this->process = $process;
+        $this->workers   = $workers;
+        $this->jobs      = $jobs;
+        $this->queues    = $queues->getQueues();
+        $this->process   = $process;
+        $this->validator = $spawnValidator;
     }
 
     /**
@@ -78,22 +86,12 @@ class SchedulerService
     {
         foreach ($workers as $key => $worker) {
             $task    = isset($worker['task']) ? $worker['task'] : null;
-            $load    = sys_getloadavg();
-            $maxLoad = $this->workers->getWorkerMaxLoad($worker['class']);
-            if ($maxLoad > 0 && $maxLoad <= $load[0]) {
-                $output->writeln(sprintf('Max. server load reached for service %s', $worker['class']));
+            $isValidSpawnProcess = $this->validator->validate($worker);
+            if ($isValidSpawnProcess !== TRUE) {
+                $output->writeln($isValidSpawnProcess);
                 continue;
             }
-            try {
-                if ($this->isWorkerLimitReached($worker)) {
-                    $output->writeln(sprintf('Limit reached for service %s', $worker['class']));
-                    continue;
-                }
-            } catch (\Exception $e) {
-                throw new \Exception(
-                    'Could not connect to WorkingQueue. Dont forget to run simpleq:scheduler:init first'
-                );
-            }
+
             $job = $this->getJob($queue, $task, $worker['class']);
             if (!$job) {
                 $output->writeln(
@@ -163,17 +161,6 @@ class SchedulerService
         } catch (\Exception $e) {
             throw new \Exception ('Could not provide job for worker '.$service);
         }
-    }
-
-    /**
-     * @param array $worker
-     * @return bool
-     */
-    protected function isWorkerLimitReached(array $worker)
-    {
-        $limit = isset($worker['limit']) && $worker['limit'] > 0 ? $worker['limit'] : 10;
-
-        return $this->workers->getActiveWorkerCount($worker['class']) >= $limit;
     }
 
     /**

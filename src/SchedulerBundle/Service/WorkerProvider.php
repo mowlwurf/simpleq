@@ -243,4 +243,13 @@ SQL;
     {
         return $this->config->getWorkerAttributeByServiceId('max_load', $id);
     }
+
+    /**
+     * @param string $id
+     * @return bool|int
+     */
+    public function getWorkerMaxMemory($id)
+    {
+        return $this->config->getWorkerAttributeByServiceId('max_mem', $id);
+    }
 }
