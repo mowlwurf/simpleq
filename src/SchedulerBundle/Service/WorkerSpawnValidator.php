@@ -51,15 +51,15 @@ class WorkerSpawnValidator
     protected function validateMemory(array $worker)
     {
         $data    = explode("\n", shell_exec("/proc/meminfo"));
-        $meminfo = array();
+        $memInfo = [];
         foreach ($data as $line) {
             list($key, $val) = explode(":", $line);
-            $meminfo[$key] = trim($val);
+            $memInfo[$key] = trim($val);
         }
 
         $memoryUsedKB = memory_get_usage(true);
-        $memTotal     = intval($meminfo['MemTotal']);
-        $memFree      = intval($meminfo['MemFree']);
+        $memTotal     = intval($memInfo['MemTotal']);
+        $memFree      = intval($memInfo['MemFree']);
 
         if (
             $memoryUsedKB >= $this->convertShortTermNumber($this->workerProvider->getWorkerMaxMemory($worker['class']))

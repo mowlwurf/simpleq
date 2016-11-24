@@ -42,6 +42,8 @@ class Configuration implements ConfigurationInterface
         $workerChildChilds->children()->integerNode('retry');
         // worker child max_load
         $workerChildChilds->children()->integerNode('max_load');
+        // worker child max_mem
+        $workerChildChilds->children()->scalarNode('max_mem');
 
         return $treeBuilder;
     }
