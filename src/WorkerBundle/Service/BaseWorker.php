@@ -81,10 +81,8 @@ class BaseWorker extends WorkerInterface
                     'status',
                     JobStatus::JOB_STATUS_FAILED
                 );
-                $this->jobProvider->updateJobAttribute(
-                    $queue,
-                    $jobId,
-                    'error',
+                $this->workerProvider->pushWorkerError(
+                    $pid,
                     $e->getMessage()
                 );
                 if ($this->jobProvider->hasToDeleteFailedJob($queue)) {

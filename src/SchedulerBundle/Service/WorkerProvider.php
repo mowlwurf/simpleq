@@ -155,7 +155,7 @@ VALUES (:pid,:status,:worker,:created,:updated)
 SQL;
 
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
-        $preparedStatement->bindValue('pid', $tempPid, PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('pid', $tempPid, PDOConnection::PARAM_INT);
         $preparedStatement->bindValue('status', WorkerStatus::WORKER_STATUS_OPEN_CODE, PDOConnection::PARAM_INT);
         $preparedStatement->bindValue('worker', $workerService, PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('created', $time->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
@@ -176,7 +176,7 @@ UPDATE %s SET pid = :npid WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
         $preparedStatement->bindValue('npid', $pid, PDOConnection::PARAM_STR);
-        $preparedStatement->bindValue('pid', $tempPid, PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('pid', $tempPid, PDOConnection::PARAM_INT);
         $preparedStatement->execute();
     }
 
@@ -204,7 +204,23 @@ UPDATE %s SET status = :status WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
         $preparedStatement->bindValue('status', $status, PDOConnection::PARAM_INT);
-        $preparedStatement->bindValue('pid', $pid, PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('pid', $pid, PDOConnection::PARAM_INT);
+        $preparedStatement->execute();
+    }
+
+    /**
+     * @param int $pid
+     * @param $error
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function pushWorkerError($pid, $error)
+    {
+        $statement         = <<<'SQL'
+UPDATE %s SET error = :error WHERE pid = :pid
+SQL;
+        $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
+        $preparedStatement->bindValue('error', \PDO::quote($error), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('pid', $pid, PDOConnection::PARAM_INT);
         $preparedStatement->execute();
     }
 
