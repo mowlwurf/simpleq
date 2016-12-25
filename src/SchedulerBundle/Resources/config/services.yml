@@ -5,21 +5,21 @@ services:
     simpleq.worker.provider:
         class: simpleq\SchedulerBundle\Service\WorkerProvider
         arguments:
-            - @simpleq.config.provider
-            - @doctrine.dbal.default_connection
+            - '@simpleq.config.provider'
+            - '@doctrine.dbal.default_connection'
     simpleq.worker.spawn.validator:
         class: simpleq\SchedulerBundle\Service\WorkerSpawnValidator
         arguments:
-            - @simpleq.worker.provider
+            - '@simpleq.worker.provider'
     simpleq.scheduler.history.provider:
         class: simpleq\SchedulerBundle\Service\WorkingQueueHistoryProvider
         arguments:
-            - @doctrine.dbal.default_connection
+            - '@doctrine.dbal.default_connection'
     simpleq.scheduler.service:
         class: simpleq\SchedulerBundle\Service\SchedulerService
         arguments:
-            - @simpleq.queue.provider
-            - @simpleq.worker.provider
-            - @simpleq.job.provider
-            - @simpleq.worker.run.process
-            - @simpleq.worker.spawn.validator
+            - '@simpleq.queue.provider'
+            - '@simpleq.worker.provider'
+            - '@simpleq.job.provider'
+            - '@simpleq.worker.run.process'
+            - '@simpleq.worker.spawn.validator'

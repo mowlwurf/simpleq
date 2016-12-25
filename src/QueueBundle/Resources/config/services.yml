@@ -5,22 +5,22 @@ services:
     simpleq.queue.provider:
         class: simpleq\QueueBundle\Service\QueueProvider
         arguments:
-            - @simpleq.config.provider
-            - @simpleq.queue.create.process
-            - @doctrine.dbal.default_connection
+            - '@simpleq.config.provider'
+            - '@simpleq.queue.create.process'
+            - '@doctrine.dbal.default_connection'
     simpleq.queue.create.process:
         class: simpleq\QueueBundle\Process\CreateDoctrineEntityProcess
     simpleq.queue.history.provider:
         class: simpleq\QueueBundle\Service\JobQueueHistoryProvider
         arguments:
-            - @doctrine.dbal.default_connection
-            - @simpleq.queue.provider
+            - '@doctrine.dbal.default_connection'
+            - '@simpleq.queue.provider'
     simpleq.job.builder:
         class: simpleq\QueueBundle\Service\JobBuilder
         arguments:
-            - @doctrine.dbal.default_connection
+            - '@doctrine.dbal.default_connection'
     simpleq.job.provider:
         class: simpleq\QueueBundle\Service\JobProvider
         arguments:
-            - @simpleq.queue.provider
-            - @simpleq.queue.history.provider
+            - '@simpleq.queue.provider'
+            - '@simpleq.queue.history.provider'

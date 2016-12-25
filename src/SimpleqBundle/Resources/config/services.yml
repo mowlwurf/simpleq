@@ -5,4 +5,4 @@ services:
     simpleq.config.provider:
         class: simpleq\SimpleqBundle\Service\ConfigProvider
         arguments:
-            - %simpleq.queue%
+            - '%simpleq.queue%'
