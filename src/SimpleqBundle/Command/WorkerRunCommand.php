@@ -57,8 +57,11 @@ class WorkerRunCommand extends ContainerAwareCommand
             }
         } while ($retry > 0);
 
-        $this->getHistoryProvider()->archiveWorkingQueueEntry($workerProvider->getWorkingQueueEntryByPid($ownPid));
-        $workerProvider->removeWorkingQueueEntry($ownPid);
+        $workingQueueEntry = $workerProvider->getWorkingQueueEntryByPid($ownPid);
+        if (is_array($workingQueueEntry)) {
+            $this->getHistoryProvider()->archiveWorkingQueueEntry($workingQueueEntry);
+            $workerProvider->removeWorkingQueueEntry($ownPid);
+        }
     }
 
     /**
