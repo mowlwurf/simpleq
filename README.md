@@ -32,6 +32,7 @@ v0 - v0.9.7
 **For Symfony 3**
 
 v1 - latest
+
 - "php": ">=5.3.9"
 - "symfony/symfony": "3.*"
 - "doctrine/orm": "^2.5"
