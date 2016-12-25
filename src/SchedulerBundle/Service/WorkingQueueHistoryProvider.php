@@ -48,7 +48,7 @@ SQL;
         $preparedStatement->bindValue('pid', $entity['pid'], PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('status', $entity['status'], PDOConnection::PARAM_INT);
         $preparedStatement->bindValue('worker', $entity['worker'], PDOConnection::PARAM_STR);
-        $preparedStatement->bindValue('error', \PDO::quote($entity['error']), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('error', $entity['error'], PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('created', $created->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('updated', $updated->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('archived', $archived->format('Y-m-d h:i:s'), PDOConnection::PARAM_STR);

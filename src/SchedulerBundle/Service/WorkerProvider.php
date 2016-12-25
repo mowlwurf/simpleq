@@ -219,7 +219,7 @@ SQL;
 UPDATE %s SET error = :error WHERE pid = :pid
 SQL;
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));
-        $preparedStatement->bindValue('error', \PDO::quote($error), PDOConnection::PARAM_STR);
+        $preparedStatement->bindValue('error', $error, PDOConnection::PARAM_STR);
         $preparedStatement->bindValue('pid', $pid, PDOConnection::PARAM_INT);
         $preparedStatement->execute();
     }
