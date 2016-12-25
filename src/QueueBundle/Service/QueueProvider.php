@@ -90,7 +90,7 @@ class %s
     protected $status;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", nullable=true, length=1000)
      */
     protected $data;
 
