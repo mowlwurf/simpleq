@@ -6,7 +6,7 @@ use simpleq\SimpleqBundle\Process\BaseProcess;
 
 class CreateDoctrineEntityProcess extends BaseProcess
 {
-    CONST CMD_PATTERN = 'app/console doctrine:generate:entities %s';
+    CONST CMD_PATTERN = 'bin/console doctrine:generate:entities %s';
 
     public function __construct()
     {

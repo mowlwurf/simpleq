@@ -4,7 +4,7 @@ namespace simpleq\WorkerBundle\Process;
 
 class WorkerRunProcess
 {
-    CONST CMD_PATTERN = 'app/console simpleq:worker:run %s %s \'%s\' %s &> /dev/null &';
+    CONST CMD_PATTERN = 'bin/console simpleq:worker:run %s %s \'%s\' %s &> /dev/null &';
 
     /**
      * @param string $id
