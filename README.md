@@ -18,6 +18,8 @@ SimpleQ is a generic queue system based on Symfony2 & Doctrine. Lightweight, fas
 
 Your project should be able to run with the following dependencies:
 
+**For Symfony 2**
+
 v0 - v0.9.7
 
 - "php": ">=5.3.9"
@@ -27,7 +29,9 @@ v0 - v0.9.7
 - "doctrine/doctrine-bundle": "~1.4"
 - "gedmo/doctrine-extensions": "~2.4"
 
-v1 - *
+**For Symfony 3**
+
+v1 - latest
 - "php": ">=5.3.9",
 - "symfony/symfony": "3.*",
 - "doctrine/orm": "^2.5",
