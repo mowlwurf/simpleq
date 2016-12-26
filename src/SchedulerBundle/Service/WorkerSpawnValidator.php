@@ -33,10 +33,18 @@ class WorkerSpawnValidator
      */
     public function validate(array $worker)
     {
+        $validateMemory = $this->workerProvider->getWorkerMaxMemory($worker['class'])
+            ? $this->validateMemory($worker)
+            : false;
+
+        $validateLoad = $this->workerProvider->getWorkerMaxLoad($worker['class'])
+            ? $this->validateLoad($worker)
+            : false;
+
         if (
             $this->validateLimit($worker)
-            && $this->validateLoad($worker)
-            && $this->validateMemory($worker)
+            && $validateLoad
+            && $validateMemory
         ) {
             return true;
         }
