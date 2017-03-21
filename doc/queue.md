@@ -126,7 +126,7 @@ You can check your queue entries with
 simpleq:queue:check [<queue_name>]
 ```
 
-## Reset
+## Clear
 
 If you want to clear a queue, execute
 
