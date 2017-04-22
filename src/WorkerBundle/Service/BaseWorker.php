@@ -103,9 +103,9 @@ class BaseWorker extends WorkerInterface
         }
         if ($this->jobProvider->hasTaskChain($queue) && isset($taskChain[$member + 1])) {
             try {
-                $this->jobProvider->updateJobAttribute($queue, $jobId, 'status', JobStatus::JOB_STATUS_OPEN);
                 $this->jobProvider->updateJobAttribute($queue, $jobId, 'task', $taskChain[$member + 1]);
                 $this->jobProvider->updateJobAttribute($queue, $jobId, 'data', $this->data);
+                $this->jobProvider->updateJobAttribute($queue, $jobId, 'status', JobStatus::JOB_STATUS_OPEN);
             } catch (\Exception $e) {
                 // only print warning for debugging issues, but dont fail processing cause of failed job update
                 print 'WARNING: job could not be updated '.$e->getMessage();
