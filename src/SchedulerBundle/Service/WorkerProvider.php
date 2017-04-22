@@ -150,8 +150,8 @@ SQL;
         $tempPid   = md5(microtime().$workerService);
         $time      = new \DateTime();
         $statement = <<<'SQL'
-INSERT INTO %s (`pid`,`status`,`worker`,`created`,`updated`)
-VALUES (:pid,:status,:worker,:created,:updated)
+INSERT INTO %s (`pid`,`status`,`worker`,`error`,`created`,`updated`)
+VALUES (:pid,:status,:worker,'',:created,:updated)
 SQL;
 
         $preparedStatement = $this->connection->prepare(sprintf($statement, self::SCHEDULER_WORKING_QUEUE_TABLE));

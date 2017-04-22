@@ -5,6 +5,7 @@ namespace simpleq\SimpleqBundle\Command;
 use simpleq\SchedulerBundle\Service\WorkerProvider;
 use simpleq\SimpleqBundle\Extension\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -27,13 +28,13 @@ class SchedulerStatusCommand extends ContainerAwareCommand
         $provider      = $this->getWorkerProvider();
         $activeWorkers = $provider->getActiveWorkers($name);
         $output->writeln(sprintf('Scheduler working queue contains %s active Workers', count($activeWorkers)));
-        $table = $this->getHelper('table');
+        $table = new Table($output);
         $output->writeln('Setting headers ...');
-        $table->setHeaders(array('ID', 'Status', 'PID', 'Worker', 'Created', 'Updated'));
+        $table->setHeaders(array('ID', 'Status', 'PID', 'Worker','Error', 'Created', 'Updated'));
         $output->writeln('Setting rows ...');
         $table->setRows($activeWorkers);
         $output->writeln('Print output ...');
-        $table->render($output);
+        $table->render();
     }
 
     /**

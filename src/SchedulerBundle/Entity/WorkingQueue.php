@@ -34,7 +34,7 @@ class WorkingQueue
     protected $worker;
 
     /**
-     * @ORM\Column(type="string", length=128, default="")
+     * @ORM\Column(type="string", length=128)
      */
     protected $error;
 
